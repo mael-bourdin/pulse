@@ -4,7 +4,9 @@
   "version": "0.1.0",
   "description": "PULSE V1 – Coach & Challenges (HealthAI Coach) – MSPR TPRE501",
   "packageManager": "pnpm@10.12.1",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "concurrently -k -n auth,api,web -c magenta,blue,green \"pnpm --filter @pulse/auth-simulator dev\" \"pnpm --filter @pulse/api dev\" \"pnpm --filter @pulse/web dev\"",
     "dev:auth": "pnpm --filter @pulse/auth-simulator dev",
@@ -17,7 +19,8 @@
     "test": "pnpm -r --if-present test",
     "typecheck": "pnpm -r --if-present typecheck",
     "build": "pnpm --filter @pulse/web build",
-    "check:secrets": "node scripts/check-secrets.mjs"
+    "check:secrets": "node scripts/check-secrets.mjs",
+    "prepare": "git config core.hooksPath .githooks || true"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"
