@@ -31,6 +31,6 @@ Décisions prises par la Squad, dans la latitude laissée par HAC-PROD-001 §9. 
 
 | # | Date | Décision | Raison | Alternatives écartées |
 |---|---|---|---|---|
-| D-15 | 2026-11-23 | Suivi de projet sur **Trello** (https://trello.com/b/Ed35xHmf/mspr) : une liste par sprint, puis En cours / En revue / Terminé ; une étiquette par epic | Outil déjà utilisé par l'équipe, gratuit, suffisant pour 21 h | Jira (non activé sur le site Atlassian) |
+| D-15 | 2026-11-23 | Suivi de projet sur **Trello** (https://trello.com/b/Ed35xHmf/mspr) : 5 colonnes Kanban (Backlog, À faire, En cours, En revue, Terminé) ; une étiquette par sprint et une par epic | Outil déjà utilisé par l'équipe, gratuit, suffisant pour 21 h | Jira (non activé sur le site Atlassian) |
 | D-16 | 2026-11-23 | Direction artistique « Rythme » : la semaine affichée comme 7 pulsations | Régularité plutôt que performance, pas de ton médical, pas de comparaison | Grille de cartes KPI des maquettes de référence |
 | D-17 | 2026-11-23 | La bande de la semaine répartit les totaux HAC-DATA-001 (5 jours actifs, série de 4) : lundi actif, mardi et mercredi inactifs, jeudi à dimanche actifs | Le jeu de données ne donne pas le détail par jour : on affiche une répartition cohérente avec les totaux | Inventer des valeurs quotidiennes ; ne rien afficher |

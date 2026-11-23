@@ -10,7 +10,7 @@ E7,Epic,E7 – Recette, qualité & livrables,"Recette HAC-ACC-001 (REC-01..13), 
 T-001,Task,Initialiser le monorepo pnpm (web / api / auth-simulator / desktop / shared),"Structure de dépôt, scripts racine, .editorconfig, .gitignore, .env.example. DoD : pnpm install && pnpm dev lance tout.",High,setup,E0,Sprint 0
 T-002,Task,Rédiger README : prérequis, installation, lancement, conventions (L3),"Node 22+, pnpm, Rust (optionnel, desktop). Procédure de lancement PULSE + simulateur.",High,setup;doc,E0,Sprint 0
 T-003,Task,Définir stratégie de branches / commits / revues,"main protégée, branches feat/<ticket>, Conventional Commits, PR avec 1 relecteur.",Medium,setup,E0,Sprint 0
-T-004,Task,Configurer le tableau Trello et planifier les sprints,"Listes par sprint (0 à 4) + En cours / En revue / Terminé, répartition des responsabilités.",Medium,setup;gestion,E0,Sprint 0
+T-004,Task,Configurer le tableau Trello et planifier les sprints,"5 colonnes Kanban, une étiquette par sprint (0 à 4), répartition des responsabilités.",Medium,setup;gestion,E0,Sprint 0
 T-005,Task,Importer HAC-DATA-001 en jeu de données seed JSON,"Script de conversion, mots de passe démo hachés (scrypt), aucune donnée réelle.",High,setup;data,E0,Sprint 0
 T-006,Task,Coque Tauri v2 pour la version desktop,"apps/desktop charge le build web. Optionnel pour la démo : la cible principale reste le web responsive.",Low,setup;tauri,E0,Sprint 3
 US-AUTH-SIM-01,Story,Simulateur : POST /api/v1/auth/login conforme HAC-API-001,"200 / 400 AUTH_BAD_REQUEST / 401 AUTH_INVALID_CREDENTIALS / 403 AUTH_ACCOUNT_DISABLED. Ne retourne jamais le mot de passe. ACC-AUTH-01..07, 09.",Highest,F1;simulateur,E1,Sprint 1
