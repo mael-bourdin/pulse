@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Aucune permission native : la coque ne fait qu'afficher le front web.",
+  "windows": ["main"],
+  "permissions": ["core:default"]
+}

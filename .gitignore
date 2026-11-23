@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
+# Stockage local PULSE V1 (régénéré depuis seed.json)
+apps/api/data/store.json
+# Drapeau d'indisponibilité du simulateur
+apps/auth-simulator/data/.unavailable
+# Tauri
+apps/desktop/src-tauri/target/
+apps/desktop/src-tauri/gen/
