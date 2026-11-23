@@ -84,6 +84,7 @@ La CI GitHub (`.github/workflows/ci.yml`) exécute les mêmes vérifications à 
 - **Commits sans co-auteur IA** : le hook `.githooks/commit-msg` (activé par `pnpm install`) retire les lignes `Co-Authored-By` d’assistants IA.
 - **Revue** : toute PR vers `main` est relue par au moins un autre membre et la CI doit passer. Checklist : règle métier citée (RG-…), droits vérifiés côté API, aucune donnée réelle ni secret.
 - **Code** : TypeScript strict, 2 espaces, LF. Validation des entrées dans `packages/shared/src/schemas.ts`, règles métier dans `apps/api/src/domain/`, une route ne contient pas de logique métier.
+- **Répartition** : Grégory = authentification et sécurité (F1) ; Maxime = préférences et objectifs (F2, F3) ; Simon = défis et progression (F4, F5) ; Mael = socle, administration (F6), démo. Recette et revue croisée : tous.
 - **Backlog** : `docs/backlog/backlog-operationnel.csv` (source du tableau Trello : https://trello.com/b/Ed35xHmf/mspr).
 
 ## Où trouver quoi
