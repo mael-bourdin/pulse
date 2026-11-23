@@ -209,7 +209,7 @@ Réponse : (non répondu) → proposition retenue.
 
 **Q10.5** L'usage de l'IA est-il déclaré dans la note technique (L5) ?
 → Oui.
-Réponse : Non.
+Réponse : Oui, simplement, sans détailler partout (réponse précisée ensuite).
 
 ## 11. Équipe
 

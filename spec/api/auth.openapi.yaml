@@ -1,0 +1,114 @@
+openapi: 3.1.0
+info:
+  title: Service central d'authentification HealthAI Coach (contrat HAC-API-001 v1.2)
+  version: "1"
+  description: >
+    Retranscription fidèle de HAC-API-001. Implémentée par crates/auth-simulator.
+    Toute divergence avec le document source est un bug du présent fichier.
+servers:
+  - url: http://localhost:8081
+paths:
+  /api/v1/auth/login:
+    post:
+      summary: Authentifier un utilisateur (HAC-API-001 §4)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, minLength: 1 }
+                password: { type: string, minLength: 1 }
+              additionalProperties: true   # « Les propriétés supplémentaires peuvent être ignorées »
+            example: { email: alex.martin@demo.healthaicoach.fr, password: DemoPassword! }
+      responses:
+        "200":
+          description: Authentification réussie
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LoginResponse" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401":
+          description: Identifiants incorrects (identique que l'adresse existe ou non)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+              example: { code: AUTH_INVALID_CREDENTIALS, message: Invalid credentials }
+        "403":
+          description: Compte désactivé — uniquement si adresse ET mot de passe sont corrects
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+              example: { code: AUTH_ACCOUNT_DISABLED, message: Account is disabled }
+        "503": { $ref: "#/components/responses/Unavailable" }
+  /api/v1/auth/me:
+    get:
+      summary: Identité associée au jeton (HAC-API-001 §5)
+      security: [{ bearer: [] }]
+      responses:
+        "200":
+          description: Identité
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Identity" }
+        "401":
+          description: Jeton absent ou invalide
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+              example: { code: AUTH_INVALID_TOKEN, message: Invalid or missing access token }
+        "403":
+          description: Compte devenu non autorisé (facultatif en V1)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+              example: { code: AUTH_ACCOUNT_DISABLED, message: Account is disabled }
+        "503": { $ref: "#/components/responses/Unavailable" }
+components:
+  securitySchemes:
+    bearer: { type: http, scheme: bearer }
+  schemas:
+    Role: { type: string, enum: [USER, FUNCTIONAL_ADMIN] }
+    AccountStatus: { type: string, enum: [ACTIVE, DISABLED] }
+    Identity:
+      type: object
+      required: [userId, email, displayName, role, accountStatus]
+      properties:
+        userId: { type: string, example: usr-10027 }
+        email: { type: string }
+        displayName: { type: string }
+        role: { $ref: "#/components/schemas/Role" }
+        accountStatus: { $ref: "#/components/schemas/AccountStatus" }
+    LoginResponse:
+      allOf:
+        - $ref: "#/components/schemas/Identity"
+        - type: object
+          required: [accessToken, tokenType, expiresIn]
+          properties:
+            accessToken: { type: string, description: Jeton opaque pour le client }
+            tokenType: { type: string, const: Bearer }
+            expiresIn: { type: integer, example: 3600 }
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code: { type: string }
+        message: { type: string }
+  responses:
+    BadRequest:
+      description: Requête invalide (champ absent, vide — y compris composé uniquement d'espaces — ou JSON non exploitable)
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+          example: { code: AUTH_BAD_REQUEST, message: Invalid authentication request }
+    Unavailable:
+      description: Service momentanément indisponible
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+          example: { code: AUTH_SERVICE_UNAVAILABLE, message: Authentication service temporarily unavailable }
+# Hors contrat, propre au simulateur (ADR-15) :
+#   POST /__control/availability  { "available": false }  en-tête X-Control-Token
+#   GET  /health
