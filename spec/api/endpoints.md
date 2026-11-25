@@ -1,8 +1,20 @@
 # API PULSE — `/api/v1`
 
 - Format JSON en camelCase.
-- Les écritures exigent `Content-Type: application/json` et un en-tête `Origin` présent dans `ALLOWED_ORIGINS`.
+- Les écritures (`POST`, `PUT`, `PATCH`, `DELETE`) exigent un en-tête `Origin` présent dans `ALLOWED_ORIGINS`. Celles qui attendent un corps (tableau « Corps des requêtes ») exigent aussi `Content-Type: application/json`, sinon 415. Les écritures sans corps (`DELETE /session`, `…/suspend`, `/reactivate`, `/close`, `/join`, `/leave`) ne vérifient pas `Content-Type` et ne renvoient jamais 415 (F1-R29).
 - Le contrat complet est **généré** par utoipa dans `spec/api/pulse.openapi.yaml` (`make openapi`). Ce tableau en est la spec de départ.
+
+**Ordre des contrôles.** Quand plusieurs erreurs s'appliquent à une requête, la première de cette liste l'emporte :
+
+1. limite de débit, sur `POST /session` seulement : 429 ;
+2. session, sur les routes protégées : 401, 403 `ACCOUNT_DISABLED` ou 503 `AUTH_UNAVAILABLE` (F1-R26), puis rôle : 403 `FORBIDDEN` ;
+3. origine, sur les écritures : 403 `ORIGIN_REJECTED` ;
+4. `Content-Type`, sur les écritures avec corps : 415 ;
+5. validation du corps : 400 `VALIDATION_ERROR`, ou `LOGIN_INVALID_REQUEST` sur `POST /session` ;
+6. ressource inconnue ou d'un autre utilisateur : 404 `NOT_FOUND` ;
+7. état : 409. Entre deux 409, l'état du défi passe avant celui de la participation.
+
+Exemples : une progression négative sur un objectif SUSPENDED donne 400, pas 409. Rejoindre un défi CLOSED où l'on a encore une participation ACTIVE donne 409 `CHALLENGE_NOT_JOINABLE`, pas `ALREADY_JOINED`. Sur `POST /session`, le service d'auth n'est appelé qu'après l'étape 5.
 
 ## Erreurs
 
