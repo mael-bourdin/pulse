@@ -76,8 +76,129 @@ Une clé inconnue dans le corps est **refusée** (400). Exception : `POST /sessi
 
 ## Formes de réponse principales
 
-- `ChallengeView` = `Challenge` + `myParticipation: Participation | null` + `canJoin: boolean` (détail : F4-R02, F4-R03).
-- `ProgressSummary` = `period`, `metrics[]` (valeur `null` si absente), `goals { active, suspended, closed, items }`, `challenges { active, items }` (détail : F5).
+Une réponse ne contient que les champs listés ici.
+
+- **Pas de `userId`** dans les ressources : sous `/me/*`, la propriété est implicite (constitution §4, §5). Seul `SessionUser` porte le sien, celui de la session. Aucune réponse ne contient de donnée d'un autre utilisateur.
+- **Nombres** : les colonnes `numeric(12,2)` sont des nombres JSON (`7.5`), jamais des chaînes. On active la fonctionnalité `serde-float` de `rust_decimal`, et `decimal_float` d'utoipa pour que l'OpenAPI, donc les types générés du front, disent `number`. En entrée, une chaîne à la place d'un nombre (`"12"`) est refusée (400) : `rust_decimal` l'accepterait par défaut.
+- **Dates** : `"YYYY-MM-DD"`.
+- **Null** : un champ marqué « oui » est toujours présent, avec la valeur `null`. Il n'est jamais omis.
+
+### `SessionUser`
+
+Le `user` de `POST /session` et `GET /session` (F1-R24).
+
+| Champ | Type | Null | Source |
+|---|---|---|---|
+| `userId` | string | non | service d'auth (`/login`, puis `/me`) ; aucune table |
+| `displayName` | string | non | service d'auth |
+| `email` | string | non | service d'auth |
+| `role` | `USER` ou `FUNCTIONAL_ADMIN` | non | service d'auth |
+
+### `Preferences`
+
+| Champ | Type | Null | Source |
+|---|---|---|---|
+| `themePrioritaire` | énum `category` | non | `preferences.theme_prioritaire` |
+| `notifications` | boolean | non | `preferences.notifications` |
+| `frequenceRappel` | énum `reminder_frequency` | non | `preferences.frequence_rappel` |
+| `momentPrefere` | énum `preferred_moment` | non | `preferences.moment_prefere` |
+| `participationDefis` | boolean | non | `preferences.participation_defis` |
+
+Non renvoyés : `preference_id`, `user_id`, `updated_at`.
+
+### `Goal`
+
+| Champ | Type | Null | Source |
+|---|---|---|---|
+| `goalId` | string | non | `goals.goal_id` |
+| `label` | string | non | `goals.label` |
+| `category` | énum `category` | non | `goals.category` |
+| `targetValue` | number | non | `goals.target_value` |
+| `currentValue` | number | non | `goals.current_value` |
+| `unit` | string | non | `goals.unit` |
+| `status` | énum `goal_status` | non | `goals.status` |
+| `startDate` | date | non | `goals.start_date` |
+| `endDate` | date | oui | `goals.end_date` |
+| `progressPercent` | integer, de 0 à 100 | non | calculé par le serveur (F3-R09) |
+
+Non renvoyé : `user_id`.
+
+`progressPercent` vaut `min(100, arrondi(currentValue / targetValue × 100))`. Il est calculé dans `pulse-domain` et le front ne le recalcule jamais. L'arrondi va au plus proche, **demi vers le haut** (12,5 → 13) : `round_dp_with_strategy(0, RoundingStrategy::MidpointAwayFromZero)`. Pas `round()` de `rust_decimal`, qui arrondit au pair (12,5 → 12).
+
+### `Challenge`
+
+Réponse de `/admin/challenges`, et base de `ChallengeView`.
+
+| Champ | Type | Null | Source |
+|---|---|---|---|
+| `challengeId` | string | non | `challenges.challenge_id` |
+| `title` | string | non | `challenges.title` |
+| `category` | énum `category` | non | `challenges.category` |
+| `description` | string | non | `challenges.description` |
+| `startDate` | date | non | `challenges.start_date` |
+| `endDate` | date | non | `challenges.end_date` |
+| `targetValue` | number | non | `challenges.target_value` |
+| `unit` | string | non | `challenges.unit` |
+| `status` | énum `challenge_status` | non | `challenges.status` |
+
+Non renvoyé : `created_by`, ni aux USER ni à l'admin (aucun écran ne l'affiche).
+
+### `ChallengeView`
+
+Réponse de `/me/challenges`. Les champs de `Challenge`, au même niveau, plus :
+
+| Champ | Type | Null | Source |
+|---|---|---|---|
+| `myParticipation` | `Participation` | oui | participation de l'utilisateur de la session sur ce défi : l'ACTIVE, sinon la plus récente, sinon `null` (F4-R02) |
+| `canJoin` | boolean | non | calculé (F4-R03) |
+
+### `Participation`
+
+| Champ | Type | Null | Source |
+|---|---|---|---|
+| `status` | énum `participation_status` | non | `participations.status` |
+| `joinedAt` | date | non | `participations.joined_at` |
+| `progressValue` | number | non | `participations.progress_value` |
+
+Non renvoyés : `participation_id`, `challenge_id` (déjà porté par le défi), `user_id`. Jamais la participation d'un autre utilisateur (F4-R09).
+
+### `Content` (SHOULD)
+
+| Champ | Type | Null | Source |
+|---|---|---|---|
+| `contentId` | string | non | `contents.content_id` |
+| `title` | string | non | `contents.title` |
+| `type` | énum `content_type` | non | `contents.type` |
+| `category` | énum `category` | non | `contents.category` |
+| `status` | énum `content_status` | non | `contents.status` |
+| `publishedAt` | date | oui | `contents.published_at` |
+| `updatedAt` | date | non | `contents.updated_at` |
+
+Non renvoyé : `author_id`.
+
+### `ProgressSummary`
+
+Réponse de `GET /me/progress` (F5).
+
+| Champ | Type | Null | Source |
+|---|---|---|---|
+| `period` | `{ start, end }`, deux dates | oui | `metrics.period_start` et `metrics.period_end` de la métrique la plus récente (F5-R02) |
+| `metrics` | `Metric[]` | non | toujours 4 éléments, dans l'ordre de F5-R03 |
+| `goals.active`, `goals.suspended`, `goals.closed` | integer | non | nombre de lignes de `goals` par statut (F5-R04) |
+| `goals.items` | `Goal[]` | non | objectifs ACTIVE, liste vide s'il n'y en a pas (F5-R05) |
+| `challenges.active` | integer | non | nombre de lignes de `participations` ACTIVE (F5-R04) |
+| `challenges.items` | `ChallengeView[]` | non | défis dont `myParticipation` est ACTIVE, liste vide s'il n'y en a pas (F5-R05) |
+
+### `Metric`
+
+| Champ | Type | Null | Source |
+|---|---|---|---|
+| `metricType` | `WEEKLY_ACTIVE_DAYS`, `STREAK_DAYS`, `WELLBEING_CHECKINS` ou `HYDRATION_DAYS` | non | `metrics.metric_type` |
+| `label` | string | non | tableau fixe de F5, présent même sans donnée |
+| `value` | number | oui | `metrics.value` sur la période, `null` sans donnée |
+| `unit` | string | non | tableau fixe de F5, présent même sans donnée |
+
+Non renvoyés : `metric_id`, `user_id`.
 
 ## Normalisation des entrées
 
