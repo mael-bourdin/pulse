@@ -4,7 +4,7 @@
 
 | Membre | Fonctionnalités | Rôle transverse |
 |---|---|---|
-| **Mael** | Socle (workspace, base, déploiement), F6 Administration | Pilote : planning, Trello, arbitrages, contact « Produit », releases ; admin du dépôt (règles de protection, secret release-please, application GitHub de Railway) |
+| **Mael** | Socle (workspace, base, déploiement), F6 Administration | Pilote : planning, Trello, arbitrages, contact « Produit », releases ; admin du dépôt (règles de protection, branche par défaut, application GitHub de Railway) |
 | **Grégory** | F1 Authentification (simulateur + session PULSE) | Référent sécurité ([security.md](security.md)) |
 | **Maxime** | F2 Préférences, F3 Objectifs | Référent recette et qualité ([testing.md](testing.md)), CI et hébergement Railway + Neon ([ci-cd.md](ci-cd.md)) |
 | **Simon** | F4 Défis, F5 Progression | Référent interface et accessibilité ([accessibility.md](accessibility.md)) |
@@ -15,7 +15,7 @@ Chacun porte ses fonctionnalités **de bout en bout** : spec, domaine, API, écr
 
 | Sprint | Durée | Contenu | Fin de sprint quand… |
 |---|---|---|---|
-| S0 Socle | 4 h | 2 h de prise en main de Rust (tous) ; workspace, base, migrations, seed, squelette Axum et React, `make dev` (Mael) ; squelette du simulateur (Grégory) ; règles de protection et secret release-please (Mael) ; CI et release-please (faits le 2026-11-25), Neon et Railway `staging` (Maxime) | `make dev` démarre chez les 4 ; CI verte sur `develop` ; release `v0.1.0` |
+| S0 Socle | 4 h | 2 h de prise en main de Rust (tous) ; workspace, base, migrations, seed, squelette Axum et React, `make dev` (Mael) ; squelette du simulateur (Grégory) ; règles de protection (Mael) ; CI et release-please (faits le 2026-11-25), secret `RELEASE_PLEASE_TOKEN`, Neon et Railway `staging` (Maxime) | `make dev` démarre chez les 4 ; CI verte sur `develop` ; release `v0.1.0` |
 | S1 Fonctionnalités | 9 h | En parallèle : F1 (Grégory), F2-F3 (Maxime), F4-F5 (Simon), F6 (Mael), Railway `production` (Maxime). F1 livre `CurrentUser` dès la 2ᵉ heure : les autres l'utilisent | Tests verts, chaque fonctionnalité vérifiée sur `staging` ; release `v0.2.0` |
 | S2 Recette | 4 h | E2E REC-01 à 13, axe, job `e2e` en CI (Maxime), corrections, contenus (SHOULD) si F1–F6 sont validées | 13 REC verts en CI ; recette manuelle avec captures sur `staging` ; release `v0.3.0` |
 | S3 Livrables | 4 h | L1–L8, vidéo de secours, répétition | Répétition chronométrée faite sur `production` ; release `v1.0.0` |

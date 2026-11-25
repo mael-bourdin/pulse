@@ -289,7 +289,7 @@ Réponse :
 Réponse :
 
 **Q14.9** Qui crée le jeton `RELEASE_PLEASE_TOKEN` ?
-→ Mael, seul à pouvoir créer un jeton fin sur son dépôt et à gérer ses secrets (ci-cd.md → Release). Sans lui, la PR de release-please ne lance pas la CI.
+→ Maxime : un collaborateur Write peut gérer les secrets Actions (ci-cd.md → Release). Sans ce jeton, la PR de release-please ne lance pas la CI.
 Réponse :
 
 **Q14.10** On garde les noms `production` / `staging`, ou on reprend le vocabulaire du dossier ?
