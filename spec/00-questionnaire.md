@@ -251,3 +251,51 @@ Réponse : Pas de plan B : on ne prendra pas de retard.
 
 **Q13.3** Autre chose (consignes du formateur…) ?
 Réponse : Respecter au maximum le cahier des charges.
+
+## 14. Workflow, CI et déploiement (ajouté le 2026-11-25)
+
+Propositions détaillées dans [workflow.md](workflow.md) et [ci-cd.md](ci-cd.md), consignées en ADR-28 à ADR-33. À valider en séance.
+
+**Q14.1** On ajoute une branche `develop` et un environnement `staging` pour la recette, ou on reste sur `main` seule ?
+→ `develop` + `staging`. Coût : environ 1 h 30 en S0 et quelques dollars par mois. La démo du jury reste stable pendant qu'on continue à fusionner.
+Réponse :
+
+**Q14.2** Le projet Railway reste dans l'espace de Maxime ? Il y a été créé le 2026-11-25 (essai, puis plan Free, qui n'accepte qu'un membre).
+→ Oui : 0 €, Maxime fait les réglages Railway et la démonstration du 503 en ligne ; Mael installe l'application GitHub de Railway sur le dépôt ; toute l'équipe est membre de Neon (ADR-35).
+Réponse :
+
+**Q14.3** Quelle est la date exacte de la soutenance ?
+→ Nécessaire pour planifier le gel de `main` (J-2), la release `v1.0.0` et la chauffe des services gratuits.
+Réponse :
+
+**Q14.4** Qui est référent CI ?
+→ Maxime (référent qualité) ; Mael garde Railway et les réglages GitHub (lui seul est admin du dépôt).
+Réponse :
+
+**Q14.5** On ajoute une colonne « En recette » au Trello (6 colonnes) ?
+→ Oui : une carte n'est finie qu'une fois vérifiée sur `staging` par un autre membre.
+Réponse :
+
+**Q14.6** Le dépôt est public : on sort les annexes du dossier (PDF, classeur) de Git ?
+→ Oui, `docs/annexes/` ignoré ; seules les données converties en JSON sont versionnées.
+Réponse :
+
+**Q14.7** `develop` devient la branche par défaut du dépôt ?
+→ Oui : les PR la visent par défaut, ce qui évite d'en ouvrir une vers `main` par erreur.
+Réponse :
+
+**Q14.8** La relecture par le référent sécurité (session, client d'auth, admin) est imposée par GitHub (`CODEOWNERS`) ou reste une règle d'équipe ?
+→ Règle d'équipe : un blocage technique figerait les PR quand Grégory est absent.
+Réponse :
+
+**Q14.9** Qui crée le jeton `RELEASE_PLEASE_TOKEN` ?
+→ Mael, seul à pouvoir créer un jeton fin sur son dépôt et à gérer ses secrets (ci-cd.md → Release). Sans lui, la PR de release-please ne lance pas la CI.
+Réponse :
+
+**Q14.10** On garde les noms `production` / `staging`, ou on reprend le vocabulaire du dossier ?
+→ HAC-ACC-001 (ACC-SEC-02) n'autorise les mots de passe de démo qu'en développement et en recette, et HAC-API-001 §1 parle d'« environnements de développement et de recette ». Proposition : garder `main` comme branche de la version livrée, mais nommer les environnements `demo` et `recette` pour ne pas présenter au jury une « production » qui accepte des mots de passe publiés.
+Réponse :
+
+**Q14.11** L'hébergement gratuit Railway Free + Neon (mise en veille, chauffe avant la démo) convient ?
+→ Oui ; si Railway refuse 2 services × 2 environnements en Free, `staging` passe sur Render Free ; dernier recours : auto-hébergement Oracle + Dokploy (ci-cd.md → Plan et coût).
+Réponse :

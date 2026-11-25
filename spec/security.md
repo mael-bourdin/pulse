@@ -15,10 +15,14 @@ Responsable : **Grégory** (référent sécurité). Cette page répond au CDC §
 | Entrées malveillantes | Validation côté API (types, bornes, énumérations, clés inconnues refusées) ; requêtes SQL paramétrées ; corps limité à 16 Ko | ACC-SEC-03 |
 | Réponse du service d'auth piégée ou invalide | Schéma vérifié (rôle connu, `accountStatus`, `tokenType = Bearer`, champs présents) ; sinon `AUTH_UNAVAILABLE` | ACC-SEC-05 |
 | Fuite d'informations techniques | `AppError` ne sort que `{ code, message }` ; panics interceptés → 500 générique | ACC-GEN-06, ACC-SEC-07 |
-| Secrets dans le dépôt | `.env` ignoré ; `.env.example` sans secret ; scan `gitleaks` dans `make check` | ACC-SEC-01 |
+| Secrets dans le dépôt | `.env` ignoré ; `.env.example` sans secret ; scan `gitleaks` dans `make check` **et** dans le job CI `secrets`, bloquant sur chaque PR (aucune fuite dans l'historique au 2026-11-25). Aucun mot de passe réel nulle part (API §8) ; les mots de passe de démo ne figurent que dans le README et les données de test | ACC-SEC-01 |
 | Mot de passe exposé | Simulateur : Argon2id, jamais renvoyé ; PULSE ne stocke ni ne journalise le mot de passe | ACC-AUTH-09, ACC-SEC-02 |
-| Dépendances vulnérables | `cargo deny check` et `pnpm audit` dans `make check` | — |
+| Dépendances vulnérables | `cargo deny check` et `pnpm audit` dans `make check` et en CI ; alertes Dependabot activées sur le dépôt | — |
 | Simulateur exposé sur Internet | Sur Railway, réseau privé seulement ; la route `/__control` exige un secret | ADR-15, ADR-17 |
+| Secrets d'hébergement | `AUTH_SIM_CONTROL_TOKEN` et `DATABASE_URL` (Neon) **différents par environnement**, saisis comme variables scellées dans Railway. Les chaînes Neon ne sortent de la console que vers `.env.staging` / `.env.production` sur les postes (ignorés par Git) pour le seed. Un seul secret dans GitHub, `RELEASE_PLEASE_TOKEN` (jeton fin limité au dépôt, 90 jours) ; la CI ne déploie pas et n'a aucun jeton Railway | ADR-30, ADR-34 |
+| CI détournée par une PR | Jobs en `permissions: contents: read` ; pas de `pull_request_target` ; aucune variable secrète exposée aux PR ; actions tierces limitées aux éditeurs connus et épinglées sur une version majeure | ADR-29 |
+| Contournement de la revue | Rulesets sur `main` et `develop` : PR obligatoire, 1 approbation, checks verts, ni force-push ni suppression, **aucune exception, même pour l'admin** | ADR-29 |
+| Comptes de démo publics | Les mots de passe de démo sont publiés (README, dossier HAC-DATA-001) : n'importe qui peut se connecter sur l'URL publique, y compris en admin, et modifier les données de démo. Risque **accepté** (données synthétiques, aucune donnée réelle) ; `make seed-remote` juste avant la démo. Conforme à ACC-SEC-02 : nos deux environnements en ligne sont des environnements de recette ([ci-cd.md](ci-cd.md) → Périmètre) | CDC §4.5, ACC-SEC-02 |
 
 ## En-têtes HTTP (tower-http)
 
