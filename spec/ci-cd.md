@@ -71,11 +71,13 @@ La V0 TypeScript n'a plus de tests en CI (`apps/api` est voué à disparaître) 
 | `actions-rust-lang/setup-rust-toolchain` | `v2` : lit `rust-toolchain.toml`, met en cache `target/` |
 | `EmbarkStudios/cargo-deny-action` | `v2` |
 | `pnpm/action-setup` + `actions/setup-node` | `v6` + `v7` avec `cache: pnpm` |
-| `googleapis/release-please-action` | `v5` |
+| `googleapis/release-please-action` | `v5.0.0`, **épinglée par SHA** : c'est le seul workflow qui détient un jeton en écriture |
 | `gitleaks/gitleaks-action` | `v3` (gratuit pour un dépôt personnel ; une licence gratuite serait demandée si le dépôt passait dans une organisation) |
 | `actions/upload-artifact` | `v7` |
 
 Les navigateurs Playwright ne sont pas mis en cache (déconseillé par Playwright) : `pnpm exec playwright install --with-deps chromium`.
+
+Les actions des workflows en lecture seule sont épinglées sur leur version majeure ; une action qui reçoit un secret ou des droits en écriture est épinglée par SHA de commit, et on monte sa version à la main en relisant le changelog.
 
 **Règles** :
 - `develop` rouge = on répare avant toute autre fusion.
