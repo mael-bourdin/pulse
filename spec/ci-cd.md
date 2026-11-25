@@ -43,7 +43,7 @@ Trois workflows dans `.github/workflows/` :
 | `pr-title.yml` | `pull_request` (ouverture, modification du titre, nouveau commit) | Titre au format Angular ([workflow.md](workflow.md) → Commits) |
 | `release-please.yml` | `push` sur `main` | PR de release, tag et Release GitHub (voir Release) |
 
-- **Droits** : `permissions: contents: read` par défaut, `pull-requests: read` pour gitleaks, aucun droit pour `pr-title`. Pas de `pull_request_target`. Le seul secret est `RELEASE_PLEASE_TOKEN` (voir Release), jamais exposé aux PR.
+- **Droits** : `permissions: contents: read` par défaut, `pull-requests: read` pour gitleaks, aucun droit pour `pr-title`. Pas de `pull_request_target`. Le seul secret est la clé privée de la GitHub App de release (voir Release), lue uniquement par `release-please.yml` sur `main`, jamais exposée aux PR.
 - **Concurrence** : `group: ci-${{ github.ref }}`, annulation des exécutions précédentes **seulement pour les PR** (une exécution annulée sur `develop` ou `main` bloquerait le déploiement de ce commit).
 - **Durée** : `timeout-minutes` sur chaque job ; objectif moins de 10 min pour une PR, grâce au cache Rust.
 - La CI lance **les mêmes commandes** que `make check` sur les postes ([testing.md](testing.md)).
@@ -71,7 +71,7 @@ La V0 TypeScript n'a plus de tests en CI (`apps/api` est voué à disparaître) 
 | `actions-rust-lang/setup-rust-toolchain` | `v2` : lit `rust-toolchain.toml`, met en cache `target/` |
 | `EmbarkStudios/cargo-deny-action` | `v2` |
 | `pnpm/action-setup` + `actions/setup-node` | `v6` + `v7` avec `cache: pnpm` |
-| `googleapis/release-please-action` | `v5.0.0`, **épinglée par SHA** : c'est le seul workflow qui détient un jeton en écriture |
+| `googleapis/release-please-action` + `actions/create-github-app-token` | `v5.0.0` + `v3.4.0`, **épinglées par SHA** : c'est le seul workflow qui manipule une clé et un jeton en écriture |
 | `gitleaks/gitleaks-action` | `v3` (gratuit pour un dépôt personnel ; une licence gratuite serait demandée si le dépôt passait dans une organisation) |
 | `actions/upload-artifact` | `v7` |
 
@@ -118,8 +118,16 @@ Les checks n'apparaissent dans la liste des rulesets qu'après avoir tourné une
 
 - **Configuration** : `release-please-config.json` (type `simple`, un seul paquet à la racine, sections du changelog en français, `bootstrap-sha` = dernier commit de la V0 pour ne pas reprendre son historique) et `.release-please-manifest.json` (version courante, `0.0.0` au départ).
 - **Version dans le code** : dès que le workspace Rust existe, on ajoute dans `extra-files` le fichier `Cargo.toml` (`$.workspace.package.version`, type `toml`) et `apps/web/package.json` (`$.version`, type `json`). `/health` affiche alors la version publiée.
-- **Jeton** : une PR ouverte avec le `GITHUB_TOKEN` ne déclenche **aucun** workflow ; la PR de release n'aurait donc jamais ses checks requis et resterait bloquée par le ruleset de `main`. Un collaborateur Write peut gérer les secrets Actions de ce dépôt (vérifié le 2026-11-25). Maxime crée un jeton limité au strict nécessaire, expiration 90 jours : un **fine-grained token** sur `mael-bourdin/pulse` (*Contents* et *Pull requests* en écriture) si GitHub propose ce dépôt comme propriétaire de ressource, sinon un jeton classique limité au scope `public_repo`. Il l'enregistre comme secret `RELEASE_PLEASE_TOKEN`. Les PR de release apparaissent alors à son nom : un autre membre les approuve. Sans lui, le workflow retombe sur `GITHUB_TOKEN` : la PR de release est créée, mais il faut la fermer et la rouvrir à la main pour lancer la CI.
+- **Jeton : une GitHub App, pas un jeton personnel.** Une PR ouverte avec le `GITHUB_TOKEN` ne déclenche **aucun** workflow : la PR de release n'aurait jamais ses checks requis et resterait bloquée par le ruleset de `main`. Le workflow demande donc à une petite GitHub App, `pulse-release-bot`, un jeton valable **1 heure** et limité à ce dépôt (`actions/create-github-app-token`, épinglée par SHA). Par rapport à un jeton personnel : il n'appartient à personne, n'expire pas tous les 90 jours, et la PR de release est ouverte par le bot, donc n'importe quel membre peut l'approuver.
+  - Création (Maxime), avec ce lien qui préremplit tout : <https://github.com/settings/apps/new?name=pulse-release-bot&description=release-please%20pour%20mael-bourdin%2Fpulse&url=https%3A%2F%2Fgithub.com%2Fmael-bourdin%2Fpulse&public=true&webhook_active=false&contents=write&pull_requests=write&issues=write>. *Public* veut seulement dire « installable sur un autre compte », ici celui de Mael. Puis générer une clé privée et noter le *Client ID*.
+  - Installation (Mael, seul à pouvoir installer une app sur son compte) : sur `mael-bourdin/pulse` uniquement.
+  - Configuration (Maxime, un collaborateur Write peut le faire) : variable `RELEASE_APP_CLIENT_ID` et secret `RELEASE_APP_PRIVATE_KEY` dans Settings → Secrets and variables → Actions. Supprimer ensuite le fichier `.pem` du poste.
+  - Tant que l'app n'est pas configurée, le workflow retombe sur `GITHUB_TOKEN` : la PR de release est créée, mais il faut la fermer puis la rouvrir à la main pour lancer la CI. Ce repli marche aussi si la clé est révoquée.
 - release-please ne crée de release que s'il y a au moins un `feat`, `fix`, `perf` ou `revert` depuis la précédente : une promotion qui ne contient que des specs ne produit pas de version.
+- **Forcer une version** (`v1.0.0` pour la soutenance) : écrire `Release-As: 1.0.0` dans le **corps du merge commit** de la PR de promotion (GitHub permet de l'éditer au moment de fusionner). Rien à changer dans la configuration.
+- **Corriger une note de version** après coup : ajouter un bloc `BEGIN_COMMIT_OVERRIDE` … `END_COMMIT_OVERRIDE` dans la description de la PR fusionnée. Ça ne marche que pour une PR fusionnée en squash, donc pour les PR vers `develop`, pas pour la promotion.
+- **Pas de PR de release ?** Vérifier qu'une ancienne PR ne porte plus l'étiquette `autorelease: pending` (README de release-please, section Troubleshooting), puis relancer le workflow.
+- Le jour où `Cargo.toml` passe dans `extra-files`, vérifier que `Cargo.lock` suit (sinon `cargo build --locked` échoue après une release).
 
 ## Déploiement : Railway + Neon (gratuit)
 

@@ -288,8 +288,8 @@ Réponse :
 → Règle d'équipe : un blocage technique figerait les PR quand Grégory est absent.
 Réponse :
 
-**Q14.9** Qui crée le jeton `RELEASE_PLEASE_TOKEN` ?
-→ Maxime : un collaborateur Write peut gérer les secrets Actions (ci-cd.md → Release). Sans ce jeton, la PR de release-please ne lance pas la CI.
+**Q14.9** Qui met en place la GitHub App de release (`pulse-release-bot`) ?
+→ Maxime la crée et configure le secret, Mael l'installe sur le dépôt (ci-cd.md → Release). Sans elle, il faut fermer et rouvrir la PR de release à la main pour lancer la CI.
 Réponse :
 
 **Q14.10** On garde les noms `production` / `staging`, ou on reprend le vocabulaire du dossier ?

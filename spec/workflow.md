@@ -137,7 +137,7 @@ Versions attendues (release-please monte la version mineure à chaque `feat` tan
 | `v0.1.0` | Fin S0 : socle déployé |
 | `v0.2.0` | Fin S1 : F1 à F6 |
 | `v0.3.0` ou `v0.2.x` | Fin S2 : recette passée |
-| `v1.0.0` | Version présentée en soutenance, forcée par `"release-as": "1.0.0"` dans `release-please-config.json` le temps de cette release |
+| `v1.0.0` | Version présentée en soutenance, forcée par `Release-As: 1.0.0` dans le corps du merge commit de la dernière promotion ([ci-cd.md](ci-cd.md) → Release) |
 
 **Gel** : à partir de J-2 avant la soutenance, `main` ne reçoit plus que des correctifs d'anomalies Critiques.
 
