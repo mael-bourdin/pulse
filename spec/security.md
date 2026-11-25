@@ -11,7 +11,7 @@ Responsable : **Grégory** (référent sécurité). Cette page répond au CDC §
 | Deviner si un compte existe | Simulateur : même 401 et même temps de réponse (haché factice) ; PULSE : même message ; limite par IP, pas par e-mail | ACC-AUTH-05 |
 | Vol de session par XSS | Jeton dans un cookie httpOnly, jamais lisible en JS ; React échappe le contenu ; CSP stricte | ADR-10 |
 | CSRF | `SameSite=Strict` + vérification d'`Origin` + JSON obligatoire sur les écritures | ADR-11 |
-| Force brute | 5 tentatives par minute et par IP sur `POST /session` → 429 | ADR-16 |
+| Force brute | 5 tentatives par minute et par IP sur `POST /session` → 429. Derrière Railway, l'IP vient de `X-Real-IP`, rempli par le proxy, jamais de la première entrée de `X-Forwarded-For` : le client la choisit, et en changer à chaque essai contournerait la limite (F1-R30) | ADR-16 |
 | Entrées malveillantes | Validation côté API (types, bornes, énumérations, clés inconnues refusées) ; requêtes SQL paramétrées ; corps limité à 16 Ko | ACC-SEC-03 |
 | Réponse du service d'auth piégée ou invalide | Schéma vérifié (rôle connu, `accountStatus`, `tokenType = Bearer`, champs présents) ; sinon `AUTH_UNAVAILABLE` | ACC-SEC-05 |
 | Fuite d'informations techniques | `AppError` ne sort que `{ code, message }` ; panics interceptés → 500 générique | ACC-GEN-06, ACC-SEC-07 |

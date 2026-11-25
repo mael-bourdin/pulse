@@ -39,7 +39,7 @@
 | F1-R27 | `DELETE /api/v1/session` → 204 et cookie effacé (`Max-Age=0`). Le contrat ne prévoit pas de révocation, donc le jeton expire de lui-même | — |
 | F1-R28 | Contrôle de rôle côté API : `/api/v1/me/*` exige USER, `/api/v1/admin/*` exige FUNCTIONAL_ADMIN. Mauvais rôle → **403 `FORBIDDEN`**, même en appel direct | ACC-AUTH-13, 14, 15, ACC-ADM-01, 02, RG-AUTH-03 à 05 |
 | F1-R29 | Écritures (`POST`, `PUT`, `PATCH`, `DELETE`) : `Origin` absent de `ALLOWED_ORIGINS` → 403 `ORIGIN_REJECTED` ; `Content-Type` différent de `application/json` (pour les requêtes avec corps) → 415 | ADR-11 |
-| F1-R30 | Limite de débit sur `POST /session` : `LOGIN_RATE_LIMIT_PER_MIN` (5 par défaut) essais par minute **par IP (lue dans `X-Forwarded-For` si `TRUST_PROXY=true`)** → 429 `TOO_MANY_ATTEMPTS`. Jamais de limite par adresse e-mail | ADR-16, ACC-AUTH-05 |
+| F1-R30 | Limite de débit sur `POST /session` : `LOGIN_RATE_LIMIT_PER_MIN` (5 par défaut) essais par minute **par IP** → 429 `TOO_MANY_ATTEMPTS`. Jamais de limite par adresse e-mail. La clé vient d'un extracteur maison (trait `KeyExtractor` de `tower_governor`), pas de `SmartIpKeyExtractor` : celui-ci prend la première entrée de `X-Forwarded-For`, que le client écrit lui-même, et un faux en-tête suffirait à contourner la limite. Avec `TRUST_PROXY=true`, l'IP est lue dans `X-Real-IP`, que le proxy de Railway remplit avec l'IP du client ([docs Railway](https://docs.railway.com/networking/public-networking/specs-and-limits), « Request headers ») ; `X-Forwarded-For` n'est jamais lu. Avec `TRUST_PROXY=false`, ou si `X-Real-IP` est absent ou illisible : IP de la connexion TCP (`ConnectInfo`) | ADR-16, ACC-AUTH-05 |
 | F1-R31 | Journaux : méthode, route, statut, durée, identifiant de requête. Jamais de corps, de cookie, d'en-tête `Authorization` ni d'e-mail | ACC-SEC-07, constitution §6 |
 
 ### Interface (`apps/web`)
@@ -106,6 +106,7 @@ Voir [api/endpoints.md](../api/endpoints.md).
 | ACC-AUTH-03 | R03 | Intégration simulateur | `acc_auth_03_login_200_structure_contrat` |
 | ACC-AUTH-04 | R04 | Intégration simulateur (5 cas + JSON invalide) | `acc_auth_04_requete_invalide_400` |
 | ACC-AUTH-05 / REC-02 | R05, R22 | Intégration simulateur + API, E2E | `acc_auth_05_401_identique_adresse_connue_ou_non`, `rec_02` |
+| ACC-AUTH-05 | R30 | Intégration API, `TRUST_PROXY=true` et `LOGIN_RATE_LIMIT_PER_MIN=1` : deux requêtes du même proxy, même `X-Real-IP`, `X-Forwarded-For` différents (`1.1.1.1` puis `2.2.2.2`) → la seconde reçoit 429. En ligne, à la main : six `curl` avec un `X-Real-IP` et un `X-Forwarded-For` inventés, changés à chaque fois → la sixième reçoit 429 | `acc_auth_05_limite_ip_non_contournable` |
 | ACC-AUTH-06 / REC-03 | R06, R22 | Intégration simulateur + API, E2E | `acc_auth_06_compte_desactive_403`, `rec_03` |
 | ACC-AUTH-07 / REC-04 | R07, R22, R26 | Intégration simulateur + API, E2E | `acc_auth_07_indisponibilite_503`, `rec_04` |
 | ACC-AUTH-08 / REC-05 | R08, R09, R25 | Intégration simulateur + API, E2E | `acc_auth_08_jeton_me`, `rec_05` |
