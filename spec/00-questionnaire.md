@@ -29,6 +29,10 @@ Réponse : On repart de zéro, on ne garde pas le TypeScript.
 → PULSE est un composant indépendant, branché uniquement par des contrats HTTP.
 Réponse : Cross-platform, léger, compilé ; envie de tester une technologie en vogue.
 
+**Q0.6** (ajoutée le 2026-11-25) Le jury demandera qui reprend PULSE en V2 si l'équipe HealthAI est en Java / Spring. On assume ce risque de reprise ?
+→ Oui, et on le dit : Java / Spring figure dans les alternatives écartées d'ADR-01, le contrat HTTP + OpenAPI rend PULSE indépendant du langage (TECH §6), et le risque est écrit dans L7.
+Réponse :
+
 ## 1. Cible
 
 **Q1.1** La démo se fait dans le navigateur, dans l'app Tauri, ou les deux ?
@@ -118,6 +122,10 @@ Réponse : Un message d'erreur.
 → Il la traite comme « service indisponible ».
 Réponse : OK, service indisponible.
 
+**Q5.7** (ajoutée le 2026-11-25) Le contrat ne garantit que les rôles et statuts utiles à PULSE (« au minimum », API §9). Le service réel peut en renvoyer d'autres. Un rôle inconnu ou un compte non ACTIVE : 403 ou 503 ?
+→ 403 (`FORBIDDEN` pour un rôle inconnu, `ACCOUNT_DISABLED` pour un statut autre que ACTIVE) : un utilisateur bien authentifié ne doit pas lire « service indisponible ». Le 503 reste pour les réponses mal formées (F1-R23 à adapter).
+Réponse :
+
 ## 6. Sécurité
 
 **Q6.1** Les mots de passe de démo sont stockés hachés dans le simulateur ?
@@ -176,6 +184,10 @@ Réponse : Le plus accessible possible : AAA si possible.
 → Vouvoiement.
 Réponse : Vouvoiement.
 
+**Q8.4** (ajoutée le 2026-11-25) Aucune annexe n'impose de niveau d'accessibilité (PROD, UX, ACC). AAA coûte cher (contraste 7:1, cibles de 44 px). On garantit AA et on ne vise AAA qu'une fois F1 à F6 validées ?
+→ Oui : AA garanti et testé (axe), AAA en COULD.
+Réponse :
+
 ## 9. Hébergement
 
 **Q9.1** Faut-il héberger quelque chose en ligne ?
@@ -211,6 +223,10 @@ Réponse : (non répondu) → proposition retenue.
 → Oui.
 Réponse : Oui, simplement, sans détailler partout (réponse précisée ensuite).
 
+**Q10.6** (ajoutée le 2026-11-25) HAC-ACC-001 §13 dit qu'une « stratégie industrielle complète de tests » n'est pas un critère. Notre plan (unitaires, intégration, 13 E2E sur Chromium + WebKit + mobile, axe) est lourd pour 21 h et une équipe qui découvre Rust. On le réduit ?
+→ Oui : unitaires du domaine et intégration de l'API (droits, contrat, erreurs) en priorité, E2E REC-01 à 13 sur Chromium bureau seulement, WebKit et smartphone vérifiés à la main pendant la recette.
+Réponse :
+
 ## 11. Équipe
 
 **Q11.1** Qui est PO, pilote, référent technique, référent recette ?
@@ -229,6 +245,10 @@ Réponse : Oui.
 
 **Q11.5** Quels outils utilisez-vous déjà (communication, support de soutenance) ?
 Réponse : Discord ; diaporama + document.
+
+**Q11.6** (ajoutée le 2026-11-25) Pas de plan B (Q13.2), d'accord. Mais personne n'a jamais fait de Rust (Q0.2) : on fixe au moins un point de contrôle mesurable ?
+→ Fin de S0 : `make dev` démarre chez les quatre et la connexion F1 fonctionne de bout en bout (simulateur + session). Sinon, on replanifie tout de suite : binômes, et on coupe les COULD puis les SHOULD.
+Réponse :
 
 ## 12. Livrables et soutenance
 
