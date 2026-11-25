@@ -1,0 +1,29 @@
+name: pr-title
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+    branches: [develop, main]
+
+permissions: {}
+
+jobs:
+  pr-title:
+    name: pr-title
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Titre au format Angular
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          format='^(feat|fix|perf|refactor|test|docs|build|ci|revert|chore)(\([a-z0-9-]+\))?!?: [^ ].*$'
+          if ! [[ "$TITLE" =~ $format ]]; then
+            echo "::error::Titre « $TITLE » non conforme. Attendu : type(scope): sujet (convention Angular, spec/workflow.md)."
+            exit 1
+          fi
+          spec_id='\[[A-Z][A-Z0-9-]*[0-9]([, ]+[A-Z][A-Z0-9-]*[0-9])*\]$'
+          if [[ "$TITLE" =~ ^(feat|fix)[\(!:] ]] && ! [[ "$TITLE" =~ $spec_id ]]; then
+            echo "::error::Un titre feat ou fix finit par l'identifiant de spec, par exemple [F3-R07] ou [ADR-15]."
+            exit 1
+          fi

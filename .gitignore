@@ -13,3 +13,8 @@ apps/auth-simulator/data/.unavailable
 # Tauri
 apps/desktop/src-tauri/target/
 apps/desktop/src-tauri/gen/
+target/
+playwright-report/
+test-results/
+# Annexes du dossier MSPR : jamais dans le dépôt public (Q14.6)
+docs/annexes/
