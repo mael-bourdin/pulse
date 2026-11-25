@@ -14,6 +14,7 @@ Format commun : `{ "code": "…", "message": "…", "details": [{ "field": "…"
 | 400 | `LOGIN_INVALID_REQUEST` | Veuillez renseigner votre adresse e-mail et votre mot de passe. |
 | 401 | `LOGIN_INVALID_CREDENTIALS` | Adresse e-mail ou mot de passe incorrect. |
 | 401 | `SESSION_EXPIRED` | Votre session a expiré. Merci de vous reconnecter. |
+| 401 | `UNAUTHENTICATED` | Aucun : pas de cookie de session (première visite), l'interface ouvre la page de connexion sans message. Le champ `message` vaut « Connexion requise. » |
 | 403 | `ACCOUNT_DISABLED` | À la connexion : « Ce compte n'est pas autorisé à accéder à PULSE. Contactez votre référent HealthAI Coach. » En cours de session : « Votre compte n'est plus autorisé à accéder à PULSE. » |
 | 403 | `FORBIDDEN` | Vous n'avez pas les droits nécessaires. |
 | 403 | `ORIGIN_REJECTED` | Requête refusée. |
