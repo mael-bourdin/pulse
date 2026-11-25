@@ -6,7 +6,7 @@ Responsable : **Grégory** (référent sécurité). Cette page répond au CDC §
 
 | Menace | Parade | Réf. |
 |---|---|---|
-| Un USER accède à l'admin | Extracteur `RequireRole<Admin>` sur toutes les routes `/admin/*` → 403 ; garde de route côté front en plus | ACC-AUTH-13…15, ACC-ADM-02 |
+| Un USER accède à l'admin, ou un FUNCTIONAL_ADMIN à l'espace personnel | Couche `RequireRole<Admin>` sur le groupe `/admin/*` et `RequireRole<User>` sur le groupe `/me/*`, posées en `route_layer` et non handler par handler → 403 ; garde de route côté front en plus | ACC-AUTH-13…15, ACC-ADM-02, ACC-SEC-04, ADR-27 |
 | Lire ou modifier les données d'un autre utilisateur | `user_id` toujours tiré de `/me` ; chaque requête SQL filtre sur `user_id` ; une ressource d'un autre renvoie 404 | ACC-PREF-06, ACC-GOAL-09, ACC-PROG-03 |
 | Deviner si un compte existe | Simulateur : même 401 et même temps de réponse (haché factice) ; PULSE : même message ; limite par IP, pas par e-mail | ACC-AUTH-05 |
 | Vol de session par XSS | Jeton dans un cookie httpOnly, jamais lisible en JS ; React échappe le contenu ; CSP stricte | ADR-10 |

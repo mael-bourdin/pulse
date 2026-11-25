@@ -18,6 +18,8 @@ Format commun : `{ "code": "…", "message": "…", "details": [{ "field": "…"
 | 403 | `FORBIDDEN` | Vous n'avez pas les droits nécessaires. |
 | 403 | `ORIGIN_REJECTED` | Requête refusée. |
 | 404 | `NOT_FOUND` | Élément introuvable. |
+| 405 | `METHOD_NOT_ALLOWED` | Requête refusée. |
+| 413 | `PAYLOAD_TOO_LARGE` | Requête refusée. |
 | 415 | `UNSUPPORTED_MEDIA_TYPE` | Requête refusée. |
 | 409 | `INVALID_STATE` | (message précis selon la transition refusée) |
 | 409 | `CHALLENGE_NOT_JOINABLE` | Ce défi n'est pas ouvert aux inscriptions. |
@@ -26,6 +28,28 @@ Format commun : `{ "code": "…", "message": "…", "details": [{ "field": "…"
 | 429 | `TOO_MANY_ATTEMPTS` | Trop de tentatives. Réessayez dans une minute. |
 | 503 | `AUTH_UNAVAILABLE` | Le service de connexion est momentanément indisponible. |
 | 500 | `INTERNAL_ERROR` | Une erreur inattendue est survenue. |
+
+### Rejets techniques
+
+Axum répond seul à certaines requêtes, en texte ou avec un corps vide. PULSE renvoie quand même `{ code, message, details? }` (ADR-08) :
+
+| Cas | Par défaut (Axum) | Réponse de PULSE | Test |
+|---|---|---|---|
+| JSON illisible, ou corps qui n'est pas un objet | 400 texte | 400 `VALIDATION_ERROR`, sans `details` | `acc_sec_03_json_illisible_400` |
+| Mauvais type, ex. `"targetValue": "abc"` (F3-R04) | 422 texte | 400 `VALIDATION_ERROR`, `details[0].field = "targetValue"` | `acc_sec_03_type_incorrect_400` |
+| Champ obligatoire absent | 422 texte | 400 `VALIDATION_ERROR`, `field` = le champ absent | `acc_sec_03_champ_absent_400` |
+| Clé inconnue | 422 texte | 400 `VALIDATION_ERROR`, `field` = la clé | `acc_sec_03_cle_inconnue_400` |
+| `Content-Type` absent ou autre que `application/json` | 415 texte | 415 `UNSUPPORTED_MEDIA_TYPE` | `acc_sec_03_content_type_415` |
+| Corps de plus de 16 Ko | 413 texte | 413 `PAYLOAD_TOO_LARGE` | `acc_sec_03_corps_trop_gros_413` |
+| Méthode non prévue sur une route existante | 405, corps vide | 405 `METHOD_NOT_ALLOWED` | `acc_gen_06_methode_405_json` |
+| Limite de débit de `POST /session` dépassée | 429 texte (`tower_governor`) | 429 `TOO_MANY_ATTEMPTS` | `acc_gen_06_limite_429_json` |
+| Chemin inconnu sous `/api/v1` | page React (repli des fichiers statiques) | 404 `NOT_FOUND` | `acc_gen_06_route_inconnue_404_json` |
+
+- Chaque route lit son corps avec un seul extracteur partagé, `ApiJson<T>`, jamais `Json<T>`. Il décode avec `serde_path_to_error`, qui donne le chemin du champ fautif. `details[].message` est un message français (« Valeur invalide. », « Champ obligatoire. »), jamais le texte de serde.
+- Serde signale un champ absent au niveau de l'objet parent, pas du champ : `field` doit quand même nommer le champ absent.
+- Sur `POST /session`, les erreurs de décodage (JSON illisible, mauvais type, champ absent) donnent 400 `LOGIN_INVALID_REQUEST`, sans `details` (F1-R21). 413 et 415 restent inchangés.
+- La limite de 16 Ko passe par `DefaultBodyLimit::max(16_384)` ; `ApiJson` traduit son dépassement en 413. 405 : `Router::method_not_allowed_fallback`. 429 : `GovernorLayer::error_handler`. 404 : repli propre au routeur `/api/v1`, le site React ne sert que les autres chemins.
+- Les longueurs (1–120, 1–254…) se comptent en caractères, `chars().count()` après trim, comme `length()` dans les `CHECK` de PostgreSQL ([data-model.md](../data-model.md)), jamais en octets avec `len()`. Test `acc_sec_03_longueur_en_caracteres` : un `label` de 120 « é » est accepté, de 121 refusé.
 
 ## Endpoints
 

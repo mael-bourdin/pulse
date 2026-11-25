@@ -52,10 +52,10 @@ pulse/
 |---|---|
 | `config` | Lit la configuration depuis les variables d'environnement, une seule fois au démarrage |
 | `auth_client` | **Seul endroit qui appelle le service d'auth.** Délai maximal, validation de la réponse, traduction des erreurs |
-| `session` | Cookie de session, extracteurs `CurrentUser` et `RequireRole<Admin>`, vérification `/me` à chaque requête |
+| `session` | Cookie de session, extracteur `CurrentUser`, vérification `/me` à chaque requête, couches de rôle `RequireRole<User>` (groupe `/me`) et `RequireRole<Admin>` (groupe `/admin`) |
 | `routes::{auth, preferences, goals, challenges, progress, admin}` | Une route = valider l'entrée → appeler le domaine → enregistrer → répondre |
 | `repo::{…}` | Requêtes SQL. Chaque requête de l'espace personnel filtre sur `user_id` |
-| `error` | `AppError` → `{ code, message, details? }` + statut HTTP |
+| `error` | `AppError` → `{ code, message, details? }` + statut HTTP ; extracteur `ApiJson` et réponses JSON aux rejets du framework (voir [api/endpoints.md](api/endpoints.md) → Rejets techniques) |
 | `openapi` | Description utoipa, exportée dans `spec/api/pulse.openapi.yaml` |
 
 `pulse-domain` contient les types (`Goal`, `GoalStatus`…), les transitions d'état et la validation. Il n'a ni E/S, ni async, ni dépendance à sqlx ou Axum, et se teste sans base.
@@ -67,7 +67,10 @@ pulse/
    - 401 → `SESSION_EXPIRED` ;
    - 403 → `ACCOUNT_DISABLED` ;
    - 503, délai dépassé ou réponse invalide → `AUTH_UNAVAILABLE`.
-3. `RequireRole` vérifie le rôle ; un mauvais rôle donne **403** `FORBIDDEN`.
+3. La couche de rôle du groupe vérifie le rôle : `RequireRole<User>` sur `/me/*`, `RequireRole<Admin>` sur `/admin/*`. Un mauvais rôle donne **403** `FORBIDDEN`.
+   - Elle est posée **une fois par groupe** (`Router::route_layer`), jamais handler par handler : un handler de `/me` qui ne lirait que `CurrentUser` laisserait passer un FUNCTIONAL_ADMIN.
+   - `route_layer` est appelé en dernier sur le routeur du groupe : Axum ne protège pas une route ajoutée après lui.
+   - La couche range le `CurrentUser` dans les extensions de la requête ; le handler le relit sans rappeler `/me`.
 4. La route appelle le domaine avec le `user_id` issu de `/me`, jamais de la requête.
 5. Une ressource qui appartient à un autre utilisateur donne **404** `NOT_FOUND`.
 
@@ -99,7 +102,7 @@ En développement, Vite (port 5173) redirige `/api` vers `:8080`, ce qui garde l
 | HTTP | `axum` 0.8, `tower-http` (en-têtes, limite de taille, fichiers statiques, trace), `tower_governor` (limite de débit) |
 | Base | `sqlx` 0.8 (postgres, runtime tokio), requêtes vérifiées **à l'exécution** (`query_as`), migrations `sqlx::migrate!` |
 | Client auth | `reqwest` (timeout explicite) |
-| Sérialisation | `serde` (`rename_all = "camelCase"`, énumérations en `SCREAMING_SNAKE_CASE`) |
+| Sérialisation | `serde` (`rename_all = "camelCase"`, énumérations en `SCREAMING_SNAKE_CASE`), `serde_path_to_error` (champ fautif dans `details`) |
 | Hachage | `argon2` (simulateur) |
 | Journaux | `tracing`, `tracing-subscriber` (JSON) |
 | OpenAPI | `utoipa` + `utoipa-axum` |
