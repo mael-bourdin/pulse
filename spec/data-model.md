@@ -98,8 +98,8 @@ Les nouveaux identifiants reprennent le format de DATA : préfixe + numéro sur 
 
 ## Chargement de HAC-DATA-001
 
-- Le classeur `.xlsm` (copié dans `docs/annexes/`) est converti **une fois** en `data/hac-data-001/*.json` (versionné) par `data/convert.py`. La conversion de la V0, vérifiée contre le classeur, est conservée dans `data/hac-data-001/seed.json` : elle sert de point de départ, et ne disparaît pas avec `apps/` quand la V0 TypeScript est supprimée.
-- `make seed` (= `pulse-api seed --reset`) vide les tables, recharge les JSON et recale les séquences. On le lance avant chaque démo.
+- La conversion du classeur `.xlsm` (copié dans `docs/annexes/`), faite pour la V0 et vérifiée contre le classeur, est versionnée dans `data/hac-data-001/seed.json`. Ce fichier unique est la source du chargement : il ne disparaît pas avec `apps/` quand la V0 TypeScript est supprimée.
+- `make seed` (= `pulse-api seed --reset`) vide les tables, recharge `seed.json` et recale les séquences. On le lance avant chaque démo.
 - Les utilisateurs et les mots de passe ne vont **pas** dans PostgreSQL. Ils restent dans `crates/auth-simulator/data/users.json`, avec des hachés Argon2id produits par `auth-simulator hash-users`. Cette commande lit `data/hac-data-001/users.json` (identifiants, e-mails, noms, rôles et statuts, **sans** mot de passe ni haché) et demande les mots de passe de démo de HAC-DATA-001 à l'exécution : ils ne sont versionnés en clair nulle part ailleurs que dans le README.
 
 ## Données de référence utiles pour la recette
