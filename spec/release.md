@@ -28,8 +28,8 @@ Les deux sont des environnements de recette au sens d'ACC-SEC-02 (données et co
 **Une PR de release est toujours ouverte** : à chaque fusion dans `develop`, release-please ouvre ou met à jour la PR `chore(develop): release X.Y.Z`. Elle ne touche que `CHANGELOG.md` et `.release-please-manifest.json`, et montre en permanence ce que contiendra la prochaine version. On ne la fusionne qu'au moment de livrer.
 
 1. **Livrer une version**, en fin de sprint : relire le changelog de la PR de release (la liste des commits du sprint, avec leurs identifiants de spec), puis la fusionner dans `develop` (approbation et CI verte, comme toute PR). release-please crée alors le tag `vX.Y.Z` et la Release GitHub.
-2. **Promotion** `develop` → `main` (workflow.md → Promotion), juste après, en merge commit : `main` reçoit la version taguée et `production` se redéploie. Si `staging` et les E2E sont en place, deux conditions de plus : `e2e` vert, cartes du sprint vérifiées sur `staging`.
-3. **Vérification** de `production` : `/health` affiche le bon commit, connexion d'Alex et de Léa, un 401.
+2. **Promotion** `develop` → `main` (workflow.md → Promotion), **juste après, sans aucune autre fusion dans `develop` entre les deux** (sinon elle partirait sur `main` sans être dans la release), en merge commit : `main` reçoit la version taguée et `production` se redéploie. Si `staging` et les E2E sont en place, deux conditions de plus : `e2e` vert, cartes du sprint vérifiées sur `staging`.
+3. **Vérification** de `production` : `/health` affiche la version `X.Y.Z` et le SHA du **merge commit de la promotion** (celui de `main`, que Railway déploie), pas celui du tag : le tag pointe sur le commit de `develop`, au code identique. Puis connexion d'Alex et de Léa, un 401.
 
 | Version | Moment |
 |---|---|
@@ -58,7 +58,7 @@ Une PR ouverte avec le `GITHUB_TOKEN` ne déclenche **aucun** workflow : la PR d
 
 ## E2E vers `main`
 
-Workflow `e2e.yml`, sur chaque PR vers `main` dès que `e2e/playwright.config.ts` existe, sauf la PR de release-please (elle ne touche que le changelog) : `make e2e` (compilation, stack complète, Playwright Chromium bureau et mobile 390 px, axe), rapport en artefact 7 jours si échec. `AUTH_SIM_CONTROL_TOKEN` est tiré au hasard à chaque exécution : aucun secret dans GitHub.
+Workflow `e2e.yml`, sur chaque PR vers `main` dès que `e2e/playwright.config.ts` existe (la PR de release vise `develop`, elle n'est donc pas concernée) : `make e2e` (compilation, stack complète, Playwright Chromium bureau et mobile 390 px, axe), rapport en artefact 7 jours si échec. `AUTH_SIM_CONTROL_TOKEN` est tiré au hasard à chaque exécution : aucun secret dans GitHub.
 
 Seulement vers `main` parce que c'est le job le plus lent ; les E2E restent lançables en local à tout moment. Le check `e2e` s'ajoute aux checks requis du ruleset de `main` ([ci.md](ci.md) → Protection des branches).
 

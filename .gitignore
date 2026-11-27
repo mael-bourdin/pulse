@@ -14,3 +14,6 @@ playwright-report/
 test-results/
 # Annexes du dossier MSPR : jamais dans le dépôt public (Q14.6)
 docs/annexes/
+
+# Cache de compilation TypeScript (tsc -b)
+*.tsbuildinfo

@@ -1,7 +1,6 @@
 name: release-please
 
 on:
-  # Every merge into develop opens or updates the release PR, so it is always up to date.
   push:
     branches: [develop]
   workflow_dispatch:
