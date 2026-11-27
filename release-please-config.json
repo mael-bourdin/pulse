@@ -4,6 +4,7 @@
   "bootstrap-sha": "3a04db1b2f2f97053383666955772db5094cbfa7",
   "include-component-in-tag": false,
   "bump-minor-pre-major": true,
+  "initial-version": "0.1.0",
   "changelog-sections": [
     { "type": "feat", "section": "Fonctionnalités" },
     { "type": "fix", "section": "Corrections" },
