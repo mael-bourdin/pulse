@@ -107,7 +107,7 @@ goal-004 appartient à Samira, goal-006 à Chloé : ces cas se testent avec leur
 | ACC-ADM-02 | F6-R01 | I + E2E | `api/f6_admin`, `e2e/rec-12` | à faire |
 | ACC-ADM-03 | F6-R02 | I | `api/f6_admin` | à faire |
 | ACC-ADM-04 | F6-R03, F6-R05 | I | `api/f6_admin` | à faire |
-| ACC-ADM-05 | F6-R04 | U + I | `dom/challenge`, `api/f6_admin` | à faire |
+| ACC-ADM-05 | F6-R04 | U + I | `dom/admin`, `api/f6_admin` | en cours (domaine fait) |
 | ACC-ADM-06 | F6-R05 | I | `api/f6_admin` | à faire |
 | ACC-ADM-07 *(SHOULD)* | F6-R08 | I | `api/f6_admin` | à faire |
 
