@@ -13,7 +13,7 @@ Responsable : **Grégory** (référent sécurité). Cette page répond au CDC §
 | CSRF | `SameSite=Strict` + vérification d'`Origin` + JSON obligatoire sur les écritures | ADR-11 |
 | Force brute | 5 tentatives par minute et par IP sur `POST /session` → 429 | ADR-16 |
 | Entrées malveillantes | Validation côté API (types, bornes, énumérations, clés inconnues refusées) ; requêtes SQL paramétrées ; corps limité à 16 Ko | ACC-SEC-03 |
-| Réponse du service d'auth piégée ou invalide | Schéma vérifié (rôle connu, `accountStatus`, `tokenType = Bearer`, champs présents) ; sinon `AUTH_UNAVAILABLE` | ACC-SEC-05 |
+| Réponse du service d'auth piégée ou invalide | Schéma vérifié (`tokenType = Bearer`, champs présents) ; sinon `AUTH_UNAVAILABLE`. Rôle inconnu → `FORBIDDEN` ; `accountStatus` autre que ACTIVE → `ACCOUNT_DISABLED` | ACC-SEC-05 |
 | Fuite d'informations techniques | `AppError` ne sort que `{ code, message }` ; panics interceptés → 500 générique | ACC-GEN-06, ACC-SEC-07 |
 | Secrets dans le dépôt | `.env` ignoré ; `.env.example` sans secret ; scan `gitleaks` dans `make check` | ACC-SEC-01 |
 | Mot de passe exposé | Simulateur : Argon2id, jamais renvoyé ; PULSE ne stocke ni ne journalise le mot de passe | ACC-AUTH-09, ACC-SEC-02 |

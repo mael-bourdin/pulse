@@ -32,7 +32,7 @@
 | F1-R20 | Seul le module `auth_client` appelle le service d'auth, à l'URL `AUTH_SERVICE_URL`, avec un délai maximal `AUTH_TIMEOUT_MS` (3000 ms) | ACC-AUTH-10, 11, ACC-QUAL-02 |
 | F1-R21 | `POST /api/v1/session` valide `email` (1–254) et `password` (1–200). Si invalide → 400 `LOGIN_INVALID_REQUEST`, **sans** appeler le service | ACC-SEC-03 |
 | F1-R22 | Correspondance des réponses de `/login` : 400 → 400 `LOGIN_INVALID_REQUEST` ; 401 → 401 `LOGIN_INVALID_CREDENTIALS` ; 403 → 403 `ACCOUNT_DISABLED` ; 503 → 503 `AUTH_UNAVAILABLE` | ACC-AUTH-16, ACC-SEC-06 |
-| F1-R23 | **Validation des réponses** : sont traités comme **503 `AUTH_UNAVAILABLE`** (cause journalisée sans donnée sensible) tous les cas suivants : JSON invalide, champ manquant, rôle inconnu, `tokenType` ≠ `Bearer`, `expiresIn` ≤ 0, 200 avec `accountStatus = DISABLED`, statut non prévu (ex. 500), délai dépassé, connexion refusée | ACC-SEC-05, TECH §4.5, RG-AUTH-06 |
+| F1-R23 | **Validation des réponses** : sont traités comme **503 `AUTH_UNAVAILABLE`** (cause journalisée sans donnée sensible) tous les cas suivants : JSON invalide, champ manquant, `tokenType` ≠ `Bearer`, `expiresIn` ≤ 0, statut non prévu (ex. 500), délai dépassé, connexion refusée. Un 200 bien formé avec un rôle inconnu donne **403 `FORBIDDEN`**, comme un mauvais rôle (F1-R28) ; avec un `accountStatus` autre que ACTIVE, il est traité comme un 403 du service : **403 `ACCOUNT_DISABLED`** (F1-R22, F1-R26). Voir Q5.7 | ACC-SEC-05, TECH §4.5, RG-AUTH-06 |
 | F1-R24 | Connexion réussie → `200 { user }`, avec `user = { userId, displayName, email, role }`, et un cookie `pulse_session` = jeton opaque : `HttpOnly`, `SameSite=Strict`, `Path=/`, `Max-Age=expiresIn`, `Secure` si `COOKIE_SECURE=true`. Le jeton n'apparaît **jamais** dans le corps de la réponse | ACC-AUTH-12, ADR-10 |
 | F1-R25 | Chaque requête protégée appelle `/me` avec le jeton du cookie, **sans cache**. L'identité et le rôle viennent uniquement de `/me` | ACC-AUTH-12, REC-05, ADR-10 |
 | F1-R26 | En cours de session : `/me` 401 → **401 `SESSION_EXPIRED`** et cookie effacé ; `/me` 403 → **403 `ACCOUNT_DISABLED`** et cookie effacé ; 503 ou réponse invalide → **503 `AUTH_UNAVAILABLE`**, cookie **conservé** | ACC-AUTH-16 |
@@ -115,7 +115,7 @@ Voir [api/endpoints.md](../api/endpoints.md).
 | ACC-AUTH-13, 15 / REC-12 | R28 | Intégration API, E2E | `acc_auth_13_user_refuse_admin`, `rec_12` |
 | ACC-AUTH-14 / REC-11 | R28, R40 | Intégration API, E2E | `acc_auth_14_admin_accede`, `rec_11` |
 | ACC-AUTH-16 | R22, R23, R26, R43 | Intégration API | `acc_auth_16_erreurs_maitrisees` |
-| ACC-SEC-05 | R23 | Intégration API (faux service qui renvoie des réponses invalides) | `acc_sec_05_reponse_invalide_503` (un cas par anomalie) |
+| ACC-SEC-05 | R23 | Intégration API (faux service qui renvoie des réponses invalides) | `acc_sec_05_reponse_invalide_503` (un cas par anomalie), `acc_sec_05_role_ou_statut_inconnu_403` |
 | ACC-SEC-06 | R22, R26 | Intégration API | `acc_sec_06_codes_distincts` |
 
 ## Hors périmètre
