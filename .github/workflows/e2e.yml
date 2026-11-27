@@ -1,0 +1,68 @@
+name: e2e
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  detect:
+    name: detect
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      e2e: ${{ steps.files.outputs.e2e }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: files
+        run: echo "e2e=$([ -f e2e/playwright.config.ts ] && [ -f Makefile ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+  e2e:
+    name: e2e
+    needs: detect
+    if: needs.detect.outputs.e2e == 'true' && !startsWith(github.head_ref, 'release-please--')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: pulse
+          POSTGRES_PASSWORD: pulse
+          POSTGRES_DB: pulse
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://pulse:pulse@localhost:5432/pulse
+    steps:
+      - uses: actions/checkout@v7
+      - name: Jeton de pilotage du simulateur, propre à l'exécution
+        run: echo "AUTH_SIM_CONTROL_TOKEN=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+      - uses: actions-rust-lang/setup-rust-toolchain@v2
+      - uses: pnpm/action-setup@v6
+        with:
+          package_json_file: apps/web/package.json
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: apps/web/pnpm-lock.yaml
+      - run: pnpm --dir apps/web install --frozen-lockfile
+      - run: pnpm --dir apps/web exec playwright install --with-deps chromium
+      - run: make e2e
+      - if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

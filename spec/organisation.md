@@ -31,7 +31,8 @@ On coupe dans cet ordre, du premier au dernier :
 3. Critères AAA (on garde AA)
 4. Contenus admin (SHOULD)
 5. Génération des types TypeScript depuis l'OpenAPI (types écrits à la main)
-6. Mise en ligne Railway (démo locale)
+6. Releases automatiques, environnement `staging` et E2E en CI ([release.md](release.md))
+7. Mise en ligne Railway (démo locale)
 
 ## Trello
 

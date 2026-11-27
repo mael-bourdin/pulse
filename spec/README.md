@@ -20,6 +20,7 @@ Ici, **la spec fait foi.** Le code et les tests découlent de ces fichiers. Tout
 | [workflow.md](workflow.md) | Branches, commits Angular, PR et revues, promotion, hotfix |
 | [organisation.md](organisation.md) | Rôles, planning, Trello, Git, livrables |
 | [features/](features/) | Une spec par fonctionnalité, F1 à F6 |
+| [release.md](release.md) | Proposition : release-please, environnement `staging`, E2E vers `main` |
 | [traceability.md](traceability.md) | Correspondance règles → specs → tests → recette |
 
 ## Cycle de travail

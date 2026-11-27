@@ -40,8 +40,9 @@ Un test qui échoue une fois sur deux est un bug, pas du bruit. Pas de relance a
 
 ## Recette (livrable L6)
 
-- Les E2E tournent **en local** (`make e2e` : seed, stack locale, limite de connexion relevée, 503 piloté par `/__control`).
+- Les E2E tournent **en local** (`make e2e` : seed, stack locale, limite de connexion relevée, 503 piloté par `/__control`) et, si [release.md](release.md) est retenu, en CI sur chaque PR vers `main`.
 - Les E2E tournent avec l'horloge réelle, pas une date fixe : tout objectif créé en E2E a une `endDate` future ou vide, sinon la création est refusée (F3-R02).
+- Si `staging` existe, la recette en ligne se fait dessus ; sur `production`, seulement une vérification rapide après chaque release.
 - En ligne, la recette est **manuelle**, avec captures : `make seed-remote` avant, et le 503 via `make auth-down-remote`.
 - Résultats consignés dans `docs/recette.md` : scénario, date, résultat, capture, anomalie liée.
 
