@@ -23,13 +23,13 @@ Les deux sont des environnements de recette au sens d'ACC-SEC-02 (données et co
 
 ## Releases : release-please
 
-[release-please](https://github.com/googleapis/release-please) lit les commits Angular arrivés sur `main`, en déduit la prochaine version (SemVer) et tient `CHANGELOG.md`. Personne ne choisit un numéro ni ne rédige de notes à la main.
+[release-please](https://github.com/googleapis/release-please) lit les commits Angular arrivés sur **`develop`**, en déduit la prochaine version (SemVer) et tient `CHANGELOG.md`. Personne ne choisit un numéro ni ne rédige de notes à la main.
 
-1. **Promotion** (workflow.md → Promotion), avec deux conditions de plus : `e2e` vert, et cartes du sprint vérifiées sur `staging`. Fusion en merge commit, `production` se redéploie.
-2. **PR de release** : release-please ouvre (ou met à jour) la PR `chore(main): release X.Y.Z`, qui ne touche que `CHANGELOG.md` et la version. On relit le changelog : c'est la liste des commits du sprint, avec leurs identifiants de spec.
-3. **Publication** : à sa fusion, release-please crée le tag `vX.Y.Z` et la Release GitHub.
-4. **Report** : PR `main` → `develop` en merge commit (`chore(release): report de vX.Y.Z`), pour que `develop` ait le changelog et la version.
-5. **Vérification** de `production` : `/health` affiche le bon commit, connexion d'Alex et de Léa, un 401.
+**Une PR de release est toujours ouverte** : à chaque fusion dans `develop`, release-please ouvre ou met à jour la PR `chore(develop): release X.Y.Z`. Elle ne touche que `CHANGELOG.md` et `.release-please-manifest.json`, et montre en permanence ce que contiendra la prochaine version. On ne la fusionne qu'au moment de livrer.
+
+1. **Livrer une version**, en fin de sprint : relire le changelog de la PR de release (la liste des commits du sprint, avec leurs identifiants de spec), puis la fusionner dans `develop` (approbation et CI verte, comme toute PR). release-please crée alors le tag `vX.Y.Z` et la Release GitHub.
+2. **Promotion** `develop` → `main` (workflow.md → Promotion), juste après, en merge commit : `main` reçoit la version taguée et `production` se redéploie. Si `staging` et les E2E sont en place, deux conditions de plus : `e2e` vert, cartes du sprint vérifiées sur `staging`.
+3. **Vérification** de `production` : `/health` affiche le bon commit, connexion d'Alex et de Léa, un 401.
 
 | Version | Moment |
 |---|---|
@@ -39,11 +39,11 @@ Les deux sont des environnements de recette au sens d'ACC-SEC-02 (données et co
 | `v1.0.0` | Version présentée en soutenance |
 
 Réglages et pièges :
-- **Configuration** : `release-please-config.json` (type `simple`, un seul paquet à la racine, sections du changelog en français) et `.release-please-manifest.json` (`0.0.0` au départ). La première version est `0.1.0` (`initial-version`). Le workflow fixe `target-branch: main` : la branche par défaut du dépôt étant `develop`, release-please travaillerait sinon sur `develop` (constaté le 2026-11-27 avec la PR #97, fermée). `bootstrap-sha` est le commit du dossier de specs (`3a04db1`), point de départ de la V1 : l'historique de la V0 n'entre pas dans le changelog.
+- **Configuration** : `release-please-config.json` (type `simple`, un seul paquet à la racine, sections du changelog en français) et `.release-please-manifest.json` (`0.0.0` au départ). La première version est `0.1.0` (`initial-version`). Le workflow tourne à chaque poussée sur `develop` (et à la main, `workflow_dispatch`) avec `target-branch: develop`. `bootstrap-sha` est le commit du dossier de specs (`3a04db1`), point de départ de la V1 : l'historique de la V0 n'entre pas dans le changelog.
 - release-please ne crée de release que s'il y a au moins un `feat`, `fix`, `perf` ou `revert` depuis la précédente.
-- **Forcer `v1.0.0`** : écrire `Release-As: 1.0.0` dans le **corps du merge commit** de la dernière promotion (GitHub permet de l'éditer au moment de fusionner).
+- **Forcer `v1.0.0`** : écrire `Release-As: 1.0.0` dans le **corps du commit de squash** d'une PR fusionnée dans `develop` (GitHub permet de l'éditer au moment de fusionner) ; la PR de release passe alors en 1.0.0.
 - **Corriger une note** après coup : bloc `BEGIN_COMMIT_OVERRIDE` … `END_COMMIT_OVERRIDE` dans la description de la PR fusionnée, ce qui ne marche que pour une PR fusionnée en squash (vers `develop`).
-- **Pas de PR de release ?** Vérifier qu'une ancienne PR ne porte plus l'étiquette `autorelease: pending`, puis relancer le workflow.
+- **Pas de PR de release ?** Elle n'apparaît que s'il y a au moins un `feat`, `fix`, `perf` ou `revert` depuis la dernière version. Sinon, vérifier qu'une ancienne PR ne porte plus l'étiquette `autorelease: pending`, puis relancer le workflow (Actions → release-please → Run workflow).
 - **Version dans le code** : dès que le workspace Rust existe, ajouter `Cargo.toml` (`$.workspace.package.version`) et `apps/web/package.json` (`$.version`) dans `extra-files`, et vérifier que `Cargo.lock` suit.
 
 ### Jeton : une GitHub App
