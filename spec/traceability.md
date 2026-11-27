@@ -32,15 +32,15 @@ Mettre le statut à jour dans la PR qui fait passer le test.
 
 | Critère | Exigences | Niveau | Fichier | Statut |
 |---|---|---|---|---|
-| ACC-AUTH-01 | F1-R01 | I | `sim` | à faire |
-| ACC-AUTH-02 | F1-R01 | I | `sim` | à faire |
-| ACC-AUTH-03 | F1-R03 | I | `sim` | à faire |
+| ACC-AUTH-01 | F1-R01 | I | `sim` : `acc_auth_02_endpoints_exposes` (login) | en cours : `/me` avec F1-B |
+| ACC-AUTH-02 | F1-R01 | I | `sim` : `acc_auth_02_endpoints_exposes` (login) | en cours : `/me` avec F1-B |
+| ACC-AUTH-03 | F1-R03 | I | `sim` : `acc_auth_03_login_200_structure_contrat`, `acc_auth_03_cles_supplementaires_ignorees` | fait |
 | ACC-AUTH-04 | F1-R04 | I | `sim` | à faire |
 | ACC-AUTH-05 | F1-R05, F1-R22, F1-R30 | I + E2E | `sim`, `api/f1_session`, `e2e/rec-02` | à faire |
 | ACC-AUTH-06 | F1-R06, F1-R22 | I + E2E | `sim`, `api/f1_session`, `e2e/rec-03` | à faire |
 | ACC-AUTH-07 | F1-R07, F1-R12, F1-R22, F1-R26 | I + E2E | `sim`, `api/f1_session`, `e2e/rec-04` | à faire |
 | ACC-AUTH-08 | F1-R08, F1-R09, F1-R25 | I + E2E | `sim`, `api/f1_session`, `e2e/rec-05` | à faire |
-| ACC-AUTH-09 | F1-R02, F1-R10 | I | `sim` | à faire |
+| ACC-AUTH-09 | F1-R02, F1-R10 | U + I | `sim` : `acc_auth_09_jamais_de_mot_de_passe`, `acc_auth_09_hash_users_ne_garde_que_des_haches`, `acc_auth_09_hash_users_refuse_un_mot_de_passe_vide` | fait |
 | ACC-AUTH-10 | F1-R20 | I + R | `api/f1_session` | à faire |
 | ACC-AUTH-11 | F1-R20 | I | `api/f1_session` | à faire |
 | ACC-AUTH-12 | F1-R24, F1-R25 | I | `api/f1_session` | à faire |
