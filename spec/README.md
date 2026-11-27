@@ -17,6 +17,7 @@ Ici, **la spec fait foi.** Le code et les tests découlent de ces fichiers. Tout
 | [hosting.md](hosting.md) | Local, Railway, app Tauri |
 | [organisation.md](organisation.md) | Rôles, planning, Trello, Git, livrables |
 | [features/](features/) | Une spec par fonctionnalité, F1 à F6 |
+| [release.md](release.md) | Proposition : release-please, environnement `staging`, E2E vers `main` |
 | [traceability.md](traceability.md) | Correspondance règles → specs → tests → recette |
 
 ## Cycle de travail

@@ -17,6 +17,7 @@ Responsable : **Grégory** (référent sécurité). Cette page répond au CDC §
 | Fuite d'informations techniques | `AppError` ne sort que `{ code, message }` ; panics interceptés → 500 générique | ACC-GEN-06, ACC-SEC-07 |
 | Secrets dans le dépôt | `.env` ignoré ; `.env.example` sans secret ; scan `gitleaks` dans `make check` | ACC-SEC-01 |
 | Mot de passe exposé | Simulateur : Argon2id, jamais renvoyé ; PULSE ne stocke ni ne journalise le mot de passe | ACC-AUTH-09, ACC-SEC-02 |
+| Clé de la GitHub App de release | Seul secret dans GitHub : la clé privée de `pulse-release-bot`, installée sur ce seul dépôt, lue uniquement par `release-please.yml` sur `main`, jamais exposée aux PR ; jetons d'une heure ; actions épinglées par SHA | ADR-37 |
 | Dépendances vulnérables | `cargo deny check` et `pnpm audit` dans `make check` | — |
 | Simulateur exposé sur Internet | Sur Railway, réseau privé seulement ; la route `/__control` exige un secret | ADR-15, ADR-17 |
 
