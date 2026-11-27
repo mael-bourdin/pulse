@@ -61,6 +61,7 @@ Un ruleset par branche (Settings → Rules → Rulesets) :
 | Block force pushes | oui | oui |
 | Require a pull request | oui, **1 approbation** | oui, **1 approbation** |
 | Dismiss stale approvals on new push | oui | oui |
+| Require approval of the most recent reviewable push | oui | oui (celui qui pousse le dernier commit ne peut pas être celui qui approuve) |
 | Require conversation resolution | oui | oui |
 | Allowed merge methods | **Merge** uniquement | **Squash** et **Merge** (merge réservé aux reports `main` → `develop`) |
 | Require status checks | `rust`, `web`, `secrets`, `pr-title` | les mêmes |

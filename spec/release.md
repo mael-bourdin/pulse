@@ -48,11 +48,12 @@ Réglages et pièges :
 
 ### Jeton : une GitHub App
 
-Une PR ouverte avec le `GITHUB_TOKEN` ne déclenche **aucun** workflow : la PR de release n'aurait jamais ses checks requis. Le workflow demande donc à une GitHub App, `pulse-release-bot`, un jeton valable **1 heure** et limité à ce dépôt (`actions/create-github-app-token`). Il n'appartient à personne, n'expire pas, et n'importe quel membre peut approuver la PR du bot.
+Une PR ouverte avec le `GITHUB_TOKEN` ne déclenche **aucun** workflow : la PR de release n'aurait jamais ses checks requis. Le workflow demande donc à une GitHub App, `pulse-release-please-bot`, un jeton valable **1 heure** et limité à ce dépôt (`actions/create-github-app-token`). Il n'appartient à personne, n'expire pas, et n'importe quel membre peut approuver la PR du bot.
 
 - Création : faite par Maxime le 2026-11-25 (Client ID dans la variable `RELEASE_APP_CLIENT_ID`).
 - Installation : Mael, seul à pouvoir installer une app sur son compte, sur `mael-bourdin/pulse` uniquement.
-- Secret `RELEASE_APP_PRIVATE_KEY` : saisi par Maxime dans Settings → Secrets and variables → Actions, puis le fichier `.pem` est supprimé du poste.
+- Secret `RELEASE_APP_PRIVATE_KEY` : saisi par Maxime le 2026-11-27 dans Settings → Secrets and variables → Actions, puis le fichier `.pem` est supprimé du poste.
+- L'app doit être **publique** (Advanced → Make public) pour pouvoir être installée sur un autre compte que celui de son créateur.
 - Tant que l'app n'est pas installée, le workflow retombe sur `GITHUB_TOKEN` : la PR de release est créée, mais il faut la fermer puis la rouvrir à la main pour lancer la CI.
 - `release-please-action` et `create-github-app-token` sont **épinglées par SHA** : c'est le seul workflow qui manipule une clé et un jeton en écriture.
 
@@ -64,6 +65,6 @@ Seulement vers `main` parce que c'est le job le plus lent ; les E2E restent lan�
 
 ## Mise en place
 
-1. Mael installe `pulse-release-bot` ; Maxime saisit le secret.
+1. Mael installe `pulse-release-please-bot` ; Maxime saisit le secret.
 2. Création du projet Neon `pulse-staging` et de l'environnement Railway `staging` (services, variables, « Wait for CI » sur la branche `develop`).
 3. Après la première exécution de `e2e.yml`, Mael ajoute `e2e` aux checks requis de `main`.
