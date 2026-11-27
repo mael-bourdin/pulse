@@ -1,0 +1,44 @@
+[
+  {
+    "userId": "usr-10027",
+    "email": "alex.martin@demo.healthaicoach.fr",
+    "displayName": "Alex Martin",
+    "role": "USER",
+    "accountStatus": "ACTIVE"
+  },
+  {
+    "userId": "usr-10028",
+    "email": "samira.benali@demo.healthaicoach.fr",
+    "displayName": "Samira Benali",
+    "role": "USER",
+    "accountStatus": "ACTIVE"
+  },
+  {
+    "userId": "usr-10029",
+    "email": "thomas.roy@demo.healthaicoach.fr",
+    "displayName": "Thomas Roy",
+    "role": "USER",
+    "accountStatus": "DISABLED"
+  },
+  {
+    "userId": "usr-10030",
+    "email": "chloe.nguyen@demo.healthaicoach.fr",
+    "displayName": "Chloé Nguyen",
+    "role": "USER",
+    "accountStatus": "ACTIVE"
+  },
+  {
+    "userId": "usr-10031",
+    "email": "mehdi.laurent@demo.healthaicoach.fr",
+    "displayName": "Mehdi Laurent",
+    "role": "USER",
+    "accountStatus": "ACTIVE"
+  },
+  {
+    "userId": "adm-10001",
+    "email": "lea.bernard@demo.healthaicoach.fr",
+    "displayName": "Léa Bernard",
+    "role": "FUNCTIONAL_ADMIN",
+    "accountStatus": "ACTIVE"
+  }
+]

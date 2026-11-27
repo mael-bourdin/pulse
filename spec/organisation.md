@@ -4,9 +4,9 @@
 
 | Membre | Fonctionnalités | Rôle transverse |
 |---|---|---|
-| **Mael** | Socle (workspace, base, déploiement), F6 Administration | Pilote : planning, Trello, arbitrages, contact « Produit » ; référent hébergement |
+| **Mael** | Socle (workspace, base, déploiement), F6 Administration | Pilote : planning, Trello, arbitrages, contact « Produit » ; référent hébergement ; admin du dépôt (rulesets, branche par défaut) |
 | **Grégory** | F1 Authentification (simulateur + session PULSE) | Référent sécurité ([security.md](security.md)) |
-| **Maxime** | F2 Préférences, F3 Objectifs | Référent recette et qualité ([testing.md](testing.md)) |
+| **Maxime** | F2 Préférences, F3 Objectifs | Référent recette et qualité ([testing.md](testing.md)) et CI ([ci.md](ci.md)) |
 | **Simon** | F4 Défis, F5 Progression | Référent interface et accessibilité ([accessibility.md](accessibility.md)) |
 
 Chacun porte ses fonctionnalités **de bout en bout** : spec, domaine, API, écran, tests. Chacun **commite son propre code** (Q11.4).
@@ -24,7 +24,7 @@ Avant que F1 soit prête, les autres codent leur domaine et leurs tests unitaire
 
 ## Priorités (ordre de sacrifice si le temps manque)
 
-On ne coupe jamais : F1 à F6 (MUST), le simulateur conforme, les contrôles de droits, les REC en local, AA.
+On ne coupe jamais : F1 à F6 (MUST), le simulateur conforme, les contrôles de droits, les REC en local, AA, la CI de base (`rust`, `web`, `secrets`) et la protection de `main` et `develop` (CDC §5.2, §5.6).
 On coupe dans cet ordre, du premier au dernier :
 1. App Tauri (bonus, CDC §6)
 2. E2E WebKit et mobile (on garde Chromium bureau)
@@ -42,7 +42,9 @@ On coupe dans cet ordre, du premier au dernier :
 
 ## Dépôt
 
-On garde le **même dépôt** (`mael-bourdin/pulse`) : un premier commit supprime la V0 TypeScript, ce qui reste visible dans l'historique et montre la démarche au jury. Les annexes du dossier sont copiées dans `docs/annexes/` (dépôt privé).
+On garde le **même dépôt** (`mael-bourdin/pulse`) : un premier commit supprime la V0 TypeScript, ce qui reste visible dans l'historique et montre la démarche au jury.
+
+Le dépôt est **public** (vérifié le 2026-11-25), ce qui rend GitHub Actions et les rulesets gratuits (ADR-29). Les annexes du dossier (PDF, classeur `.xlsm`) **ne sont donc pas versionnées** : `docs/annexes/` est ignoré par Git et les annexes circulent sur Discord. Seules les données de référence `data/hac-data-001/` sont versionnées (données synthétiques, CDC §4.5).
 
 ## Git
 
