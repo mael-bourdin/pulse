@@ -32,14 +32,14 @@ Mettre le statut à jour dans la PR qui fait passer le test.
 
 | Critère | Exigences | Niveau | Fichier | Statut |
 |---|---|---|---|---|
-| ACC-AUTH-01 | F1-R01 | I | `sim` : `acc_auth_02_endpoints_exposes` (login) | en cours : `/me` avec F1-B |
-| ACC-AUTH-02 | F1-R01 | I | `sim` : `acc_auth_02_endpoints_exposes` (login) | en cours : `/me` avec F1-B |
+| ACC-AUTH-01 | F1-R01 | I | `sim` : `acc_auth_02_endpoints_exposes`, `acc_auth_02_me_expose` | fait |
+| ACC-AUTH-02 | F1-R01 | I | `sim` : `acc_auth_02_endpoints_exposes`, `acc_auth_02_me_expose` | fait |
 | ACC-AUTH-03 | F1-R03 | I | `sim` : `acc_auth_03_login_200_structure_contrat`, `acc_auth_03_cles_supplementaires_ignorees` | fait |
-| ACC-AUTH-04 | F1-R04 | I | `sim` | à faire |
-| ACC-AUTH-05 | F1-R05, F1-R22, F1-R30 | I + E2E | `sim`, `api/f1_session`, `e2e/rec-02` | à faire |
-| ACC-AUTH-06 | F1-R06, F1-R22 | I + E2E | `sim`, `api/f1_session`, `e2e/rec-03` | à faire |
-| ACC-AUTH-07 | F1-R07, F1-R12, F1-R22, F1-R26 | I + E2E | `sim`, `api/f1_session`, `e2e/rec-04` | à faire |
-| ACC-AUTH-08 | F1-R08, F1-R09, F1-R25 | I + E2E | `sim`, `api/f1_session`, `e2e/rec-05` | à faire |
+| ACC-AUTH-04 | F1-R04 | I | `sim` : `acc_auth_04_requete_invalide_400`, `acc_auth_04_type_incorrect_400`, `acc_auth_04_champ_manquant_400`, `acc_auth_04_sans_content_type_400`, `acc_auth_04_corps_trop_gros_400` | fait |
+| ACC-AUTH-05 | F1-R05, F1-R22, F1-R30 | I + E2E | `sim` : `acc_auth_05_401_identique_adresse_connue_ou_non` ; `api/f1_session`, `e2e/rec-02` | `sim` fait, API et E2E à faire |
+| ACC-AUTH-06 | F1-R06, F1-R22 | I + E2E | `sim` : `acc_auth_06_compte_desactive_403` ; `api/f1_session`, `e2e/rec-03` | `sim` fait, API et E2E à faire |
+| ACC-AUTH-07 | F1-R07, F1-R12, F1-R22, F1-R26 | I + E2E | `sim` : `acc_auth_07_indisponibilite_503`, `acc_auth_07_pilotage_protege` ; `api/f1_session`, `e2e/rec-04` | `sim` fait, API et E2E à faire |
+| ACC-AUTH-08 | F1-R08, F1-R09, F1-R25 | U + I + E2E | `sim` : `acc_auth_08_jeton_me`, `acc_auth_08_en_tete_non_bearer_401`, `acc_auth_08_jeton_opaque_unique`, `acc_auth_08_compte_devenu_desactive_403`, `acc_auth_08_jeton_lie_a_son_utilisateur`, `acc_auth_08_jeton_expire` ; `api/f1_session`, `e2e/rec-05` | `sim` fait, API et E2E à faire |
 | ACC-AUTH-09 | F1-R02, F1-R10 | U + I | `sim` : `acc_auth_09_jamais_de_mot_de_passe`, `acc_auth_09_hash_users_ne_garde_que_des_haches`, `acc_auth_09_hash_users_refuse_un_mot_de_passe_vide` | fait |
 | ACC-AUTH-10 | F1-R20 | I + R | `api/f1_session` | à faire |
 | ACC-AUTH-11 | F1-R20 | I | `api/f1_session` | à faire |
@@ -121,7 +121,7 @@ goal-004 appartient à Samira, goal-006 à Chloé : ces cas se testent avec leur
 | ACC-SEC-04 autorisation côté serveur | F1-R28, F6-R01, F6-R09 | I | `api/f1_session`, `api/f6_admin` | à faire |
 | ACC-SEC-05 réponses du service contrôlées | F1-R23 | I (faux service) | `api/f1_session` | à faire |
 | ACC-SEC-06 400/401/403/503 distingués | F1-R22, F1-R26 | I | `api/f1_session` | à faire |
-| ACC-SEC-07 messages d'erreur sans trace, chemin interne ni configuration | F1-R11, F1-R31, catalogue d'erreurs et `AppError` ([api/endpoints.md](api/endpoints.md#erreurs)) | I | `sim`, `api/security` : `acc_sec_07_panique_500_generique` (route de test qui panique → 500 `INTERNAL_ERROR`, message générique) ; `acc_sec_07_auth_injoignable_sans_url` (service d'auth injoignable → 503 `AUTH_UNAVAILABLE`, corps sans `AUTH_SERVICE_URL`, hôte, port ni message d'erreur `reqwest`) | à faire |
+| ACC-SEC-07 messages d'erreur sans trace, chemin interne ni configuration | F1-R11, F1-R31, catalogue d'erreurs et `AppError` ([api/endpoints.md](api/endpoints.md#erreurs)) | I | `sim` : `acc_sec_07_panique_500_generique`, `acc_sec_07_route_inconnue_404` ; `api/security` : `acc_sec_07_panique_500_generique` (route de test qui panique → 500 `INTERNAL_ERROR`, message générique) ; `acc_sec_07_auth_injoignable_sans_url` (service d'auth injoignable → 503 `AUTH_UNAVAILABLE`, corps sans `AUTH_SERVICE_URL`, hôte, port ni message d'erreur `reqwest`) | à faire |
 | ACC-QUAL-01 code PULSE et simulateur séparés | [architecture.md](architecture.md) (crates distinctes) | R | — | à faire |
 | ACC-QUAL-02 appels d'auth regroupés | F1-R20 | R + outil (`reqwest` utilisé seulement dans `auth_client`) | — | à faire |
 | ACC-QUAL-03 cohérent avec DATA | [data-model.md](data-model.md) | E2E | `e2e/rec-*` | à faire |
