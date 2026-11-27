@@ -107,3 +107,18 @@ En développement, Vite (port 5173) redirige `/api` vers `:8080`, ce qui garde l
 | Front | React 19, React Router 7, TanStack Query, `openapi-typescript` + `openapi-fetch` (types générés depuis l'OpenAPI) |
 | Desktop | Tauri 2.12 |
 | Tests | `cargo test`, `#[sqlx::test]`, Playwright + `@axe-core/playwright` |
+| Dates | `chrono` (avec la fonctionnalité `chrono` de sqlx), `chrono-tz` |
+
+## Dates
+
+Le serveur tourne en UTC sur Railway, les utilisateurs sont en France. Sans règle, un objectif créé à 0 h 30, heure de Paris, porterait la date de la veille.
+
+| Sujet | Règle |
+|---|---|
+| Date du jour | Date courante dans le fuseau **`Europe/Paris`**, jamais celle du serveur : `Utc::now().with_timezone(&chrono_tz::Europe::Paris).date_naive()`. `chrono-tz` gère les heures d'été et d'hiver |
+| Date du jour dans les tests | `pulse-domain` ne lit jamais l'heure : il reçoit la date du jour en paramètre (`today: NaiveDate`). `pulse-api` l'obtient par une simple fonction `today: fn() -> NaiveDate` rangée dans l'état Axum, sans trait : en production, celle qui applique la règle « Date du jour » ci-dessus ; dans les tests, une fonction qui renvoie une date fixe (ex. `2026-02-15`), pour que chaque test connaisse sa date |
+| Date seule | Type SQL `date`, `chrono::NaiveDate` en Rust, `"YYYY-MM-DD"` en JSON (date ISO 8601, sans heure ni fuseau) : `startDate`, `endDate`, `joinedAt`, `publishedAt`, `updatedAt` des contenus, `period` |
+| Horodatage | Type SQL `timestamptz`, `DateTime<Utc>` en Rust, ISO 8601 en UTC en JSON (`2026-02-15T08:30:00Z`), comme le contrat d'auth (HAC-API-001 §2). Les journaux sont aussi en UTC |
+| Front | Une date seule est affichée telle quelle, en français. Elle ne passe jamais par `new Date("2026-02-15")`, qui la lit comme minuit UTC et peut afficher la veille |
+
+Dans les specs, « date du jour » désigne cette date : création d'un objectif (F3-R02, F3-R03), clôture (F3-R07), inscription à un défi (F4-R04), contenus (F6-R08). ADR-19 et F4-R11 restent vrais : aucun statut n'est calculé à partir de cette date.
