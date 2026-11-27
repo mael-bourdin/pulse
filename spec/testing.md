@@ -24,17 +24,41 @@ Pas d'E2E sur l'app Tauri : il n'existe pas de pilote WebDriver pour macOS. L'ap
 | Commande | Effet |
 |---|---|
 | `make test` | Tests unitaires, de contrat et d'intégration (PostgreSQL local requis) |
-| `make e2e` | Remet la base à zéro (`make seed`), lance la stack, puis Playwright |
-| `make check` | fmt, clippy, cargo deny, eslint, tsc, gitleaks, `make test` — **à lancer avant chaque push** |
+| `make e2e` | Compile, lance la stack, puis Playwright ; chaque fichier E2E remet la base à zéro avant de commencer |
+| `make check` | fmt, clippy, cargo deny, eslint, tsc, gitleaks, `make test` : **miroir local de la CI**, à lancer avant chaque push |
+
+La CI lance **les mêmes commandes** que `make check` ([ci.md](ci.md)) : un test qui passe en local passe en CI, et inversement. C'est la CI qui fait foi : une PR rouge n'est pas fusionnée, même si `make check` passait chez son auteur.
+
+## Isolation des E2E
+
+- Les scénarios modifient les données (REC-07 crée un objectif, REC-08 rejoint chl-005), ce qui fausserait REC-10. Chaque fichier `e2e/rec-*.spec.ts` appelle donc le seed avant de commencer, et les fichiers tournent **en série** (`workers: 1`).
+- Le seed est une fonction de `pulse-api`, appelée par `make seed`, par les E2E et par les tests `#[sqlx::test]` qui ont besoin des données de référence.
+
+## Tests instables
+
+Un test qui échoue une fois sur deux est un bug, pas du bruit. Pas de relance automatique en CI, pas de `continue-on-error`. On le corrige dans la séance ou on le marque `#[ignore]` / `test.fixme` avec une carte Trello « Anomalie » qui le cite.
 
 ## Recette (livrable L6)
 
 - Les E2E tournent **en local** (`make e2e` : seed, stack locale, limite de connexion relevée, 503 piloté par `/__control`).
+- Les E2E tournent avec l'horloge réelle, pas une date fixe : tout objectif créé en E2E a une `endDate` future ou vide, sinon la création est refusée (F3-R02).
 - En ligne, la recette est **manuelle**, avec captures : `make seed-remote` avant, et le 503 via `make auth-down-remote`.
 - Résultats consignés dans `docs/recette.md` : scénario, date, résultat, capture, anomalie liée.
 
 ## Anomalies
 
-- Une carte Trello avec l'étiquette « Anomalie ».
-- **Critique** si elle bloque un scénario REC, ou viole CDC §4.1 (sécurité) ou §4.5 (confidentialité). Les anomalies critiques sont corrigées avant la revue de version (CDC §5.6).
+- Une carte Trello `BUG – …` avec l'étiquette « Anomalie ». La description précise : environnement (local ou en ligne), étapes, résultat attendu et obtenu, REC ou ACC touchés, commit vu dans `/health`.
+- **Critique** si elle bloque un scénario REC, viole CDC §4.1 (sécurité) ou §4.5 (confidentialité), ou correspond à l'une des **conditions bloquantes** de HAC-ACC-001 §12. Les anomalies critiques passent en tête de « À faire » et sont corrigées avant la revue de version (CDC §5.6).
+- Conditions bloquantes (ACC §12), vérifiées avant chaque promotion vers `main` :
+  1. PULSE ne se lance pas à partir du dépôt et du README ;
+  2. des écrans sans logique applicative ;
+  3. simulateur absent ou non consommé via HAC-API-001 ;
+  4. un USER accède aux fonctions FUNCTIONAL_ADMIN ;
+  5. PULSE lit directement les données internes du simulateur ;
+  6. un mot de passe ou une information individuelle sensible dans une réponse, un écran ou un journal ;
+  7. une fonctionnalité principale non démontrable avec les données fictives ;
+  8. l'admin ne peut pas créer ou modifier un défi selon les règles produit ;
+  9. une erreur du service d'auth fait planter l'application ;
+  10. une démonstration avec des données réelles ou identifiantes.
+- Les anomalies non bloquantes sont acceptables si elles sont identifiées et documentées dans L6 (ACC §12). Chaque anomalie est reportée dans `docs/recette.md`, corrigée ou non.
 - Chaque correction ajoute un test qui reproduit l'anomalie.

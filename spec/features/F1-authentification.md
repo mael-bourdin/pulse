@@ -4,7 +4,7 @@
 - **User stories** : US-AUTH-01, US-AUTH-02, US-AUTH-03
 - **Règles** : RG-AUTH-01 à 06
 - **Contrat** : [api/auth.openapi.yaml](../api/auth.openapi.yaml) (HAC-API-001)
-- **Décisions** : ADR-10, 11, 12, 14, 15, 16
+- **Décisions** : ADR-10, 11, 12, 14, 15, 16, 27
 
 ## Comportement
 
@@ -13,14 +13,14 @@
 | Id | Exigence | Source |
 |---|---|---|
 | F1-R01 | Expose `POST /api/v1/auth/login` et `GET /api/v1/auth/me`, en JSON camelCase | ACC-AUTH-01, 02 |
-| F1-R02 | Utilisateurs chargés depuis `data/users.json` (les 6 comptes de DATA, rôles et états inchangés). Mots de passe hachés en **Argon2id**, jamais en clair | ACC-AUTH-09, ADR-14 |
+| F1-R02 | Au démarrage, le simulateur charge `crates/auth-simulator/data/users.json` (les 6 comptes de DATA, rôles et états inchangés). Ce fichier est produit par `auth-simulator hash-users` à partir de `data/hac-data-001/users.json`, qui ne contient aucun haché. Mots de passe hachés en **Argon2id**, jamais en clair | ACC-AUTH-09, ADR-14 |
 | F1-R03 | Identifiants corrects + compte ACTIVE → **200** avec `userId`, `email`, `displayName`, `role`, `accountStatus`, `accessToken`, `tokenType: "Bearer"`, `expiresIn: 3600` | ACC-AUTH-03 |
-| F1-R04 | Corps non JSON, pas un objet, `email` ou `password` absent, vide ou non textuel → **400** `AUTH_BAD_REQUEST`. Les clés supplémentaires sont ignorées | ACC-AUTH-04 |
+| F1-R04 | Corps non JSON, pas un objet, `email` ou `password` absent, vide ou non textuel → **400** `AUTH_BAD_REQUEST`. Les clés supplémentaires sont ignorées. Tous les rejets de l'extracteur `Json` d'Axum sont traduits en ce 400 `{ code, message }` : JSON illisible (400 texte par défaut), mauvais type ou champ manquant (422), `Content-Type` absent ou faux (415), corps trop gros (413). Le simulateur ne renvoie jamais 413, 415 ni 422, que le contrat ne prévoit pas | ACC-AUTH-04, HAC-API-001 §4.2, §4.4 |
 | F1-R05 | Mauvais mot de passe **ou** adresse inconnue → **401** `AUTH_INVALID_CREDENTIALS`, avec un corps identique. Un hachage factice est calculé si l'adresse est inconnue, pour que le temps de réponse ne trahisse rien | ACC-AUTH-05, REC-02 |
 | F1-R06 | Compte DISABLED → **403** `AUTH_ACCOUNT_DISABLED`, **seulement** si l'adresse et le mot de passe sont corrects ; sinon 401 | ACC-AUTH-06, REC-03 |
 | F1-R07 | Indisponibilité → **503** `AUTH_SERVICE_UNAVAILABLE` sur les deux endpoints. Déclenchée par `AUTH_SIM_UNAVAILABLE=true` au démarrage ou par `POST /__control/availability` (en-tête `X-Control-Token`), sans redémarrage | ACC-AUTH-07, REC-04, ADR-15 |
 | F1-R08 | Jeton opaque aléatoire (≥ 128 bits), gardé en mémoire avec son `userId` et son expiration (`AUTH_SIM_TOKEN_TTL`, 3600 s par défaut) | ACC-AUTH-08 |
-| F1-R09 | `/me` avec un jeton valide → **200** identité, sans jeton ; jeton absent, mal formé, inconnu ou expiré → **401** `AUTH_INVALID_TOKEN` ; compte devenu DISABLED → **403** | ACC-AUTH-08, REC-05 |
+| F1-R09 | `/me` avec un jeton valide → **200** identité, sans jeton ; jeton absent, mal formé, inconnu ou expiré → **401** `AUTH_INVALID_TOKEN` ; compte devenu DISABLED → **403**. Un en-tête `Authorization` absent ou qui n'est pas `Bearer <jeton>` donne aussi ce 401, jamais le 400 texte de l'extracteur `TypedHeader` | ACC-AUTH-08, REC-05, HAC-API-001 §5 |
 | F1-R10 | Aucune réponse ni aucun journal ne contient de mot de passe, de haché ou de jeton | ACC-AUTH-09, ACC-SEC-02 |
 | F1-R11 | Route inconnue → 404 `{ code, message }` ; erreur interne → 500 générique, sans trace | ACC-SEC-07 |
 | F1-R12 | `/__control/availability` sans jeton valide → 401. Si `AUTH_SIM_CONTROL_TOKEN` n'est pas défini, la route est désactivée | ADR-15 |
@@ -34,12 +34,12 @@
 | F1-R22 | Correspondance des réponses de `/login` : 400 → 400 `LOGIN_INVALID_REQUEST` ; 401 → 401 `LOGIN_INVALID_CREDENTIALS` ; 403 → 403 `ACCOUNT_DISABLED` ; 503 → 503 `AUTH_UNAVAILABLE` | ACC-AUTH-16, ACC-SEC-06 |
 | F1-R23 | **Validation des réponses** : sont traités comme **503 `AUTH_UNAVAILABLE`** (cause journalisée sans donnée sensible) tous les cas suivants : JSON invalide, champ manquant, rôle inconnu, `tokenType` ≠ `Bearer`, `expiresIn` ≤ 0, 200 avec `accountStatus = DISABLED`, statut non prévu (ex. 500), délai dépassé, connexion refusée | ACC-SEC-05, TECH §4.5, RG-AUTH-06 |
 | F1-R24 | Connexion réussie → `200 { user }`, avec `user = { userId, displayName, email, role }`, et un cookie `pulse_session` = jeton opaque : `HttpOnly`, `SameSite=Strict`, `Path=/`, `Max-Age=expiresIn`, `Secure` si `COOKIE_SECURE=true`. Le jeton n'apparaît **jamais** dans le corps de la réponse | ACC-AUTH-12, ADR-10 |
-| F1-R25 | Chaque requête protégée appelle `/me` avec le jeton du cookie, **sans cache**. L'identité et le rôle viennent uniquement de `/me` | ACC-AUTH-12, REC-05, ADR-10 |
-| F1-R26 | En cours de session : `/me` 401 → **401 `SESSION_EXPIRED`** et cookie effacé ; `/me` 403 → **403 `ACCOUNT_DISABLED`** et cookie effacé ; 503 ou réponse invalide → **503 `AUTH_UNAVAILABLE`**, cookie **conservé** | ACC-AUTH-16 |
+| F1-R25 | Chaque requête protégée appelle `/me` avec le jeton du cookie, **sans cache**, et **une seule fois** : la couche posée en `route_layer` appelle `/me` et range l'utilisateur dans les extensions de la requête ; l'extracteur `CurrentUser` lit cette extension et ne rappelle jamais `/me`. L'identité et le rôle viennent uniquement de `/me` | ACC-AUTH-12, REC-05, ADR-10 |
+| F1-R26 | Pas de cookie `pulse_session`, ou cookie vide → **401 `UNAUTHENTICATED`**, sans aucun appel au service d'auth : c'est le cas d'une première visite, et ce visiteur ne voit jamais 503, même si le service est indisponible. En cours de session (cookie présent) : `/me` 401 → **401 `SESSION_EXPIRED`** et cookie effacé ; `/me` 403 → **403 `ACCOUNT_DISABLED`** et cookie effacé ; 503 ou réponse invalide → **503 `AUTH_UNAVAILABLE`**, cookie **conservé** | ACC-AUTH-16 |
 | F1-R27 | `DELETE /api/v1/session` → 204 et cookie effacé (`Max-Age=0`). Le contrat ne prévoit pas de révocation, donc le jeton expire de lui-même | — |
-| F1-R28 | Contrôle de rôle côté API : `/api/v1/me/*` exige USER, `/api/v1/admin/*` exige FUNCTIONAL_ADMIN. Mauvais rôle → **403 `FORBIDDEN`**, même en appel direct | ACC-AUTH-13, 14, 15, ACC-ADM-01, 02, RG-AUTH-03 à 05 |
+| F1-R28 | Contrôle de rôle côté API : `/api/v1/me/*` exige USER, `/api/v1/admin/*` exige FUNCTIONAL_ADMIN. Mauvais rôle → **403 `FORBIDDEN`**, même en appel direct. Ce contrôle est une couche posée sur chaque groupe de routes (`route_layer` : `RequireRole<User>` sur `/me`, `RequireRole<Admin>` sur `/admin`), jamais un extracteur ajouté handler par handler : un handler qui ne lirait que `CurrentUser` laisserait passer un FUNCTIONAL_ADMIN ([architecture.md](../architecture.md) → Flux d'une requête protégée) | ACC-AUTH-13, 14, 15, ACC-ADM-01, 02, ACC-SEC-04, RG-AUTH-03 à 05, ADR-27 |
 | F1-R29 | Écritures (`POST`, `PUT`, `PATCH`, `DELETE`) : `Origin` absent de `ALLOWED_ORIGINS` → 403 `ORIGIN_REJECTED` ; `Content-Type` différent de `application/json` (pour les requêtes avec corps) → 415 | ADR-11 |
-| F1-R30 | Limite de débit sur `POST /session` : `LOGIN_RATE_LIMIT_PER_MIN` (5 par défaut) essais par minute **par IP (lue dans `X-Forwarded-For` si `TRUST_PROXY=true`)** → 429 `TOO_MANY_ATTEMPTS`. Jamais de limite par adresse e-mail | ADR-16, ACC-AUTH-05 |
+| F1-R30 | Limite de débit sur `POST /session` : `LOGIN_RATE_LIMIT_PER_MIN` (5 par défaut) essais par minute **par IP** → 429 `TOO_MANY_ATTEMPTS`. Jamais de limite par adresse e-mail. La clé vient d'un extracteur maison (trait `KeyExtractor` de `tower_governor`), pas de `SmartIpKeyExtractor` : celui-ci prend la première entrée de `X-Forwarded-For`, que le client écrit lui-même, et un faux en-tête suffirait à contourner la limite. Avec `TRUST_PROXY=true`, l'IP est lue dans `X-Real-IP`, que le proxy de Railway remplit avec l'IP du client ([docs Railway](https://docs.railway.com/networking/public-networking/specs-and-limits), « Request headers ») ; `X-Forwarded-For` n'est pas lu. Repli, si la vérification manuelle en ligne (ACC-AUTH-05) montre que Railway ne remplace pas un `X-Real-IP` envoyé par le client : la **dernière** entrée de `X-Forwarded-For`, celle ajoutée par le proxy, jamais la première. Avec `TRUST_PROXY=false`, ou si l'en-tête est absent ou illisible : IP de la connexion TCP (`ConnectInfo<SocketAddr>`). Elle n'existe que si l'app est servie avec `into_make_service_with_connect_info::<SocketAddr>()`, sinon l'extraction échoue en 500. Dans les tests d'intégration (`oneshot`), elle vient de la couche `MockConnectInfo` (`axum::extract::connect_info`) ; cette couche ne pose que `MockConnectInfo<SocketAddr>` dans les extensions, que seul l'extracteur `ConnectInfo` d'Axum relit, donc l'extracteur maison cherche `ConnectInfo<SocketAddr>` puis `MockConnectInfo<SocketAddr>` | ADR-16, ACC-AUTH-05 |
 | F1-R31 | Journaux : méthode, route, statut, durée, identifiant de requête. Une ligne par appel au service d'auth : endpoint, statut, durée, jamais le jeton (REC-05 s'appuie dessus). Jamais de corps, de cookie, d'en-tête `Authorization` ni d'e-mail | ACC-SEC-07, constitution §6 |
 
 ### Interface (`apps/web`)
@@ -48,8 +48,8 @@
 |---|---|---|
 | F1-R40 | Après connexion : USER → `/`, FUNCTIONAL_ADMIN → `/admin` | RG-AUTH-03, P1 |
 | F1-R41 | Garde de route : sans session → `/connexion` ; mauvais rôle → `/acces-refuse`. Cette garde est un confort d'affichage, l'API reste le vrai contrôle (F1-R28) | ACC-AUTH-15 |
-| F1-R42 | Au chargement de l'app : `GET /session` rétablit la session ou renvoie vers `/connexion` | REC-05 |
-| F1-R43 | Toute réponse 401 `SESSION_EXPIRED` renvoie vers `/connexion` avec le message de session expirée. Une réponse 503 affiche une alerte, sans déconnecter | ACC-AUTH-16 |
+| F1-R42 | Au chargement de l'app : `GET /session` rétablit la session. 401 `UNAUTHENTICATED` (première visite, ou cookie déjà supprimé par le navigateur à son `Max-Age`) → `/connexion`, **sans message** ; 401 `SESSION_EXPIRED` → `/connexion` avec le bandeau de session expirée | REC-05 |
+| F1-R43 | L'interface réagit au `code` de l'erreur, jamais au seul statut HTTP. Une fois la session ouverte dans l'interface, tout 401 (`SESSION_EXPIRED`, ou `UNAUTHENTICATED` si le navigateur a déjà supprimé le cookie) renvoie vers `/connexion` avec le bandeau de session expirée. 403 `ACCOUNT_DISABLED`, au chargement ou en cours de session : l'interface oublie l'utilisateur et renvoie vers `/connexion` avec l'alerte de compte désactivé. 403 `FORBIDDEN` : écran `/acces-refuse`, sans déconnecter. Une réponse 503 affiche une alerte, sans déconnecter | ACC-AUTH-16 |
 
 ## Écrans
 
@@ -71,7 +71,8 @@
 | 429 | Trop de tentatives | « Trop de tentatives. Réessayez dans une minute. » |
 | 503 / réseau | Service momentanément indisponible | « Le service de connexion est momentanément indisponible. Réessayez dans quelques instants. » (couleur d'avertissement, distincte d'un refus) |
 
-- **Après expiration de session** : bandeau d'information « Votre session a expiré. Merci de vous reconnecter. ».
+- **Après expiration de session** (F1-R42, F1-R43) : bandeau d'information « Votre session a expiré. Merci de vous reconnecter. ». Une première visite (401 `UNAUTHENTICATED` au chargement) affiche la page sans bandeau.
+- **Après désactivation du compte en cours de session** (403 `ACCOUNT_DISABLED`) : même zone `role="alert"` que les erreurs de connexion, titre « Accès non autorisé », texte « Votre compte n'est plus autorisé à accéder à PULSE. ».
 - **Accessibilité** :
   - `autocomplete="username"` et `autocomplete="current-password"` ;
   - le focus passe sur l'alerte en cas d'erreur ;
@@ -104,19 +105,21 @@ Voir [api/endpoints.md](../api/endpoints.md).
 |---|---|---|---|
 | ACC-AUTH-01, 02 | R01 | Intégration simulateur | `acc_auth_02_endpoints_exposes` |
 | ACC-AUTH-03 | R03 | Intégration simulateur | `acc_auth_03_login_200_structure_contrat` |
-| ACC-AUTH-04 | R04 | Intégration simulateur (5 cas + JSON invalide) | `acc_auth_04_requete_invalide_400` |
+| ACC-AUTH-04 | R04 | Intégration simulateur (5 cas + JSON invalide), puis un test par rejet d'Axum, chacun → 400 `AUTH_BAD_REQUEST` en JSON : `"email": 42`, `password` absent, sans `Content-Type`, corps de 3 Mo | `acc_auth_04_requete_invalide_400`, `acc_auth_04_type_incorrect_400`, `acc_auth_04_champ_manquant_400`, `acc_auth_04_sans_content_type_400`, `acc_auth_04_corps_trop_gros_400` |
 | ACC-AUTH-05 / REC-02 | R05, R22 | Intégration simulateur + API, E2E | `acc_auth_05_401_identique_adresse_connue_ou_non`, `rec_02` |
+| ACC-AUTH-05 | R30 | Intégration API, `TRUST_PROXY=true` et `LOGIN_RATE_LIMIT_PER_MIN=1` : deux requêtes du même proxy, même `X-Real-IP`, `X-Forwarded-For` différents (`1.1.1.1` puis `2.2.2.2`) → la seconde reçoit 429. En ligne, à la main : six `curl` avec un `X-Real-IP` et un `X-Forwarded-For` inventés, changés à chaque fois → la sixième reçoit 429 | `acc_auth_05_limite_ip_non_contournable` |
 | ACC-AUTH-06 / REC-03 | R06, R22 | Intégration simulateur + API, E2E | `acc_auth_06_compte_desactive_403`, `rec_03` |
 | ACC-AUTH-07 / REC-04 | R07, R22, R26 | Intégration simulateur + API, E2E | `acc_auth_07_indisponibilite_503`, `rec_04` |
-| ACC-AUTH-08 / REC-05 | R08, R09, R25 | Intégration simulateur + API, E2E | `acc_auth_08_jeton_me`, `rec_05` |
+| ACC-AUTH-08 / REC-05 | R08, R09, R25 | Intégration simulateur + API, E2E ; `Authorization: Basic …` sur `/me` → 401 `AUTH_INVALID_TOKEN` en JSON | `acc_auth_08_jeton_me`, `acc_auth_08_en_tete_non_bearer_401`, `rec_05` |
 | ACC-AUTH-09 | R02, R10 | Intégration simulateur | `acc_auth_09_jamais_de_mot_de_passe` |
 | ACC-AUTH-10, 11 | R20 | Intégration API (simulateur sur port aléatoire) | `acc_auth_11_url_configurable` |
 | ACC-AUTH-12 / REC-01 | R24, R25 | Intégration API, E2E | `acc_auth_12_contexte_utilisateur`, `rec_01` |
 | ACC-AUTH-13, 15 / REC-12 | R28 | Intégration API, E2E | `acc_auth_13_user_refuse_admin`, `rec_12` |
 | ACC-AUTH-14 / REC-11 | R28, R40 | Intégration API, E2E | `acc_auth_14_admin_accede`, `rec_11` |
-| ACC-AUTH-16 | R22, R23, R26, R43 | Intégration API | `acc_auth_16_erreurs_maitrisees` |
+| ACC-AUTH-16 | R22, R23, R26, R43 | Intégration API : sans cookie → 401 `UNAUTHENTICATED` et `/me` jamais appelé ; cookie au jeton inconnu → 401 `SESSION_EXPIRED`. E2E : première visite sur `/` → `/connexion` sans bandeau | `acc_auth_16_erreurs_maitrisees`, `acc_auth_16_sans_cookie_unauthenticated`, `acc_auth_16_jeton_inconnu_session_expiree`, `rec_05` |
 | ACC-SEC-05 | R23 | Intégration API (faux service qui renvoie des réponses invalides) | `acc_sec_05_reponse_invalide_503` (un cas par anomalie) |
 | ACC-SEC-06 | R22, R26 | Intégration API | `acc_sec_06_codes_distincts` |
+| ACC-SEC-04 | R28 | Intégration API : FUNCTIONAL_ADMIN sur `GET /api/v1/me/goals` → 403 `FORBIDDEN` ; puis chaque route de `/me/*` avec FUNCTIONAL_ADMIN et chaque route de `/admin/*` avec USER → 403 (attrape une route ajoutée après `route_layer`) | `acc_sec_04_admin_refuse_espace_personnel`, `acc_sec_04_chaque_route_protegee` |
 
 ## Hors périmètre
 
