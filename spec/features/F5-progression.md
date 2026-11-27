@@ -9,19 +9,33 @@
 | Id | Exigence | Source |
 |---|---|---|
 | F5-R01 | `GET /me/progress` ne renvoie que les données de l'utilisateur de la session | RG-PROG-01, ACC-PROG-01, 03 |
-| F5-R02 | **Période** = celle de la métrique la plus récente de l'utilisateur (`periodStart`, `periodEnd`). S'il n'a aucune métrique : `period: null` | ACC-PROG-02 |
-| F5-R03 | **Indicateurs affichés**, toujours ces 4 et dans cet ordre : WEEKLY_ACTIVE_DAYS, STREAK_DAYS, WELLBEING_CHECKINS, HYDRATION_DAYS. Pour chacun : libellé, valeur et unité, ou `value: null` s'il n'y a pas de donnée sur la période | RG-PROG-02, 03, ACC-PROG-02, 05 |
-| F5-R04 | **Compteurs calculés depuis les données réelles** : objectifs ACTIVE, SUSPENDED et CLOSED ; participations ACTIVE | ACC-PROG-04 |
-| F5-R05 | **Détail** : pour chaque objectif ACTIVE, libellé, valeur actuelle, cible, unité, % (règle F3-R09) ; pour chaque participation ACTIVE, titre du défi, valeur, unité | ACC-PROG-04 |
+| F5-R02 | **Période** = celle de la métrique la plus récente de l'utilisateur, renvoyée en `period: { start, end }`. S'il n'a aucune métrique : `period: null` | ACC-PROG-02 |
+| F5-R03 | **Indicateurs affichés**, toujours ces 4 et dans cet ordre : WEEKLY_ACTIVE_DAYS, STREAK_DAYS, WELLBEING_CHECKINS, HYDRATION_DAYS. Pour chacun : `label` et `unit` fixes (tableau ci-dessous), et `value`, ou `value: null` s'il n'y a pas de donnée sur la période | RG-PROG-02, 03, ACC-PROG-02, 05 |
+| F5-R04 | **Compteurs calculés depuis les données réelles** : objectifs ACTIVE, SUSPENDED et CLOSED (table `goals`) ; participations ACTIVE (table `participations`). Les métriques `CHALLENGES_ACTIVE` et `GOALS_CLOSED` de DATA ne sont jamais lues | ACC-PROG-04 |
+| F5-R05 | **Détail** : `goals.items` = les objectifs ACTIVE, au format `Goal` : libellé, valeur actuelle, cible, unité et `progressPercent` (F3-R09), calculé par le serveur. `challenges.items` = les défis où la participation est ACTIVE, au format `ChallengeView` : titre, unité et `myParticipation.progressValue` | ACC-PROG-04 |
 | F5-R06 | Aucun classement, aucune moyenne collective, aucune comparaison | RG-PROG-04 |
 | F5-R07 | Une donnée absente n'est jamais une erreur : réponse 200 avec `null` ou une liste vide | RG-PROG-03, ACC-PROG-05 |
 
-**Réponse** `ProgressSummary` :
+**Indicateurs.** `label` et `unit` viennent de ce tableau, pas de la ligne `metrics`, pour exister même sans donnée. Ce sont les libellés de DATA.
+
+| `metricType` | `label` | `unit` | Affiché sur |
+|---|---|---|---|
+| WEEKLY_ACTIVE_DAYS | Jours avec activité enregistrée | jours | carte « Jours actifs » |
+| STREAK_DAYS | Série de suivi en cours | jours | carte « Série en cours » ; « 4 jours de suivi » du tableau de bord |
+| WELLBEING_CHECKINS | Check-ins bien-être complétés | check-ins | carte « Check-ins bien-être » |
+| HYDRATION_DAYS | Jours ayant atteint l'objectif hydratation | jours | carte « Jours objectif hydratation » |
+
+Les métriques `CHALLENGES_ACTIVE` (met-004) et `GOALS_CLOSED` (met-006) de DATA ne sont ni affichées ni utilisées pour les compteurs (F5-R04), car elles peuvent contredire les données réelles : met-004 donne 2 défis actifs à Samira, alors que ses participations ACTIVE en donnent 3 (part-002, part-004, part-010). PULSE affiche 3. REC-10 se joue donc avec Alex, dont les données sont cohérentes. Écart à signaler dans L1.
+
+**Réponse** `ProgressSummary`, dont les champs sont détaillés dans [api/endpoints.md](../api/endpoints.md#formes-de-réponse-principales) :
 ```json
 { "period": { "start": "2026-02-09", "end": "2026-02-15" },
-  "metrics": [ { "metricType": "WEEKLY_ACTIVE_DAYS", "label": "…", "value": 5, "unit": "jours" }, … ],
-  "goals": { "active": 2, "suspended": 0, "closed": 1, "items": [ … ] },
-  "challenges": { "active": 1, "items": [ { "challenge": { … }, "participation": { … } } ] } }
+  "metrics": [ { "metricType": "WEEKLY_ACTIVE_DAYS", "label": "Jours avec activité enregistrée", "value": 5, "unit": "jours" }, … ],
+  "goals": { "active": 2, "suspended": 0, "closed": 1,
+             "items": [ { "goalId": "goal-001", "label": "Atteindre 8000 pas par jour", "currentValue": 6250, "targetValue": 8000, "unit": "pas/jour", "progressPercent": 78, … } ] },
+  "challenges": { "active": 1,
+                  "items": [ { "challengeId": "chl-001", "title": "10 000 pas ensemble", "unit": "pas/jour", …,
+                               "myParticipation": { "status": "ACTIVE", "joinedAt": "2026-02-01", "progressValue": 7800 }, "canJoin": false } ] } }
 ```
 
 ### Ce que voit Alex avec les données de départ (REC-10)
@@ -61,7 +75,7 @@ Il réutilise `/me/progress` et `/me/preferences`.
 - **4 cartes** :
   - « Objectifs : 2 actifs » → lien « Voir mes objectifs » ;
   - « Défis : 1 participation active » → lien « Découvrir les défis » ;
-  - « Progression : 4 jours de suivi » → lien « Voir ma progression » ;
+  - « Progression : 4 jours de suivi » (valeur de STREAK_DAYS ; sans donnée, « Progression : pas encore de donnée ») → lien « Voir ma progression » ;
   - « Préférences : Activité, rappels le matin » → lien « Modifier mes préférences ».
 - Note : « Votre espace est personnel : vos objectifs, défis et progression ne sont jamais visibles par votre employeur. »
 
