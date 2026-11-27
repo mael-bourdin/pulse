@@ -40,7 +40,7 @@
 | F1-R28 | Contrôle de rôle côté API : `/api/v1/me/*` exige USER, `/api/v1/admin/*` exige FUNCTIONAL_ADMIN. Mauvais rôle → **403 `FORBIDDEN`**, même en appel direct | ACC-AUTH-13, 14, 15, ACC-ADM-01, 02, RG-AUTH-03 à 05 |
 | F1-R29 | Écritures (`POST`, `PUT`, `PATCH`, `DELETE`) : `Origin` absent de `ALLOWED_ORIGINS` → 403 `ORIGIN_REJECTED` ; `Content-Type` différent de `application/json` (pour les requêtes avec corps) → 415 | ADR-11 |
 | F1-R30 | Limite de débit sur `POST /session` : `LOGIN_RATE_LIMIT_PER_MIN` (5 par défaut) essais par minute **par IP (lue dans `X-Forwarded-For` si `TRUST_PROXY=true`)** → 429 `TOO_MANY_ATTEMPTS`. Jamais de limite par adresse e-mail | ADR-16, ACC-AUTH-05 |
-| F1-R31 | Journaux : méthode, route, statut, durée, identifiant de requête. Jamais de corps, de cookie, d'en-tête `Authorization` ni d'e-mail | ACC-SEC-07, constitution §6 |
+| F1-R31 | Journaux : méthode, route, statut, durée, identifiant de requête. Une ligne par appel au service d'auth : endpoint, statut, durée, jamais le jeton (REC-05 s'appuie dessus). Jamais de corps, de cookie, d'en-tête `Authorization` ni d'e-mail | ACC-SEC-07, constitution §6 |
 
 ### Interface (`apps/web`)
 

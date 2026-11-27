@@ -151,7 +151,7 @@ Ces exigences ne viennent d'aucun critère ACC ni scénario REC. Leur test porte
 | Exigence | Test | Niveau | Fichier | Statut |
 |---|---|---|---|---|
 | F1-R27 déconnexion | `f1_r27_deconnexion` : `DELETE /session` → 204 et `Set-Cookie` de `pulse_session` avec `Max-Age=0` | I | `api/f1_session` | à faire |
-| F1-R29 origine et `Content-Type` | `f1_r29_origine_et_content_type` : `POST /me/goals` sans `Origin` ou avec une origine inconnue → 403 `ORIGIN_REJECTED` ; avec `Content-Type: text/plain` → 415 ; `POST /me/goals/goal-001/suspend` sans `Content-Type` → 200 | I | `api/security` | à faire |
+| F1-R29 origine et `Content-Type` | `f1_r29_origine_et_content_type` : sans session, `POST /me/goals` sans `Origin` ou avec une origine inconnue → 403 `ORIGIN_REJECTED`, pas 401 (l'origine passe avant la session, voir l'ordre des contrôles dans [api/endpoints.md](api/endpoints.md)) ; connecté, avec `Content-Type: text/plain` → 415 ; `POST /me/goals/goal-001/suspend` sans `Content-Type` → 200 | I | `api/security` | à faire |
 | F2-R07 aucune préférence | `f2_r07_sans_preferences` : base sans pref-001 ; `GET` → 404, `PUT` → 200, puis `GET` → 200 avec les valeurs envoyées | I | `api/f2_preferences` | à faire |
 | F2-R08 `participationDefis` sans effet | `f2_r08_participation_defis_sans_effet` : Alex passe `participationDefis` à `false` ; chl-005 garde `canJoin: true` et peut être rejoint | I | `api/f2_preferences` | à faire |
 | F3-R09 pourcentage | `f3_r09_pourcentage_plafonne` : goal-001 (6250 / 8000) → 78 ; goal-002 (7,1 / 7,5) → 95 ; goal-006 (165 / 150) → 100, dépassement accepté | U | `dom/goal` | à faire |
