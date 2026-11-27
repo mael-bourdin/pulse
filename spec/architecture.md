@@ -1,5 +1,36 @@
 # Architecture
 
+## Contexte : le SI existant de HealthAI Coach
+
+PULSE V1 n'arrive pas sur un terrain vierge (HAC-TECH-001 §2). Ce qui existait avant la Squad, et que PULSE ne touche pas :
+
+```mermaid
+flowchart LR
+  subgraph SI historique HealthAI Coach, hors périmètre
+    WEB[Application web]
+    MOB[Application mobile]
+    CORE[Socle Java / Spring]
+    HDB[(PostgreSQL historique)]
+    AUTH[Service central d'authentification<br/>contrat HAC-API-001]
+  end
+  subgraph Construit par la Squad
+    PULSE[PULSE V1<br/>pulse-api + site React]
+    PDB[(Base PULSE V1)]
+    SIM[auth-simulator<br/>remplace AUTH en dev et en recette]
+  end
+  WEB --> CORE
+  MOB --> CORE
+  CORE --> HDB
+  CORE --> AUTH
+  PULSE --> PDB
+  PULSE -- HTTP, contrat HAC-API-001 --> SIM
+  PULSE -. en production HealthAI, même contrat .-> AUTH
+```
+
+- PULSE est un composant **à côté** du socle Java : il ne le modifie pas et ne suppose pas sa disparition (TECH §3.2, §4.1).
+- PULSE n'accède jamais à la base historique ni aux données internes d'un autre composant (TECH §3.3, §4.3) : sa base est la sienne.
+- La Squad n'a aucun accès au service d'authentification réel : le simulateur le remplace en développement et en recette (TECH §3.4, API §1).
+
 ## Vue d'ensemble
 
 ```mermaid
@@ -25,6 +56,18 @@ flowchart LR
 - **Monolithe modulaire** : un seul serveur PULSE, découpé en modules par domaine. Le simulateur d'auth est un **service séparé**, imposé par le CDC.
 - **Même origine** : `pulse-api` sert le site React compilé **et** l'API sous `/api/v1`. Le navigateur et l'app Tauri ne parlent qu'à cette adresse, donc le cookie de session fonctionne partout, sans CORS.
 - **L'app Tauri** est une fenêtre qui charge l'URL de PULSE (locale ou en ligne). Elle n'a aucune commande Rust côté app et aucune logique métier.
+
+## Remplacer le simulateur par le service réel
+
+Question attendue du jury (TECH §8). Si HealthAI Coach branche son vrai service :
+
+| Change | Ne change pas |
+|---|---|
+| `AUTH_SERVICE_URL` : l'URL HTTPS du service réel, **sans** le préfixe logique `/api/v1/auth`, que `auth_client` ajoute lui-même (API §2) | Le code métier (`pulse-domain`) et les routes : « le remplacement du simulateur par un service conforme au même contrat ne nécessiterait pas de réécrire la logique métier de PULSE » (API §11) |
+| Le simulateur, sa route `/__control` et `AUTH_SIM_CONTROL_TOKEN` ne sont plus déployés | `auth_client`, seul point de contact avec le service (ADR-12) |
+| La démonstration du 503 se fait autrement (coupure réseau, délai dépassé) | Les tests de contrat, qui restent la référence du comportement attendu |
+
+Point ouvert : le service réel peut renvoyer d'autres rôles ou statuts que ceux de la V1 (Q5.7).
 
 ## Organisation du dépôt
 
