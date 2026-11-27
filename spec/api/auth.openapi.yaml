@@ -22,7 +22,7 @@ paths:
                 email: { type: string, minLength: 1 }
                 password: { type: string, minLength: 1 }
               additionalProperties: true   # « Les propriétés supplémentaires peuvent être ignorées »
-            example: { email: alex.martin@demo.healthaicoach.fr, password: DemoPassword! }
+            example: { email: alex.martin@demo.healthaicoach.fr, password: "<mot de passe de démo, voir README>" }
       responses:
         "200":
           description: Authentification réussie
