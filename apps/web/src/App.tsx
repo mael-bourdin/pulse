@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Route, Routes } from 'react-router'
-import { Layout } from './layout/Layout'
+import { BareLayout, Layout } from './layout/Layout'
 import { NotFound } from './pages/NotFound'
 import { Placeholder } from './pages/Placeholder'
 
@@ -15,9 +15,11 @@ export function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
-          <Route path="/connexion" element={<Placeholder title="Connexion" ticket="F1-R40 à R43" />} />
-          <Route path="/acces-refuse" element={<Placeholder title="Droits insuffisants" ticket="F1-R41" />} />
-          <Route path="/admin/*" element={<Placeholder title="Administration PULSE" ticket="F6" />} />
+          <Route element={<BareLayout />}>
+            <Route path="/connexion" element={<Placeholder title="Connexion" ticket="F1-R40 à R43" />} />
+            <Route path="/acces-refuse" element={<Placeholder title="Droits insuffisants" ticket="F1-R41" />} />
+            <Route path="/admin/*" element={<Placeholder title="Administration PULSE" ticket="F6" />} />
+          </Route>
           <Route element={<Layout />}>
             <Route index element={<Placeholder title="Mon espace" ticket="F5" />} />
             <Route path="objectifs" element={<Placeholder title="Mes objectifs" ticket="F3" />} />

@@ -45,8 +45,14 @@ export async function api<T>(path: string, method: Method = 'GET', body?: unknow
   }
 
   if (response.status === 204) return undefined as T
-  const data: unknown = await response.json().catch(() => null)
-  if (response.ok) return data as T
+  const data: unknown = await response.json().catch(() => undefined)
+  if (response.ok) {
+    // Un 200 dont le corps n'est pas du JSON (page HTML d'un proxy…) n'est pas un succès.
+    if (data === undefined) {
+      throw new ApiError(response.status, 'INTERNAL_ERROR', 'Une erreur inattendue est survenue.')
+    }
+    return data as T
+  }
 
   if (isErrorBody(data)) {
     throw new ApiError(response.status, data.code, data.message, data.details ?? [])

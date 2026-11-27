@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router'
+import { Shell } from './Shell'
 
 // Navigation de l'espace personnel (HAC-UX-001 p.5). Le nom de l'utilisateur et le bouton
 // « Se déconnecter » arrivent avec la session (F1-R40 à R43).
@@ -14,39 +15,46 @@ const LINKS = [
 export function Layout() {
   const [menuOpen, setMenuOpen] = useState(false)
 
+  const header = (
+    <header className="topbar">
+      <div className="topbar__inner">
+        <span className="brand">PULSE</span>
+        <button
+          type="button"
+          className="menu-toggle"
+          aria-expanded={menuOpen}
+          aria-controls="menu-principal"
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          Menu
+        </button>
+        <nav id="menu-principal" aria-label="Menu principal" className={menuOpen ? 'nav nav--open' : 'nav'}>
+          <ul>
+            {LINKS.map((link) => (
+              <li key={link.to}>
+                <NavLink to={link.to} end={link.end} onClick={() => setMenuOpen(false)}>
+                  {link.label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </header>
+  )
+
   return (
-    <>
-      <a className="skip-link" href="#contenu">
-        Aller au contenu
-      </a>
-      <header className="topbar">
-        <div className="topbar__inner">
-          <span className="brand">PULSE</span>
-          <button
-            type="button"
-            className="menu-toggle"
-            aria-expanded={menuOpen}
-            aria-controls="menu-principal"
-            onClick={() => setMenuOpen((open) => !open)}
-          >
-            Menu
-          </button>
-          <nav id="menu-principal" aria-label="Menu principal" className={menuOpen ? 'nav nav--open' : 'nav'}>
-            <ul>
-              {LINKS.map((link) => (
-                <li key={link.to}>
-                  <NavLink to={link.to} end={link.end} onClick={() => setMenuOpen(false)}>
-                    {link.label}
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-      </header>
-      <main id="contenu" tabIndex={-1} className="content">
-        <Outlet />
-      </main>
-    </>
+    <Shell header={header}>
+      <Outlet />
+    </Shell>
+  )
+}
+
+/** Pages hors espace personnel (connexion, accès refusé, admin provisoire) : même structure accessible, sans menu. */
+export function BareLayout() {
+  return (
+    <Shell>
+      <Outlet />
+    </Shell>
   )
 }
