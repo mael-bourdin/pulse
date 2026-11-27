@@ -43,6 +43,7 @@ pulse/
 ├── data/hac-data-001/      # jeu de données converti en JSON (versionné)
 ├── migrations/             # migrations SQL (sqlx)
 ├── e2e/                    # tests Playwright (REC-01…13) + axe
+├── .github/workflows/      # ci.yml, pr-title.yml (voir ci.md)
 └── spec/                   # ce dossier
 ```
 

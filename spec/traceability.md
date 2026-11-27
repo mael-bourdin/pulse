@@ -113,7 +113,7 @@ Mettre le statut à jour dans la PR qui fait passer le test.
 
 | Critère | Exigences | Niveau | Fichier | Statut |
 |---|---|---|---|---|
-| ACC-SEC-01 aucun secret versionné | [security.md](security.md) | R + outil (`make check`, scan de secrets) | — | à faire |
+| ACC-SEC-01 aucun secret versionné | [security.md](security.md) | R + outil (gitleaks dans `make check` et le job CI `secrets`, bloquant) | `.github/workflows/ci.yml` | à faire |
 | ACC-SEC-02 mots de passe de démo jamais renvoyés | F1-R02, F1-R10 | I | `sim`, `api/security` | à faire |
 | ACC-SEC-03 entrées validées | F1-R21, F2-R04, F3-R04, F6-R04 | U + I | `dom/*`, `api/*` | à faire |
 | ACC-SEC-04 autorisation côté serveur | F1-R28, F6-R01, F6-R09 | I | `api/f1_session`, `api/f6_admin` | à faire |

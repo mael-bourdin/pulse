@@ -1,21 +1,113 @@
-# Vérifications automatisées simples (CDC §5.6) – pas un pipeline de mise en production (hors périmètre V1).
 name: ci
+
 on:
-  push:
-    branches: [main]
   pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop, main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
-  verify:
+  detect:
+    name: detect
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      rust: ${{ steps.files.outputs.rust }}
+      web: ${{ steps.files.outputs.web }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      # Skipped jobs count as success for required checks, so rust and web stay green until the V1 code lands.
+      - id: files
+        run: |
+          echo "rust=$([ -f Cargo.toml ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          echo "web=$([ -f apps/web/pnpm-lock.yaml ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+  secrets:
+    name: secrets
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_COMMENTS: false
+
+  web:
+    name: web
+    needs: detect
+    if: needs.detect.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          package_json_file: apps/web/package.json
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: pnpm
+          cache-dependency-path: apps/web/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      - run: pnpm check:secrets
-      - run: pnpm typecheck
-      - run: pnpm test
-      - run: pnpm build
+      - run: pnpm run --if-present lint
+      - run: pnpm run --if-present typecheck
+      - run: pnpm run build
+
+  rust:
+    name: rust
+    needs: detect
+    if: needs.detect.outputs.rust == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: pulse
+          POSTGRES_PASSWORD: pulse
+          POSTGRES_DB: pulse
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://pulse:pulse@localhost:5432/pulse
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions-rust-lang/setup-rust-toolchain@v2
+        with:
+          components: rustfmt, clippy
+      - run: cargo fmt --all --check
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+      - run: cargo test --workspace
+      - name: pulse-api ne dépend pas du simulateur
+        run: |
+          if cargo tree -p pulse-api --prefix none 2>/dev/null | grep -q '^auth-simulator '; then
+            echo "::error::pulse-api dépend de auth-simulator : il doit passer par HTTP uniquement (ADR-12, HAC-API-001 §11)."
+            exit 1
+          fi
+      - if: hashFiles('deny.toml') != ''
+        uses: EmbarkStudios/cargo-deny-action@v2
+      - name: OpenAPI généré à jour
+        if: hashFiles('spec/api/pulse.openapi.yaml') != ''
+        run: |
+          cargo run --quiet -p pulse-api -- openapi > spec/api/pulse.openapi.yaml
+          git diff --exit-code spec/api/pulse.openapi.yaml

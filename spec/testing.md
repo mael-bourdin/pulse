@@ -24,8 +24,19 @@ Pas d'E2E sur l'app Tauri : il n'existe pas de pilote WebDriver pour macOS. L'ap
 | Commande | Effet |
 |---|---|
 | `make test` | Tests unitaires, de contrat et d'intégration (PostgreSQL local requis) |
-| `make e2e` | Remet la base à zéro (`make seed`), lance la stack, puis Playwright |
-| `make check` | fmt, clippy, cargo deny, eslint, tsc, gitleaks, `make test` — **à lancer avant chaque push** |
+| `make e2e` | Compile, lance la stack, puis Playwright ; chaque fichier E2E remet la base à zéro avant de commencer |
+| `make check` | fmt, clippy, cargo deny, eslint, tsc, gitleaks, `make test` : **miroir local de la CI**, à lancer avant chaque push |
+
+La CI lance **les mêmes commandes** que `make check` ([ci.md](ci.md)) : un test qui passe en local passe en CI, et inversement. C'est la CI qui fait foi : une PR rouge n'est pas fusionnée, même si `make check` passait chez son auteur.
+
+## Isolation des E2E
+
+- Les scénarios modifient les données (REC-07 crée un objectif, REC-08 rejoint chl-005), ce qui fausserait REC-10. Chaque fichier `e2e/rec-*.spec.ts` appelle donc le seed avant de commencer, et les fichiers tournent **en série** (`workers: 1`).
+- Le seed est une fonction de `pulse-api`, appelée par `make seed`, par les E2E et par les tests `#[sqlx::test]` qui ont besoin des données de référence.
+
+## Tests instables
+
+Un test qui échoue une fois sur deux est un bug, pas du bruit. Pas de relance automatique en CI, pas de `continue-on-error`. On le corrige dans la séance ou on le marque `#[ignore]` / `test.fixme` avec une carte Trello « Anomalie » qui le cite.
 
 ## Recette (livrable L6)
 

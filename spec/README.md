@@ -14,6 +14,7 @@ Ici, **la spec fait foi.** Le code et les tests découlent de ces fichiers. Tout
 | [security.md](security.md) | Sécurité, confidentialité, journaux |
 | [accessibility.md](accessibility.md) | AA garanti, AAA visé |
 | [testing.md](testing.md) | Stratégie de tests et recette |
+| [ci.md](ci.md) | CI GitHub Actions, protection des branches |
 | [hosting.md](hosting.md) | Local, Railway, app Tauri |
 | [organisation.md](organisation.md) | Rôles, planning, Trello, Git, livrables |
 | [features/](features/) | Une spec par fonctionnalité, F1 à F6 |
