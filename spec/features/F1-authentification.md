@@ -35,7 +35,7 @@
 | F1-R23 | **Validation des réponses** : sont traités comme **503 `AUTH_UNAVAILABLE`** (cause journalisée sans donnée sensible) tous les cas suivants : JSON invalide, champ manquant, rôle inconnu, `tokenType` ≠ `Bearer`, `expiresIn` ≤ 0, 200 avec `accountStatus = DISABLED`, statut non prévu (ex. 500), délai dépassé, connexion refusée | ACC-SEC-05, TECH §4.5, RG-AUTH-06 |
 | F1-R24 | Connexion réussie → `200 { user }`, avec `user = { userId, displayName, email, role }`, et un cookie `pulse_session` = jeton opaque : `HttpOnly`, `SameSite=Strict`, `Path=/`, `Max-Age=expiresIn`, `Secure` si `COOKIE_SECURE=true`. Le jeton n'apparaît **jamais** dans le corps de la réponse | ACC-AUTH-12, ADR-10 |
 | F1-R25 | Chaque requête protégée appelle `/me` avec le jeton du cookie, **sans cache**, et **une seule fois** : la couche posée en `route_layer` appelle `/me` et range l'utilisateur dans les extensions de la requête ; l'extracteur `CurrentUser` lit cette extension et ne rappelle jamais `/me`. L'identité et le rôle viennent uniquement de `/me` | ACC-AUTH-12, REC-05, ADR-10 |
-| F1-R26 | En cours de session : `/me` 401 → **401 `SESSION_EXPIRED`** et cookie effacé ; `/me` 403 → **403 `ACCOUNT_DISABLED`** et cookie effacé ; 503 ou réponse invalide → **503 `AUTH_UNAVAILABLE`**, cookie **conservé** | ACC-AUTH-16 |
+| F1-R26 | Pas de cookie `pulse_session`, ou cookie vide → **401 `UNAUTHENTICATED`**, sans aucun appel au service d'auth : c'est le cas d'une première visite, et ce visiteur ne voit jamais 503, même si le service est indisponible. En cours de session (cookie présent) : `/me` 401 → **401 `SESSION_EXPIRED`** et cookie effacé ; `/me` 403 → **403 `ACCOUNT_DISABLED`** et cookie effacé ; 503 ou réponse invalide → **503 `AUTH_UNAVAILABLE`**, cookie **conservé** | ACC-AUTH-16 |
 | F1-R27 | `DELETE /api/v1/session` → 204 et cookie effacé (`Max-Age=0`). Le contrat ne prévoit pas de révocation, donc le jeton expire de lui-même | — |
 | F1-R28 | Contrôle de rôle côté API : `/api/v1/me/*` exige USER, `/api/v1/admin/*` exige FUNCTIONAL_ADMIN. Mauvais rôle → **403 `FORBIDDEN`**, même en appel direct. Ce contrôle est une couche posée sur chaque groupe de routes (`route_layer` : `RequireRole<User>` sur `/me`, `RequireRole<Admin>` sur `/admin`), jamais un extracteur ajouté handler par handler : un handler qui ne lirait que `CurrentUser` laisserait passer un FUNCTIONAL_ADMIN ([architecture.md](../architecture.md) → Flux d'une requête protégée) | ACC-AUTH-13, 14, 15, ACC-ADM-01, 02, ACC-SEC-04, RG-AUTH-03 à 05, ADR-27 |
 | F1-R29 | Écritures (`POST`, `PUT`, `PATCH`, `DELETE`) : `Origin` absent de `ALLOWED_ORIGINS` → 403 `ORIGIN_REJECTED` ; `Content-Type` différent de `application/json` (pour les requêtes avec corps) → 415 | ADR-11 |
@@ -48,8 +48,8 @@
 |---|---|---|
 | F1-R40 | Après connexion : USER → `/`, FUNCTIONAL_ADMIN → `/admin` | RG-AUTH-03, P1 |
 | F1-R41 | Garde de route : sans session → `/connexion` ; mauvais rôle → `/acces-refuse`. Cette garde est un confort d'affichage, l'API reste le vrai contrôle (F1-R28) | ACC-AUTH-15 |
-| F1-R42 | Au chargement de l'app : `GET /session` rétablit la session ou renvoie vers `/connexion` | REC-05 |
-| F1-R43 | Toute réponse 401 `SESSION_EXPIRED` renvoie vers `/connexion` avec le message de session expirée. Une réponse 503 affiche une alerte, sans déconnecter | ACC-AUTH-16 |
+| F1-R42 | Au chargement de l'app : `GET /session` rétablit la session. 401 `UNAUTHENTICATED` (première visite, ou cookie déjà supprimé par le navigateur à son `Max-Age`) → `/connexion`, **sans message** ; 401 `SESSION_EXPIRED` → `/connexion` avec le bandeau de session expirée | REC-05 |
+| F1-R43 | L'interface réagit au `code` de l'erreur, jamais au seul statut HTTP. Une fois la session ouverte dans l'interface, tout 401 (`SESSION_EXPIRED`, ou `UNAUTHENTICATED` si le navigateur a déjà supprimé le cookie) renvoie vers `/connexion` avec le bandeau de session expirée. 403 `ACCOUNT_DISABLED`, au chargement ou en cours de session : l'interface oublie l'utilisateur et renvoie vers `/connexion` avec l'alerte de compte désactivé. 403 `FORBIDDEN` : écran `/acces-refuse`, sans déconnecter. Une réponse 503 affiche une alerte, sans déconnecter | ACC-AUTH-16 |
 
 ## Écrans
 
@@ -71,7 +71,8 @@
 | 429 | Trop de tentatives | « Trop de tentatives. Réessayez dans une minute. » |
 | 503 / réseau | Service momentanément indisponible | « Le service de connexion est momentanément indisponible. Réessayez dans quelques instants. » (couleur d'avertissement, distincte d'un refus) |
 
-- **Après expiration de session** : bandeau d'information « Votre session a expiré. Merci de vous reconnecter. ».
+- **Après expiration de session** (F1-R42, F1-R43) : bandeau d'information « Votre session a expiré. Merci de vous reconnecter. ». Une première visite (401 `UNAUTHENTICATED` au chargement) affiche la page sans bandeau.
+- **Après désactivation du compte en cours de session** (403 `ACCOUNT_DISABLED`) : même zone `role="alert"` que les erreurs de connexion, titre « Accès non autorisé », texte « Votre compte n'est plus autorisé à accéder à PULSE. ».
 - **Accessibilité** :
   - `autocomplete="username"` et `autocomplete="current-password"` ;
   - le focus passe sur l'alerte en cas d'erreur ;
@@ -115,7 +116,7 @@ Voir [api/endpoints.md](../api/endpoints.md).
 | ACC-AUTH-12 / REC-01 | R24, R25 | Intégration API, E2E | `acc_auth_12_contexte_utilisateur`, `rec_01` |
 | ACC-AUTH-13, 15 / REC-12 | R28 | Intégration API, E2E | `acc_auth_13_user_refuse_admin`, `rec_12` |
 | ACC-AUTH-14 / REC-11 | R28, R40 | Intégration API, E2E | `acc_auth_14_admin_accede`, `rec_11` |
-| ACC-AUTH-16 | R22, R23, R26, R43 | Intégration API | `acc_auth_16_erreurs_maitrisees` |
+| ACC-AUTH-16 | R22, R23, R26, R43 | Intégration API : sans cookie → 401 `UNAUTHENTICATED` et `/me` jamais appelé ; cookie au jeton inconnu → 401 `SESSION_EXPIRED`. E2E : première visite sur `/` → `/connexion` sans bandeau | `acc_auth_16_erreurs_maitrisees`, `acc_auth_16_sans_cookie_unauthenticated`, `acc_auth_16_jeton_inconnu_session_expiree`, `rec_05` |
 | ACC-SEC-05 | R23 | Intégration API (faux service qui renvoie des réponses invalides) | `acc_sec_05_reponse_invalide_503` (un cas par anomalie) |
 | ACC-SEC-06 | R22, R26 | Intégration API | `acc_sec_06_codes_distincts` |
 | ACC-SEC-04 | R28 | Intégration API : FUNCTIONAL_ADMIN sur `GET /api/v1/me/goals` → 403 `FORBIDDEN` ; puis chaque route de `/me/*` avec FUNCTIONAL_ADMIN et chaque route de `/admin/*` avec USER → 403 (attrape une route ajoutée après `route_layer`) | `acc_sec_04_admin_refuse_espace_personnel`, `acc_sec_04_chaque_route_protegee` |
