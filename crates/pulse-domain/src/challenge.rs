@@ -6,8 +6,11 @@
 use std::error::Error;
 use std::fmt;
 
-/// Statut d'un défi, choisi par l'administration.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+use serde::{Deserialize, Serialize};
+
+/// Statut d'un défi, choisi par l'administration. En JSON : `"OPEN"`, `"UPCOMING"`, `"CLOSED"`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum ChallengeStatus {
     Open,
     Upcoming,

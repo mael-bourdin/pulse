@@ -29,3 +29,4 @@ tracing-subscriber = { version = "0.3", features = ["json", "env-filter"] }
 http-body-util = "0.1"
 chrono = { version = "0.4", default-features = false, features = ["clock", "std", "serde"] }
 chrono-tz = "0.10"
+rust_decimal = { version = "1", features = ["serde-float", "serde-str"] }

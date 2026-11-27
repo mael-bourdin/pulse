@@ -2,4 +2,7 @@
 //!
 //! Aucune dépendance web ni base de données (ADR-04) : tout se teste sans infrastructure.
 
+pub mod admin;
+pub mod category;
 pub mod challenge;
+pub mod unit;

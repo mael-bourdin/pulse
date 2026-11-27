@@ -11,7 +11,7 @@
 |---|---|---|
 | F6-R01 | Toutes les routes `/api/v1/admin/*` exigent FUNCTIONAL_ADMIN (F1-R28). Un USER reçoit **403 `FORBIDDEN`**, même en appel direct | RG-ADM-01, ACC-ADM-01, 02 |
 | F6-R02 | L'admin consulte la liste des défis : titre, catégorie, statut, période, cible, unité | ACC-ADM-03, US-ADM-01 |
-| F6-R03 | Création d'un défi : `title` (1–120), `category`, `description` (1–1000), `startDate`, `endDate` ≥ `startDate`, `targetValue` > 0, `unit` (une des 9 valeurs de F3-R11), `status` ∈ {OPEN, UPCOMING, CLOSED}. `createdBy` = admin de la session. Identifiant `chl-007`, puis la suite | RG-ADM-03, ACC-ADM-04, REC-13 |
+| F6-R03 | Création d'un défi : `title` (1–120), `category`, `description` (1–1000), `startDate`, `endDate` ≥ `startDate`, `targetValue` > 0 et ≤ 1 000 000 (comme F3-R02, et dans la précision de `numeric(12,2)`), `unit` (une des 9 valeurs de F3-R11), `status` ∈ {OPEN, UPCOMING, CLOSED}. `createdBy` = admin de la session. Identifiant `chl-007`, puis la suite | RG-ADM-03, ACC-ADM-04, REC-13 |
 | F6-R04 | Champ manquant, valeur incohérente (dates inversées, cible ≤ 0, statut inconnu) ou clé inconnue → 400 `VALIDATION_ERROR` avec `details` ; rien n'est enregistré | ACC-ADM-05 |
 | F6-R05 | Modification d'un défi OPEN ou UPCOMING : mêmes règles. Le résultat est visible à la consultation suivante, côté admin **et** côté utilisateurs | ACC-ADM-06, REC-13 |
 | F6-R06 | Un défi **CLOSED est en lecture seule** : PUT → 409 `INVALID_STATE` « Un défi terminé ne peut plus être modifié. ». Le passer à CLOSED ne touche pas aux participations existantes | UX p.10 (« Consulter »), ADR-19 |
