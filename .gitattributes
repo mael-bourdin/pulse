@@ -1,0 +1,4 @@
+# Fins de ligne LF partout : sqlx calcule la somme de contrôle des migrations sur leur contenu,
+# un fichier extrait en CRLF sous Windows serait refusé par une base déjà migrée.
+* text=auto eol=lf
+*.sql text eol=lf

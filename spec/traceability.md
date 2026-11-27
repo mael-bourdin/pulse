@@ -84,7 +84,7 @@ goal-004 appartient à Samira, goal-006 à Chloé : ces cas se testent avec leur
 | ACC-CHAL-02 | F4-R01, écran `/defis` | I + E2E | `api/f4_challenges`, `e2e/rec-09` | à faire |
 | ACC-CHAL-03 | F4-R03, F4-R04 | I | `api/f4_challenges` | à faire |
 | ACC-CHAL-04 | F4-R04 | I | `api/f4_challenges` | à faire |
-| ACC-CHAL-05 | F4-R06 | U + I | `dom/challenge`, `api/f4_challenges` | U faits, I à faire |
+| ACC-CHAL-05 | F4-R06 | U + I | `dom/challenge`, `api/schema` (`acc_chal_05_une_seule_participation_active_en_base`), `api/f4_challenges` | U et base faits, route à faire |
 | ACC-CHAL-06 | F4-R05 | U + I | `dom/challenge`, `api/f4_challenges` (chl-004 CLOSED et chl-003 UPCOMING → 409 `CHALLENGE_NOT_JOINABLE`, chacun avec son message) | U faits, I à faire |
 | ACC-CHAL-07 | F4-R08 | U + I | `dom/challenge`, `api/f4_challenges` | U faits, I à faire |
 | ACC-CHAL-08 | F4-R09 | I | `api/f4_challenges` | à faire |

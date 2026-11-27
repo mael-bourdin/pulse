@@ -14,3 +14,7 @@ unsafe_code = "forbid"
 [workspace.lints.clippy]
 dbg_macro = "deny"
 todo = "deny"
+
+[workspace.dependencies]
+sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "tls-rustls", "postgres", "macros", "migrate", "chrono", "rust_decimal"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "signal"] }
