@@ -1,0 +1,102 @@
+/* Jetons de l'interface PULSE. Contrastes pensés pour 7:1 sur le texte courant (AAA visé,
+   spec/accessibility.md). Pas de style en ligne : la CSP n'autorise que les feuilles. */
+:root {
+  --c-ink: #10202b;          /* texte courant : 16:1 sur blanc */
+  --c-muted: #3d4f5c;        /* texte secondaire : 8.5:1 sur blanc */
+  --c-bg: #f6f8f9;
+  --c-surface: #ffffff;
+  --c-line: #cfd8de;
+  --c-header: #0f2a3a;       /* en-tête bleu nuit (HAC-UX-001) */
+  --c-on-header: #ffffff;
+  --c-accent: #0b5e57;       /* teal foncé : 7.6:1 sur blanc */
+  --c-focus: #b35c00;
+  --radius: 10px;
+  --space: 1rem;
+  --target: 44px;            /* cibles tactiles (WCAG 2.5.5) */
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  color: var(--c-ink);
+  background: var(--c-bg);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; }
+h1, h2, h3 { line-height: 1.25; }
+a { color: var(--c-accent); }
+
+:focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space);
+  top: -100px;
+  padding: 0.5rem 1rem;
+  background: var(--c-surface);
+  color: var(--c-ink);
+  z-index: 10;
+}
+.skip-link:focus { top: var(--space); }
+
+.topbar { background: var(--c-header); color: var(--c-on-header); }
+.topbar__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space);
+  min-height: 64px;
+}
+.brand { font-weight: 700; font-size: 1.25rem; letter-spacing: 0.02em; }
+
+.nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 0.25rem; }
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target);
+  padding: 0 0.75rem;
+  border-radius: var(--radius);
+  color: var(--c-on-header);
+  text-decoration: none;
+}
+.nav a:hover { text-decoration: underline; }
+.nav a[aria-current='page'] { font-weight: 700; text-decoration: underline; text-underline-offset: 6px; }
+
+.menu-toggle {
+  display: none;
+  margin-left: auto;
+  min-height: var(--target);
+  padding: 0 1rem;
+  border: 2px solid var(--c-on-header);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--c-on-header);
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Menu repliable sous 820 px (spec/features/F1-authentification.md → En-tête). */
+@media (max-width: 820px) {
+  .topbar .menu-toggle { display: inline-flex; align-items: center; }
+  .nav { display: none; width: 100%; padding-bottom: var(--space); }
+  .nav--open { display: block; }
+  .nav ul { flex-direction: column; }
+}
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: calc(var(--space) * 2) var(--space);
+}
+.content:focus { outline: none; }
+.page-title:focus { outline: none; }
+.page-title:focus-visible { outline: 3px solid var(--c-focus); outline-offset: 4px; }
+.muted { color: var(--c-muted); }
