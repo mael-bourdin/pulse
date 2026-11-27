@@ -8,24 +8,28 @@ Ici, **la spec fait foi.** Le code et les tests découlent de ces fichiers. Tout
 | [constitution.md](constitution.md) | Règles non négociables |
 | [architecture.md](architecture.md) | Composants, flux, organisation du code |
 | [decisions.md](decisions.md) | Décisions d'architecture (ADR) |
+| [ambiguites.md](ambiguites.md) | Ambiguïtés du dossier signalées au Produit (L1) |
 | [data-model.md](data-model.md) | Schéma PostgreSQL, chargement de HAC-DATA-001 |
 | [api/endpoints.md](api/endpoints.md) | API PULSE (REST `/api/v1`) |
 | [api/auth.openapi.yaml](api/auth.openapi.yaml) | Contrat HAC-API-001 (écrit à la main) |
 | [security.md](security.md) | Sécurité, confidentialité, journaux |
 | [accessibility.md](accessibility.md) | AA garanti, AAA visé |
 | [testing.md](testing.md) | Stratégie de tests et recette |
+| [ci.md](ci.md) | CI GitHub Actions, protection des branches |
 | [hosting.md](hosting.md) | Local, Railway, app Tauri |
+| [workflow.md](workflow.md) | Branches, commits Angular, PR et revues, promotion, hotfix |
 | [organisation.md](organisation.md) | Rôles, planning, Trello, Git, livrables |
 | [features/](features/) | Une spec par fonctionnalité, F1 à F6 |
+| [release.md](release.md) | Proposition : release-please, environnement `staging`, E2E vers `main` |
 | [traceability.md](traceability.md) | Correspondance règles → specs → tests → recette |
 
 ## Cycle de travail
 
-1. Modifier ou créer la spec (`features/Fx-*.md`).
-2. La faire relire par un autre membre.
-3. Coder, en citant l'identifiant de la spec dans le commit.
-4. Écrire les tests qui portent les identifiants ACC ou REC.
-5. Mettre à jour [traceability.md](traceability.md).
+1. Modifier ou créer la spec (`features/Fx-*.md`) dans une PR `spec/…`, relue par un autre membre et fusionnée dans `develop`.
+2. Créer la branche depuis `develop` ([workflow.md](workflow.md)).
+3. Coder et écrire les tests qui portent les identifiants ACC ou REC.
+4. Ouvrir la PR, titrée avec l'identifiant de la spec (`feat(goals): … [F3-R07]`), et mettre à jour [traceability.md](traceability.md) dedans. CI verte, relue, fusionnée en squash.
+5. En fin de sprint, promotion `develop` → `main`.
 
 ## Références
 
