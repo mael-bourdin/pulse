@@ -67,11 +67,11 @@ Mettre le statut à jour dans la PR qui fait passer le test.
 | ACC-GOAL-01 | F3-R01 | I | `api/f3_goals` | à faire |
 | ACC-GOAL-02 | F3-R02 | I | `api/f3_goals` | à faire |
 | ACC-GOAL-03 | F3-R03 | I | `api/f3_goals` | à faire |
-| ACC-GOAL-04 | F3-R04 | U + I | `dom/goal`, `api/f3_goals` | à faire |
-| ACC-GOAL-05 | F3-R05 | U + I | `dom/goal`, `api/f3_goals` (goal-001 → 200 ; goal-004 SUSPENDED et goal-006 CLOSED → 409) | à faire |
-| ACC-GOAL-06 | F3-R07 | U + I | `dom/goal`, `api/f3_goals` (goal-001 → SUSPENDED ; goal-004 réactivé → ACTIVE ; goal-006 → 409) | à faire |
-| ACC-GOAL-07 | F3-R07 | U + I | `dom/goal`, `api/f3_goals` (goal-004 → CLOSED ; goal-006 → 409) | à faire |
-| ACC-GOAL-08 | F3-R06 | U + I | `dom/goal`, `api/f3_goals` (goal-004 et goal-006 → 409 ; valeur négative → 400) | à faire |
+| ACC-GOAL-04 | F3-R04 | U + I | `dom/goal`, `api/f3_goals` | U fait, I à faire |
+| ACC-GOAL-05 | F3-R05 | U + I | `dom/goal`, `api/f3_goals` (goal-001 → 200 ; goal-004 SUSPENDED et goal-006 CLOSED → 409) | U fait, I à faire |
+| ACC-GOAL-06 | F3-R07 | U + I | `dom/goal`, `api/f3_goals` (goal-001 → SUSPENDED ; goal-004 réactivé → ACTIVE ; goal-006 → 409) | U fait, I à faire |
+| ACC-GOAL-07 | F3-R07 | U + I | `dom/goal`, `api/f3_goals` (goal-004 → CLOSED ; goal-006 → 409) | U fait, I à faire |
+| ACC-GOAL-08 | F3-R06 | U + I | `dom/goal`, `api/f3_goals` (goal-004 et goal-006 → 409 ; valeur négative → 400) | U fait, I à faire |
 | ACC-GOAL-09 | F3-R08 | I | `api/f3_goals` | à faire |
 
 goal-004 appartient à Samira, goal-006 à Chloé : ces cas se testent avec leur compte.
@@ -154,7 +154,7 @@ Ces exigences ne viennent d'aucun critère ACC ni scénario REC. Leur test porte
 | F1-R29 origine et `Content-Type` | `f1_r29_origine_et_content_type` : sans session, `POST /me/goals` sans `Origin` ou avec une origine inconnue → 403 `ORIGIN_REJECTED`, pas 401 (l'origine passe avant la session, voir l'ordre des contrôles dans [api/endpoints.md](api/endpoints.md)) ; connecté, avec `Content-Type: text/plain` → 415 ; `POST /me/goals/goal-001/suspend` sans `Content-Type` → 200 | I | `api/security` | à faire |
 | F2-R07 aucune préférence | `f2_r07_sans_preferences` : base sans pref-001 ; `GET` → 404, `PUT` → 200, puis `GET` → 200 avec les valeurs envoyées | I | `api/f2_preferences` | à faire |
 | F2-R08 `participationDefis` sans effet | `f2_r08_participation_defis_sans_effet` : Alex passe `participationDefis` à `false` ; chl-005 garde `canJoin: true` et peut être rejoint | I | `api/f2_preferences` | à faire |
-| F3-R09 pourcentage | `f3_r09_pourcentage_plafonne` : goal-001 (6250 / 8000) → 78 ; goal-002 (7,1 / 7,5) → 95 ; goal-006 (165 / 150) → 100, dépassement accepté | U | `dom/goal` | à faire |
+| F3-R09 pourcentage | `f3_r09_pourcentage_plafonne` : goal-001 (6250 / 8000) → 78 ; goal-002 (7,1 / 7,5) → 95 ; goal-006 (165 / 150) → 100, dépassement accepté | U | `dom/goal` | fait |
 | F4-R02 participation exposée | `f4_r02_ma_participation` (Alex) : chl-001 → participation ACTIVE (part-001), `canJoin: false` ; chl-002 → LEFT (part-006), `canJoin: true` ; chl-004 → COMPLETED (part-007), `canJoin: false` ; chl-005 → `null`, `canJoin: true` ; chl-003 → `null`, `canJoin: false` | I | `api/f4_challenges` | à faire |
 | F4-R07 rejoindre après LEFT | `f4_r07_rejoindre_apres_left` (ADR-20) : Alex rejoint chl-002 → 200 et une **nouvelle** participation ACTIVE (part-011, `progressValue` 0) ; part-006 reste LEFT en base | I | `api/f4_challenges` | à faire |
 | F4-R10 défi inconnu | `f4_r10_defi_inconnu` : `GET`, `join` et `leave` sur `chl-999` → 404 `NOT_FOUND` | I | `api/f4_challenges` | à faire |
