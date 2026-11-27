@@ -25,7 +25,7 @@ Mettre le statut à jour dans la PR qui fait passer le test.
 | ACC-GEN-03 logique effective et données DATA | [data-model.md](data-model.md) (seed) | E2E | `e2e/rec-*` | à faire |
 | ACC-GEN-04 fonctionne sans le SI réel | F1-R20 | I | `api/f1_session` | à faire |
 | ACC-GEN-05 composants historiques non modifiés | ADR-01, ADR-03 | R | — | à faire |
-| ACC-GEN-06 erreurs compréhensibles | F1-R22 à R26, [api/endpoints.md](api/endpoints.md) | I + E2E | `api/security`, `e2e/rec-02`, `e2e/rec-04` | à faire |
+| ACC-GEN-06 erreurs compréhensibles | F1-R22 à R26, [api/endpoints.md](api/endpoints.md) | I + E2E | `api/socle` (404 et 405 en JSON), `api/security`, `e2e/rec-02`, `e2e/rec-04` | en cours (socle fait) |
 | ACC-GEN-07 données individuelles isolées | F6-R07, F4-R09, F5-R01 | I | `api/f6_admin`, `api/security` | à faire |
 
 ## F1 — Authentification (ACC-AUTH)
@@ -117,7 +117,7 @@ goal-004 appartient à Samira, goal-006 à Chloé : ces cas se testent avec leur
 |---|---|---|---|---|
 | ACC-SEC-01 aucun secret versionné | [security.md](security.md) | R + outil (gitleaks dans `make check` et le job CI `secrets`, bloquant) | `.github/workflows/ci.yml` | à faire |
 | ACC-SEC-02 mots de passe de démo jamais renvoyés | F1-R02, F1-R10 | I | `sim`, `api/security` | à faire |
-| ACC-SEC-03 entrées validées | F1-R21, F2-R04, F3-R04, F6-R04, [api/endpoints.md](api/endpoints.md) (nombre en chaîne : `acc_sec_03_nombre_en_chaine_400`) | U + I | `dom/*`, `api/*` | à faire |
+| ACC-SEC-03 entrées validées | F1-R21, F2-R04, F3-R04, F6-R04, [api/endpoints.md](api/endpoints.md) (nombre en chaîne : `acc_sec_03_nombre_en_chaine_400`) | U + I | `api/socle` (ApiJson), `dom/*`, `api/*` | en cours (rejets JSON faits) |
 | ACC-SEC-04 autorisation côté serveur | F1-R28, F6-R01, F6-R09 | I | `api/f1_session`, `api/f6_admin` | à faire |
 | ACC-SEC-05 réponses du service contrôlées | F1-R23 | I (faux service) | `api/f1_session` | à faire |
 | ACC-SEC-06 400/401/403/503 distingués | F1-R22, F1-R26 | I | `api/f1_session` | à faire |

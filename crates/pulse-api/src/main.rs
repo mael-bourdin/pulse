@@ -1,24 +1,37 @@
-//! Serveur PULSE : API `/api/v1` et site React compilé (voir spec/architecture.md).
+//! Binaire `pulse-api`.
 //!
-//! Sous-commandes :
+//! - `pulse-api` (ou `pulse-api serve`) : lance le serveur sur `[::]:PORT` ;
 //! - `pulse-api migrate` : applique les migrations SQL (pré-déploiement Railway, `make migrate`).
 
+use std::net::{Ipv6Addr, SocketAddr};
 use std::process::ExitCode;
+use std::sync::Arc;
 
-use sqlx::postgres::PgPoolOptions;
+use pulse_api::config::Config;
+use pulse_api::{AppState, app, pool};
+use tracing_subscriber::EnvFilter;
 
 /// Migrations du dossier `migrations/`, intégrées au binaire à la compilation.
 static MIGRATOR: sqlx::migrate::Migrator = sqlx::migrate!("../../migrations");
 
 #[tokio::main]
 async fn main() -> ExitCode {
-    let command = std::env::args().nth(1).unwrap_or_default();
-    let result = match command.as_str() {
-        "migrate" => migrate().await,
-        _ => {
-            eprintln!("Usage : pulse-api migrate");
-            return ExitCode::from(2);
-        }
+    tracing_subscriber::fmt()
+        .json()
+        .with_env_filter(EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into()))
+        .init();
+
+    let command = std::env::args().nth(1).unwrap_or_else(|| "serve".into());
+    let result = match Config::from_env() {
+        Err(message) => Err(message),
+        Ok(config) => match command.as_str() {
+            "serve" => serve(config).await,
+            "migrate" => migrate(&config).await,
+            _ => {
+                eprintln!("Usage : pulse-api [serve | migrate]");
+                return ExitCode::from(2);
+            }
+        },
     };
     match result {
         Ok(()) => ExitCode::SUCCESS,
@@ -29,14 +42,27 @@ async fn main() -> ExitCode {
     }
 }
 
-async fn migrate() -> Result<(), String> {
-    let url = std::env::var("DATABASE_URL")
-        .map_err(|_| "DATABASE_URL manquante (voir .env.example)".to_string())?;
-    let pool = PgPoolOptions::new()
-        .max_connections(1)
-        .connect(&url)
+async fn serve(config: Config) -> Result<(), String> {
+    let pool = pool(&config.database_url).map_err(|e| format!("DATABASE_URL invalide : {e}"))?;
+    let address = SocketAddr::from((Ipv6Addr::UNSPECIFIED, config.port));
+    let listener = tokio::net::TcpListener::bind(address)
         .await
-        .map_err(|e| format!("Connexion à la base impossible : {e}"))?;
+        .map_err(|e| format!("Impossible d'écouter sur {address} : {e}"))?;
+    tracing::info!(%address, "pulse-api démarré");
+    let state = AppState {
+        pool,
+        config: Arc::new(config),
+    };
+    axum::serve(listener, app(state))
+        .with_graceful_shutdown(async {
+            let _ = tokio::signal::ctrl_c().await;
+        })
+        .await
+        .map_err(|e| format!("Serveur arrêté : {e}"))
+}
+
+async fn migrate(config: &Config) -> Result<(), String> {
+    let pool = pool(&config.database_url).map_err(|e| format!("DATABASE_URL invalide : {e}"))?;
     MIGRATOR
         .run(&pool)
         .await

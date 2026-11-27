@@ -8,7 +8,7 @@ export
 
 DB_NAME ?= pulse
 
-.PHONY: help setup db migrate test fmt lint check
+.PHONY: help setup db migrate api test fmt lint check
 
 help: ## Affiche cette aide
 	@grep -hE '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  make %-12s %s\n", $$1, $$2}'
@@ -27,6 +27,9 @@ db: ## Crée la base locale si elle n'existe pas
 
 migrate: ## Applique les migrations SQL sur DATABASE_URL
 	cargo run --quiet -p pulse-api -- migrate
+
+api: ## Lance pulse-api sur :8080 (API + site compilé)
+	cargo run -p pulse-api
 
 test: ## Tests unitaires, de contrat et d'intégration (PostgreSQL local requis)
 	cargo test --workspace
