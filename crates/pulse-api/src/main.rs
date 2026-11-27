@@ -1,14 +1,15 @@
 //! Binaire `pulse-api`.
 //!
 //! - `pulse-api` (ou `pulse-api serve`) : lance le serveur sur `[::]:PORT` ;
-//! - `pulse-api migrate` : applique les migrations SQL (pré-déploiement Railway, `make migrate`).
+//! - `pulse-api migrate` : applique les migrations SQL (pré-déploiement Railway, `make migrate`) ;
+//! - `pulse-api seed --reset` : efface les données et recharge HAC-DATA-001 (`make seed`).
 
 use std::net::{Ipv6Addr, SocketAddr};
 use std::process::ExitCode;
 use std::sync::Arc;
 
 use pulse_api::config::Config;
-use pulse_api::{AppState, app, pool};
+use pulse_api::{AppState, app, pool, seed};
 use tracing_subscriber::EnvFilter;
 
 /// Migrations du dossier `migrations/`, intégrées au binaire à la compilation.
@@ -27,8 +28,12 @@ async fn main() -> ExitCode {
         Ok(config) => match command.as_str() {
             "serve" => serve(config).await,
             "migrate" => migrate(&config).await,
+            "seed" if std::env::args().nth(2).as_deref() == Some("--reset") => seed(&config).await,
             _ => {
-                eprintln!("Usage : pulse-api [serve | migrate]");
+                eprintln!("Usage : pulse-api [serve | migrate | seed --reset]");
+                eprintln!(
+                    "  seed --reset efface toutes les données PULSE avant de recharger HAC-DATA-001."
+                );
                 return ExitCode::from(2);
             }
         },
@@ -68,5 +73,12 @@ async fn migrate(config: &Config) -> Result<(), String> {
         .await
         .map_err(|e| format!("Échec des migrations : {e}"))?;
     println!("Migrations appliquées.");
+    Ok(())
+}
+
+async fn seed(config: &Config) -> Result<(), String> {
+    let pool = pool(&config.database_url).map_err(|e| format!("DATABASE_URL invalide : {e}"))?;
+    seed::reset(&pool).await?;
+    println!("Données HAC-DATA-001 rechargées.");
     Ok(())
 }
