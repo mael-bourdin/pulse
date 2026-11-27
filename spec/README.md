@@ -14,21 +14,19 @@ Ici, **la spec fait foi.** Le code et les tests découlent de ces fichiers. Tout
 | [security.md](security.md) | Sécurité, confidentialité, journaux |
 | [accessibility.md](accessibility.md) | AA garanti, AAA visé |
 | [testing.md](testing.md) | Stratégie de tests et recette |
-| [hosting.md](hosting.md) | Local, Railway (`production`, `staging`), app Tauri |
-| [workflow.md](workflow.md) | Branches, commits, PR et revues, releases, Trello, définitions de prêt et de fini |
-| [ci-cd.md](ci-cd.md) | CI GitHub Actions, protection des branches, déploiement Railway, migrations, retour arrière |
-| [organisation.md](organisation.md) | Rôles, planning, priorités, livrables, soutenance |
+| [ci.md](ci.md) | CI GitHub Actions, protection des branches |
+| [hosting.md](hosting.md) | Local, Railway, app Tauri |
+| [organisation.md](organisation.md) | Rôles, planning, Trello, Git, livrables |
 | [features/](features/) | Une spec par fonctionnalité, F1 à F6 |
 | [traceability.md](traceability.md) | Correspondance règles → specs → tests → recette |
 
 ## Cycle de travail
 
-1. Modifier ou créer la spec (`features/Fx-*.md`) dans une PR `spec/…`, relue par un autre membre et fusionnée dans `develop`.
-2. Créer la carte Trello, puis la branche depuis `develop` ([workflow.md](workflow.md)).
-3. Coder et écrire les tests qui portent les identifiants ACC ou REC.
-4. Ouvrir la PR, titrée avec l'identifiant de la spec (`feat(goals): … [F3-R07]`), et mettre à jour [traceability.md](traceability.md) dedans. CI verte, relue, fusionnée en squash.
-5. Vérifier sur `staging` ; un autre membre valide la carte.
-6. En fin de sprint, release `develop` → `main` ([ci-cd.md](ci-cd.md)).
+1. Modifier ou créer la spec (`features/Fx-*.md`).
+2. La faire relire par un autre membre.
+3. Coder, en citant l'identifiant de la spec dans le commit.
+4. Écrire les tests qui portent les identifiants ACC ou REC.
+5. Mettre à jour [traceability.md](traceability.md).
 
 ## Références
 

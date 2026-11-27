@@ -27,7 +27,7 @@ Pas d'E2E sur l'app Tauri : il n'existe pas de pilote WebDriver pour macOS. L'ap
 | `make e2e` | Compile, lance la stack, puis Playwright ; chaque fichier E2E remet la base à zéro avant de commencer |
 | `make check` | fmt, clippy, cargo deny, eslint, tsc, gitleaks, `make test` : **miroir local de la CI**, à lancer avant chaque push |
 
-La CI lance **les mêmes commandes** que `make check` ([ci-cd.md](ci-cd.md) → CI) : un test qui passe en local passe en CI, et inversement. C'est la CI qui fait foi : une PR rouge n'est pas fusionnée, même si `make check` passait chez son auteur.
+La CI lance **les mêmes commandes** que `make check` ([ci.md](ci.md)) : un test qui passe en local passe en CI, et inversement. C'est la CI qui fait foi : une PR rouge n'est pas fusionnée, même si `make check` passait chez son auteur.
 
 ## Isolation des E2E
 
@@ -40,26 +40,12 @@ Un test qui échoue une fois sur deux est un bug, pas du bruit. Pas de relance a
 
 ## Recette (livrable L6)
 
-- Les E2E tournent **en CI** sur chaque PR vers `main` (job `e2e`, Chromium bureau et mobile 390 px) et en local avec `make e2e` (WebKit en plus). Stack locale, limite de connexion relevée, 503 piloté par `/__control`.
-- En ligne, la recette est **manuelle**, avec captures, sur **`staging`** : `make seed-remote ENV=staging` avant, et le 503 via `make auth-down-remote ENV=staging`. Elle se fait carte par carte (colonne Trello « En recette ») puis en entier avant chaque release.
-- Sur `production`, seulement une vérification rapide après chaque release : `/health` affiche le bon commit, connexion d'Alex et de Léa, un 401 ([workflow.md](workflow.md) → Release).
-- Résultats consignés dans `docs/recette.md` : scénario, date, environnement, commit, résultat, capture, anomalie liée.
+- Les E2E tournent **en local** (`make e2e` : seed, stack locale, limite de connexion relevée, 503 piloté par `/__control`).
+- En ligne, la recette est **manuelle**, avec captures : `make seed-remote` avant, et le 503 via `make auth-down-remote`.
+- Résultats consignés dans `docs/recette.md` : scénario, date, résultat, capture, anomalie liée.
 
 ## Anomalies
 
-- Une carte Trello `BUG – …` avec l'étiquette « Anomalie » (format dans [workflow.md](workflow.md) → Anomalies).
-- **Critique** si elle bloque un scénario REC, viole CDC §4.1 (sécurité) ou §4.5 (confidentialité), ou correspond à l'une des **conditions bloquantes** de HAC-ACC-001 §12. Les anomalies critiques sont corrigées avant la revue de version (CDC §5.6).
-- Conditions bloquantes (ACC §12), vérifiées à chaque PR de promotion vers `main` :
-  1. PULSE ne se lance pas à partir du dépôt et du README ;
-  2. des écrans sans logique applicative ;
-  3. simulateur absent ou non consommé via HAC-API-001 ;
-  4. un USER accède aux fonctions FUNCTIONAL_ADMIN ;
-  5. PULSE lit directement les données internes du simulateur ;
-  6. un mot de passe ou une information individuelle sensible dans une réponse, un écran ou un journal ;
-  7. une fonctionnalité principale non démontrable avec les données fictives ;
-  8. l'admin ne peut pas créer ou modifier un défi selon les règles produit ;
-  9. une erreur du service d'auth fait planter l'application ;
-  10. une démonstration avec des données réelles ou identifiantes.
-- Les anomalies non bloquantes sont acceptables si elles sont identifiées et documentées dans L6 (ACC §12).
+- Une carte Trello avec l'étiquette « Anomalie ».
+- **Critique** si elle bloque un scénario REC, ou viole CDC §4.1 (sécurité) ou §4.5 (confidentialité). Les anomalies critiques sont corrigées avant la revue de version (CDC §5.6).
 - Chaque correction ajoute un test qui reproduit l'anomalie.
-- Une anomalie Critique ouverte **bloque la release** vers `main`.

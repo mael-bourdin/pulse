@@ -20,14 +20,14 @@ jobs:
     timeout-minutes: 5
     outputs:
       rust: ${{ steps.files.outputs.rust }}
-      e2e: ${{ steps.files.outputs.e2e }}
+      web: ${{ steps.files.outputs.web }}
     steps:
       - uses: actions/checkout@v7
-      # Jobs rust and e2e are skipped (reported as success) until the Rust workspace and Playwright land.
+      # Skipped jobs count as success for required checks, so rust and web stay green until the V1 code lands.
       - id: files
         run: |
           echo "rust=$([ -f Cargo.toml ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
-          echo "e2e=$([ -f e2e/playwright.config.ts ] && [ -f Makefile ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          echo "web=$([ -f apps/web/pnpm-lock.yaml ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
 
   secrets:
     name: secrets
@@ -47,19 +47,27 @@ jobs:
 
   web:
     name: web
+    needs: detect
+    if: needs.detect.outputs.web == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: apps/web
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
+        with:
+          package_json_file: apps/web/package.json
       - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: pnpm
+          cache-dependency-path: apps/web/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --dir apps/web run --if-present lint
-      - run: pnpm --dir apps/web run --if-present typecheck
-      - run: pnpm --dir apps/web run build
+      - run: pnpm run --if-present lint
+      - run: pnpm run --if-present typecheck
+      - run: pnpm run build
 
   rust:
     name: rust
@@ -103,46 +111,3 @@ jobs:
         run: |
           cargo run --quiet -p pulse-api -- openapi > spec/api/pulse.openapi.yaml
           git diff --exit-code spec/api/pulse.openapi.yaml
-
-  e2e:
-    name: e2e
-    needs: detect
-    if: >-
-      needs.detect.outputs.e2e == 'true'
-      && github.event_name == 'pull_request'
-      && github.base_ref == 'main'
-      && !startsWith(github.head_ref, 'release-please--')
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_USER: pulse
-          POSTGRES_PASSWORD: pulse
-          POSTGRES_DB: pulse
-        ports: ["5432:5432"]
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-    env:
-      DATABASE_URL: postgres://pulse:pulse@localhost:5432/pulse
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions-rust-lang/setup-rust-toolchain@v2
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps chromium
-      - run: make e2e
-      - if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 7

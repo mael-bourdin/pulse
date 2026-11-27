@@ -54,7 +54,7 @@ Rôles : `—` = public, `USER`, `ADMIN` = FUNCTIONAL_ADMIN.
 | GET | `/admin/contents` | ADMIN | F6 | `Content[]` |
 | POST | `/admin/contents` | ADMIN | F6 | `201 Content` |
 | PUT | `/admin/contents/{contentId}` | ADMIN | F6 | `Content` |
-| GET | `/health` | — | hébergement | `200 { status, version, commit }` (hors `/api/v1`). Vérifie la base, n'appelle jamais le service d'auth ; 503 si la base ne répond pas ([ci-cd.md](../ci-cd.md) → Healthcheck) |
+| GET | `/health` | — | hébergement | `200 { status }` (hors `/api/v1`) |
 
 Les espaces `/me/*` sont réservés au rôle USER ; `/admin/*` au rôle FUNCTIONAL_ADMIN (ADR-27).
 
