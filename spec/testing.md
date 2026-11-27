@@ -35,6 +35,18 @@ Pas d'E2E sur l'app Tauri : il n'existe pas de pilote WebDriver pour macOS. L'ap
 
 ## Anomalies
 
-- Une carte Trello avec l'étiquette « Anomalie ».
-- **Critique** si elle bloque un scénario REC, ou viole CDC §4.1 (sécurité) ou §4.5 (confidentialité). Les anomalies critiques sont corrigées avant la revue de version (CDC §5.6).
+- Une carte Trello `BUG – …` avec l'étiquette « Anomalie ». La description précise : environnement (local ou en ligne), étapes, résultat attendu et obtenu, REC ou ACC touchés, commit vu dans `/health`.
+- **Critique** si elle bloque un scénario REC, viole CDC §4.1 (sécurité) ou §4.5 (confidentialité), ou correspond à l'une des **conditions bloquantes** de HAC-ACC-001 §12. Les anomalies critiques passent en tête de « À faire » et sont corrigées avant la revue de version (CDC §5.6).
+- Conditions bloquantes (ACC §12), vérifiées avant chaque promotion vers `main` :
+  1. PULSE ne se lance pas à partir du dépôt et du README ;
+  2. des écrans sans logique applicative ;
+  3. simulateur absent ou non consommé via HAC-API-001 ;
+  4. un USER accède aux fonctions FUNCTIONAL_ADMIN ;
+  5. PULSE lit directement les données internes du simulateur ;
+  6. un mot de passe ou une information individuelle sensible dans une réponse, un écran ou un journal ;
+  7. une fonctionnalité principale non démontrable avec les données fictives ;
+  8. l'admin ne peut pas créer ou modifier un défi selon les règles produit ;
+  9. une erreur du service d'auth fait planter l'application ;
+  10. une démonstration avec des données réelles ou identifiantes.
+- Les anomalies non bloquantes sont acceptables si elles sont identifiées et documentées dans L6 (ACC §12). Chaque anomalie est reportée dans `docs/recette.md`, corrigée ou non.
 - Chaque correction ajoute un test qui reproduit l'anomalie.

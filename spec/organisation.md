@@ -35,10 +35,66 @@ On coupe dans cet ordre, du premier au dernier :
 
 ## Trello
 
-- Le tableau garde 5 colonnes et une étiquette par sprint.
-- Il est **régénéré à partir des specs** : une carte par exigence ou groupe d'exigences (`F3-R04 – …`), avec un lien vers la spec.
-- Les anciennes cartes (code TypeScript) sont archivées.
-- Étiquettes : sprint, fonctionnalité, MUST/SHOULD, « Anomalie », « Critique ».
+Tableau : https://trello.com/b/Ed35xHmf/mspr. Il est **régénéré à partir des specs** : une carte par exigence ou groupe d'exigences (`F3-R07 – …`), avec un lien vers la spec. Les anciennes cartes (`T-xxx`, code TypeScript) sont archivées (ADR-33).
+
+### Colonnes
+
+5 colonnes, les sprints sont des étiquettes (S0 à S3).
+
+| Colonne | Une carte y entre quand… | Qui la déplace |
+|---|---|---|
+| Backlog | elle existe dans une spec | pilote |
+| À faire | elle est retenue pour le sprint et respecte la définition de prêt | pilote, au début du sprint |
+| En cours | sa branche est créée. **2 cartes au plus par personne** | auteur |
+| En revue | sa PR est ouverte (hors brouillon) et la CI est verte. Le relecteur relit le code **et** vérifie le comportement (en local ou en ligne) | auteur |
+| Terminé | la PR est fusionnée et respecte la définition de fini | relecteur |
+
+- Une carte refusée en revue revient en « En cours », avec un commentaire qui dit ce qui ne va pas.
+- Les cartes « Terminé » restent visibles avec leur étiquette de sprint (trace pour le jury).
+- Le Power-Up **GitHub** de Trello rattache la branche et la PR à la carte.
+
+### Format d'une carte
+
+- **Titre** : `F3-R07 – Suspendre un objectif` (exigence), `BUG – <symptôme>` (anomalie), `TECH – <sujet>` (socle, CI, hébergement).
+- **Membre** : une seule personne, celle qui porte la carte.
+- **Étiquettes** : sprint (S0 à S3), fonctionnalité (Socle, F1 à F6), priorité **MoSCoW**, et si besoin « Anomalie », « Critique ».
+- **Description** :
+
+```
+Spec : spec/features/F3-objectifs.md (F3-R07)
+Critères : ACC-GOAL-06, REC-07
+Estimation : 1 h 30
+Dépend de : extracteur CurrentUser (F1)
+```
+
+### Priorité MoSCoW
+
+Chaque carte porte une et une seule étiquette de priorité, reprise de HAC-BACKLOG-001 quand elle y figure :
+
+| Étiquette | Sens pour PULSE V1 | Exemples |
+|---|---|---|
+| **MUST** | Exigé pour la revue de version : on ne le coupe jamais | F1 à F6, simulateur conforme, contrôles de droits, CI de base |
+| **SHOULD** | Attendu si la capacité le permet (CDC « besoin secondaire ») | Contenus admin (F6) |
+| **COULD** | Bonus, seulement après F1 à F6 validées (CDC §6) | App Tauri, critères AAA, E2E WebKit |
+| **WON'T** | Écarté **pour V1**, gardé visible pour L7 (recommandations V2 et V3) | MongoDB, conteneurisation, pipeline CI/CD complet |
+
+- Les cartes WON'T restent dans « Backlog » : elles montrent au jury ce qu'on a choisi de ne pas faire, et pourquoi.
+- L'ordre de sacrifice (Priorités, ci-dessus) s'applique de COULD vers SHOULD, jamais aux MUST.
+
+### Définition de prêt (avant « À faire »)
+
+- L'exigence existe dans une spec fusionnée dans `develop`.
+- Les critères ACC ou REC à tester sont identifiés.
+- Les dépendances sont connues et prêtes (ou simulables).
+- Elle est **estimée** (en heures) et tient en 3 h ; sinon on la découpe. Estimations et dépendances sont exigées pour le backlog opérationnel (HAC-BACKLOG-001, onglet « Lisez-moi »).
+
+### Définition de fini (avant « Terminé »)
+
+- Code et tests fusionnés dans `develop` par une PR approuvée, CI verte.
+- Chaque test porte l'identifiant du critère qu'il vérifie.
+- Comportement vérifié par un autre membre que l'auteur.
+- `traceability.md` mis à jour dans la PR ; spec et README à jour si le comportement a changé.
+- Aucune nouvelle violation axe sur les écrans touchés.
 
 ## Dépôt
 
