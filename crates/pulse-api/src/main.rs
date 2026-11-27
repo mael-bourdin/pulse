@@ -57,6 +57,7 @@ async fn serve(config: Config) -> Result<(), String> {
     let state = AppState {
         pool,
         config: Arc::new(config),
+        today: pulse_api::today::paris_today,
     };
     axum::serve(listener, app(state))
         .with_graceful_shutdown(async {

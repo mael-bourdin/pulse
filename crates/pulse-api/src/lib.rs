@@ -3,6 +3,7 @@
 pub mod config;
 pub mod error;
 pub mod seed;
+pub mod today;
 
 use std::sync::Arc;
 use std::time::Duration;
@@ -12,6 +13,7 @@ use axum::http::{HeaderName, HeaderValue, StatusCode, header};
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
 use axum::{Json, Router};
+use chrono::NaiveDate;
 use serde_json::json;
 use sqlx::PgPool;
 use sqlx::postgres::PgPoolOptions;
@@ -37,6 +39,9 @@ const CSP: &str =
 pub struct AppState {
     pub pool: PgPool,
     pub config: Arc<Config>,
+    /// Date du jour, en `Europe/Paris` en production ; date fixe dans les tests
+    /// (spec/architecture.md → Dates). Les routes la passent au domaine.
+    pub today: fn() -> NaiveDate,
 }
 
 /// Pool sqlx : aucune connexion gardée au repos, pour que Railway et Neon puissent

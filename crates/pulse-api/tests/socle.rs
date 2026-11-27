@@ -43,6 +43,7 @@ fn test_app(pool: PgPool) -> Router {
     app(AppState {
         pool,
         config: Arc::new(config),
+        today: || chrono::NaiveDate::from_ymd_opt(2026, 2, 15).unwrap(),
     })
 }
 
