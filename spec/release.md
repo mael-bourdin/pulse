@@ -39,7 +39,7 @@ Les deux sont des environnements de recette au sens d'ACC-SEC-02 (données et co
 | `v1.0.0` | Version présentée en soutenance |
 
 Réglages et pièges :
-- **Configuration** : `release-please-config.json` (type `simple`, un seul paquet à la racine, sections du changelog en français) et `.release-please-manifest.json` (`0.0.0` au départ). `bootstrap-sha` est le commit du dossier de specs (`3a04db1`), point de départ de la V1 : l'historique de la V0 n'entre pas dans le changelog.
+- **Configuration** : `release-please-config.json` (type `simple`, un seul paquet à la racine, sections du changelog en français) et `.release-please-manifest.json` (`0.0.0` au départ). La première version est `0.1.0` (`initial-version`). Le workflow fixe `target-branch: main` : la branche par défaut du dépôt étant `develop`, release-please travaillerait sinon sur `develop` (constaté le 2026-11-27 avec la PR #97, fermée). `bootstrap-sha` est le commit du dossier de specs (`3a04db1`), point de départ de la V1 : l'historique de la V0 n'entre pas dans le changelog.
 - release-please ne crée de release que s'il y a au moins un `feat`, `fix`, `perf` ou `revert` depuis la précédente.
 - **Forcer `v1.0.0`** : écrire `Release-As: 1.0.0` dans le **corps du merge commit** de la dernière promotion (GitHub permet de l'éditer au moment de fusionner).
 - **Corriger une note** après coup : bloc `BEGIN_COMMIT_OVERRIDE` … `END_COMMIT_OVERRIDE` dans la description de la PR fusionnée, ce qui ne marche que pour une PR fusionnée en squash (vers `develop`).
