@@ -6,15 +6,18 @@
 
 **Ordre des contrôles.** Quand plusieurs erreurs s'appliquent à une requête, la première de cette liste l'emporte :
 
-1. limite de débit, sur `POST /session` seulement : 429 ;
-2. session, sur les routes protégées : 401, 403 `ACCOUNT_DISABLED` ou 503 `AUTH_UNAVAILABLE` (F1-R26), puis rôle : 403 `FORBIDDEN` ;
-3. origine, sur les écritures : 403 `ORIGIN_REJECTED` ;
-4. `Content-Type`, sur les écritures avec corps : 415 ;
-5. validation du corps : 400 `VALIDATION_ERROR`, ou `LOGIN_INVALID_REQUEST` sur `POST /session` ;
-6. ressource inconnue ou d'un autre utilisateur : 404 `NOT_FOUND` ;
-7. état : 409. Entre deux 409, l'état du défi passe avant celui de la participation.
+1. méthode non prévue sur une route existante : 405 `METHOD_NOT_ALLOWED` ;
+2. limite de débit, sur `POST /session` seulement : 429 ;
+3. origine, sur les écritures : 403 `ORIGIN_REJECTED`, avant la session : une requête forgée depuis un autre site est refusée sans appeler le service d'auth ;
+4. session, sur les routes protégées : sans cookie, 401 `UNAUTHENTICATED`, rendu sans appeler le service d'auth (un visiteur sans cookie ne voit jamais 503) ; sinon, réponse de `/me` : 401 `SESSION_EXPIRED`, 403 `ACCOUNT_DISABLED` ou 503 `AUTH_UNAVAILABLE` (F1-R26) ;
+5. rôle : 403 `FORBIDDEN` ;
+6. `Content-Type`, sur les écritures avec corps : 415 ;
+7. corps de plus de 16 Ko : 413 `PAYLOAD_TOO_LARGE` ;
+8. validation du corps : 400 `VALIDATION_ERROR`, ou `LOGIN_INVALID_REQUEST` sur `POST /session` ;
+9. ressource inconnue ou d'un autre utilisateur : 404 `NOT_FOUND` ;
+10. état : 409. Entre deux 409, l'état du défi passe avant celui de la participation.
 
-Exemples : une progression négative sur un objectif SUSPENDED donne 400, pas 409. Rejoindre un défi CLOSED où l'on a encore une participation ACTIVE donne 409 `CHALLENGE_NOT_JOINABLE`, pas `ALREADY_JOINED`. Sur `POST /session`, le service d'auth n'est appelé qu'après l'étape 5.
+Exemples : une progression négative sur un objectif SUSPENDED donne 400, pas 409. Rejoindre un défi CLOSED où l'on a encore une participation ACTIVE donne 409 `CHALLENGE_NOT_JOINABLE`, pas `ALREADY_JOINED`. Sur `POST /session`, le service d'auth n'est appelé qu'après l'étape 8.
 
 ## Erreurs
 
