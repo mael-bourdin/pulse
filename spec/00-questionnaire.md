@@ -29,6 +29,10 @@ Réponse : On repart de zéro, on ne garde pas le TypeScript.
 → PULSE est un composant indépendant, branché uniquement par des contrats HTTP.
 Réponse : Cross-platform, léger, compilé ; envie de tester une technologie en vogue.
 
+**Q0.6** (ajoutée le 2026-11-25) Le jury demandera qui reprend PULSE en V2 si l'équipe HealthAI est en Java / Spring. On assume ce risque de reprise ?
+→ Oui, et on le dit : Java / Spring figure dans les alternatives écartées d'ADR-01, le contrat HTTP + OpenAPI rend PULSE indépendant du langage (TECH §6), et le risque est écrit dans L7.
+Réponse :
+
 ## 1. Cible
 
 **Q1.1** La démo se fait dans le navigateur, dans l'app Tauri, ou les deux ?
@@ -117,6 +121,10 @@ Réponse : Un message d'erreur.
 **Q5.6** Que fait PULSE si le service renvoie une réponse invalide ?
 → Il la traite comme « service indisponible ».
 Réponse : OK, service indisponible.
+
+**Q5.7** (ajoutée le 2026-11-25) Le contrat ne garantit que les rôles et statuts utiles à PULSE (« au minimum », API §9). Le service réel peut en renvoyer d'autres. Un rôle inconnu ou un compte non ACTIVE : 403 ou 503 ?
+→ 403 (`FORBIDDEN` pour un rôle inconnu, `ACCOUNT_DISABLED` pour un statut autre que ACTIVE) : un utilisateur bien authentifié ne doit pas lire « service indisponible ». Le 503 reste pour les réponses mal formées (F1-R23 à adapter).
+Réponse :
 
 ## 6. Sécurité
 
@@ -230,6 +238,10 @@ Réponse : Oui.
 **Q11.5** Quels outils utilisez-vous déjà (communication, support de soutenance) ?
 Réponse : Discord ; diaporama + document.
 
+**Q11.6** (ajoutée le 2026-11-25) Pas de plan B (Q13.2), d'accord. Mais personne n'a jamais fait de Rust (Q0.2) : on fixe au moins un point de contrôle mesurable ?
+→ Fin de S0 : `make dev` démarre chez les quatre et la connexion F1 fonctionne de bout en bout (simulateur + session). Sinon, on replanifie tout de suite : binômes, et on coupe les COULD puis les SHOULD.
+Réponse :
+
 ## 12. Livrables et soutenance
 
 **Q12.1** Quel format pour les livrables ?
@@ -251,3 +263,43 @@ Réponse : Pas de plan B : on ne prendra pas de retard.
 
 **Q13.3** Autre chose (consignes du formateur…) ?
 Réponse : Respecter au maximum le cahier des charges.
+
+## 14. Workflow, CI et hébergement (ajouté le 2026-11-27)
+
+Questions ouvertes par le découpage de la PR #1 (PR #1, #14 à #18). À trancher en séance.
+
+**Q14.1** On adopte la proposition de #18 (release-please, environnement `staging` sur `develop`, E2E requis vers `main`), en COULD ?
+→ Coût : 2 à 3 h en S0, puis environ 15 min par fin de sprint. Sans elle, la promotion de fin de sprint reste une simple PR (#14).
+Réponse :
+
+**Q14.2** Dans quel espace vit le projet Railway ? Il a été créé le 2026-11-25 dans l'espace de Maxime (essai, puis plan Free, qui n'accepte qu'un membre).
+→ Celui qui possède le projet est le seul à voir les journaux et à faire le 503 en ligne : point unique de défaillance le jour de la soutenance. Options : le recréer dans l'espace de Mael (référent hébergement), ou le garder chez Maxime.
+Réponse :
+
+**Q14.3** Quelle est la date exacte de la soutenance ?
+→ Nécessaire pour planifier le gel de `main` (J-2) et la chauffe des services gratuits.
+Réponse :
+
+**Q14.4** Qui est référent CI ?
+→ Maxime (référent qualité) ; Mael garde les réglages GitHub (lui seul est admin du dépôt).
+Réponse :
+
+**Q14.5** Le dépôt est public : on sort les annexes du dossier (PDF, classeur) de Git ?
+→ Oui, `docs/annexes/` ignoré ; seules les données de référence en JSON sont versionnées (#1).
+Réponse :
+
+**Q14.6** `develop` devient la branche par défaut du dépôt ?
+→ Oui : les PR la visent par défaut, ce qui évite d'en ouvrir une vers `main` par erreur.
+Réponse :
+
+**Q14.7** La relecture par le référent sécurité (session, client d'auth, admin) est imposée par GitHub (`CODEOWNERS`) ou reste une règle d'équipe ?
+→ Règle d'équipe : un blocage technique figerait les PR quand Grégory est absent.
+Réponse :
+
+**Q14.8** On garde le nom `production`, ou on reprend le vocabulaire du dossier ?
+→ ACC-SEC-02 n'autorise les mots de passe de démo qu'en développement et en recette. Proposition : garder `main` comme branche de la version livrée, mais nommer l'environnement en ligne `demo` (et `recette` si #18 passe).
+Réponse :
+
+**Q14.9** Plan Railway le mois de la soutenance : Hobby (5 $) ou on reste gratuit ?
+→ Hobby évite la mise en veille (pas de 502 au réveil devant le jury) ; gratuit oblige à chauffer les services 2 min avant (#15).
+Réponse :

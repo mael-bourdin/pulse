@@ -6,19 +6,24 @@ Responsable : **Grégory** (référent sécurité). Cette page répond au CDC §
 
 | Menace | Parade | Réf. |
 |---|---|---|
-| Un USER accède à l'admin | Extracteur `RequireRole<Admin>` sur toutes les routes `/admin/*` → 403 ; garde de route côté front en plus | ACC-AUTH-13…15, ACC-ADM-02 |
+| Un USER accède à l'admin, ou un FUNCTIONAL_ADMIN à l'espace personnel | Couche `RequireRole<Admin>` sur le groupe `/admin/*` et `RequireRole<User>` sur le groupe `/me/*`, posées en `route_layer` et non handler par handler → 403 ; garde de route côté front en plus | ACC-AUTH-13…15, ACC-ADM-02, ACC-SEC-04, ADR-27 |
 | Lire ou modifier les données d'un autre utilisateur | `user_id` toujours tiré de `/me` ; chaque requête SQL filtre sur `user_id` ; une ressource d'un autre renvoie 404 | ACC-PREF-06, ACC-GOAL-09, ACC-PROG-03 |
 | Deviner si un compte existe | Simulateur : même 401 et même temps de réponse (haché factice) ; PULSE : même message ; limite par IP, pas par e-mail | ACC-AUTH-05 |
 | Vol de session par XSS | Jeton dans un cookie httpOnly, jamais lisible en JS ; React échappe le contenu ; CSP stricte | ADR-10 |
 | CSRF | `SameSite=Strict` + vérification d'`Origin` + JSON obligatoire sur les écritures | ADR-11 |
-| Force brute | 5 tentatives par minute et par IP sur `POST /session` → 429 | ADR-16 |
+| Force brute | 5 tentatives par minute et par IP sur `POST /session` → 429. Derrière Railway, l'IP vient de `X-Real-IP`, rempli par le proxy, jamais de la première entrée de `X-Forwarded-For` : le client la choisit, et en changer à chaque essai contournerait la limite (F1-R30) | ADR-16 |
 | Entrées malveillantes | Validation côté API (types, bornes, énumérations, clés inconnues refusées) ; requêtes SQL paramétrées ; corps limité à 16 Ko | ACC-SEC-03 |
-| Réponse du service d'auth piégée ou invalide | Schéma vérifié (rôle connu, `accountStatus`, `tokenType = Bearer`, champs présents) ; sinon `AUTH_UNAVAILABLE` | ACC-SEC-05 |
+| Réponse du service d'auth piégée ou invalide | Schéma vérifié (`tokenType = Bearer`, champs présents) ; sinon `AUTH_UNAVAILABLE`. Rôle inconnu → `FORBIDDEN` ; `accountStatus` autre que ACTIVE → `ACCOUNT_DISABLED` | ACC-SEC-05 |
 | Fuite d'informations techniques | `AppError` ne sort que `{ code, message }` ; panics interceptés → 500 générique | ACC-GEN-06, ACC-SEC-07 |
-| Secrets dans le dépôt | `.env` ignoré ; `.env.example` sans secret ; scan `gitleaks` dans `make check` | ACC-SEC-01 |
+| Secrets dans le dépôt | `.env` ignoré ; `.env.example` sans secret ; scan `gitleaks` dans `make check` **et** dans le job CI `secrets`, bloquant sur chaque PR (aucune fuite dans l'historique au 2026-11-25). Aucun mot de passe réel nulle part (API §8) ; les mots de passe de démo ne figurent que dans le README et les données de test | ACC-SEC-01 |
 | Mot de passe exposé | Simulateur : Argon2id, jamais renvoyé ; PULSE ne stocke ni ne journalise le mot de passe | ACC-AUTH-09, ACC-SEC-02 |
-| Dépendances vulnérables | `cargo deny check` et `pnpm audit` dans `make check` | — |
+| Clé de la GitHub App de release | Seul secret dans GitHub : la clé privée de `pulse-release-bot`, installée sur ce seul dépôt, lue uniquement par `release-please.yml` sur `main`, jamais exposée aux PR ; jetons d'une heure ; actions épinglées par SHA | ADR-37 |
+| Dépendances vulnérables | `cargo deny check` et `pnpm audit` dans `make check` et en CI ; alertes Dependabot activées sur le dépôt | — |
+| CI détournée par une PR | Jobs en `permissions: contents: read` ; pas de `pull_request_target` ; aucun secret dans la CI ; actions tierces limitées aux éditeurs connus | ADR-29 |
+| Contournement de la revue | Rulesets sur `main` et `develop` : PR obligatoire, 1 approbation, checks verts, ni force-push ni suppression, **aucune exception, même pour l'admin** | ADR-29 |
 | Simulateur exposé sur Internet | Sur Railway, réseau privé seulement ; la route `/__control` exige un secret | ADR-15, ADR-17 |
+| Secrets d'hébergement | `AUTH_SIM_CONTROL_TOKEN` et `DATABASE_URL` (Neon) saisis comme variables scellées dans Railway. La chaîne Neon ne sort de la console que vers `.env.production` sur les postes (ignoré par Git) pour le seed. La CI n'a aucun jeton Railway | ADR-30 |
+| Comptes de démo publics | Les mots de passe de démo sont publiés (README, dossier HAC-DATA-001) : n'importe qui peut se connecter sur l'URL publique, y compris en admin, et modifier les données de démo. Risque **accepté** (données synthétiques) ; `make seed-remote` juste avant la démo. Conforme à ACC-SEC-02 : l'environnement en ligne est un environnement de recette ([hosting.md](hosting.md)) | CDC §4.5, ACC-SEC-02 |
 
 ## En-têtes HTTP (tower-http)
 
