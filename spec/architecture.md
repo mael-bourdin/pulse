@@ -80,7 +80,7 @@ pulse/
 | `AUTH_TIMEOUT_MS` | api | `3000` |
 | `ALLOWED_ORIGINS` | api | `http://localhost:8080,http://localhost:5173` (origines acceptées sur les écritures ; en ligne : l'URL Railway seule) |
 | `LOGIN_RATE_LIMIT_PER_MIN` | api | `5` (les E2E le montent à `1000`) |
-| `TRUST_PROXY` | api | `false` en local, `true` sur Railway (IP client lue dans `X-Real-IP`, rempli par le proxy de Railway ; `X-Forwarded-For` jamais lu, voir F1-R30) |
+| `TRUST_PROXY` | api | `false` en local, `true` sur Railway (IP client lue dans `X-Real-IP`, rempli par le proxy de Railway ; première entrée de `X-Forwarded-For` jamais lue, voir F1-R30) |
 | `COOKIE_SECURE` | api | `false` en local, `true` en ligne |
 | `WEB_DIST_DIR` | api | `apps/web/dist` |
 | `PORT` | api, simulateur | `8080`, `8081` |
