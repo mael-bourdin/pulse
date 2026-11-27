@@ -184,10 +184,6 @@ Réponse : Le plus accessible possible : AAA si possible.
 → Vouvoiement.
 Réponse : Vouvoiement.
 
-**Q8.4** (ajoutée le 2026-11-25) Aucune annexe n'impose de niveau d'accessibilité (PROD, UX, ACC). AAA coûte cher (contraste 7:1, cibles de 44 px). On garantit AA et on ne vise AAA qu'une fois F1 à F6 validées ?
-→ Oui : AA garanti et testé (axe), AAA en COULD.
-Réponse :
-
 ## 9. Hébergement
 
 **Q9.1** Faut-il héberger quelque chose en ligne ?
@@ -222,10 +218,6 @@ Réponse : (non répondu) → proposition retenue.
 **Q10.5** L'usage de l'IA est-il déclaré dans la note technique (L5) ?
 → Oui.
 Réponse : Oui, simplement, sans détailler partout (réponse précisée ensuite).
-
-**Q10.6** (ajoutée le 2026-11-25) HAC-ACC-001 §13 dit qu'une « stratégie industrielle complète de tests » n'est pas un critère. Notre plan (unitaires, intégration, 13 E2E sur Chromium + WebKit + mobile, axe) est lourd pour 21 h et une équipe qui découvre Rust. On le réduit ?
-→ Oui : unitaires du domaine et intégration de l'API (droits, contrat, erreurs) en priorité, E2E REC-01 à 13 sur Chromium bureau seulement, WebKit et smartphone vérifiés à la main pendant la recette.
-Réponse :
 
 ## 11. Équipe
 
