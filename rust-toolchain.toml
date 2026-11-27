@@ -1,0 +1,5 @@
+# Même version de Rust sur les postes et en CI (actions-rust-lang/setup-rust-toolchain lit ce fichier).
+[toolchain]
+channel = "1.92.0"
+components = ["rustfmt", "clippy"]
+profile = "minimal"
