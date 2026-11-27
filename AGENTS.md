@@ -21,5 +21,6 @@ PULSE V1 (HealthAI Coach), projet MSPR de 4 personnes : réécriture en Rust (Ax
 
 ## Après le travail
 
-- Dire quel ticket a avancé et ce qu'il reste à faire, pour que `tickets.json` et Trello soient mis à jour (par un humain : un agent ne modifie pas Trello).
+- Dire quel ticket a avancé et ce qu'il reste à faire, pour que `tickets.json` et Trello soient mis à jour. `tickets.json` reste tenu par un humain.
+- **Trello** : un agent peut déplacer d'une colonne à l'autre les cartes de la personne qui le lui demande, après sa confirmation, en suivant [spec/organisation.md](spec/organisation.md) (Colonnes). Il ne touche pas aux cartes des autres, ne crée, n'archive ni ne supprime aucune carte et ne modifie pas leur contenu.
 - Lancer les vérifications locales avant de proposer un commit (`make check` dès que le socle Rust existe).
