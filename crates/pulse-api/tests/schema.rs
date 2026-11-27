@@ -2,6 +2,18 @@
 
 use sqlx::PgPool;
 
+/// Nom de la contrainte qui a refusé l'écriture : un refus pour une autre raison
+/// (colonne absente, type invalide…) ferait échouer le test au lieu de le faire passer.
+fn violated<T: std::fmt::Debug>(result: Result<T, sqlx::Error>) -> String {
+    match result {
+        Err(sqlx::Error::Database(error)) => error
+            .constraint()
+            .expect("erreur de base sans contrainte")
+            .to_string(),
+        other => panic!("refus attendu par une contrainte, obtenu : {other:?}"),
+    }
+}
+
 async fn insert_challenge(pool: &PgPool, id: &str) {
     sqlx::query(
         "INSERT INTO challenges VALUES ($1, 'Défi', 'ACTIVITE', 'Description', '2026-02-01', '2026-02-28', 10, 'pas/jour', 'OPEN', 'adm-10001')",
@@ -47,7 +59,7 @@ async fn f3_r11_unite_hors_liste_refusee_par_la_base(pool: PgPool) {
             .execute(&pool)
     };
     assert!(insert("pas/jour").await.is_ok());
-    assert!(insert("km").await.is_err());
+    assert_eq!(violated(insert("km").await), "goals_unit_check");
 }
 
 #[sqlx::test(migrations = "../../migrations")]

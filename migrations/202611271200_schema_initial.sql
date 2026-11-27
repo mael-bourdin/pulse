@@ -82,7 +82,8 @@ CREATE TABLE contents (
   published_at  date,
   updated_at    date NOT NULL,
   author_id     text NOT NULL,
-  CHECK ((status = 'DRAFT') = (published_at IS NULL))  -- RG-ADM-05
+  CONSTRAINT contents_published_at_check
+    CHECK ((status = 'DRAFT') = (published_at IS NULL))  -- RG-ADM-05
 );
 
 -- Identifiants des nouvelles lignes : préfixe + numéro sur 3 chiffres (goal-011).
