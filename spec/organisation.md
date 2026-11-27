@@ -48,15 +48,17 @@ Le dépôt est **public** (vérifié le 2026-11-25), ce qui rend GitHub Actions 
 
 ## Git
 
-- `main` toujours démontrable. Une branche par carte : `feat/F3-R04-suspendre-objectif`.
-- Conventional Commits avec l'identifiant de la spec : `feat(goals): suspendre un objectif [F3-R04]`.
-- Une PR = une revue par un autre membre. Celui-ci vérifie la règle citée, le droit contrôlé côté API, le test nommé avec l'ACC, et que l'auteur sait l'expliquer.
+Détail dans [workflow.md](workflow.md). En résumé :
+- `main` = version livrée, toujours démontrable ; `develop` = intégration. Personne ne pousse dessus directement.
+- Une branche par carte depuis `develop` : `feat/F3-R07-suspendre-objectif`. PR relue par un autre membre, CI verte, fusion en squash.
+- Titre de PR en convention Angular avec l'identifiant de la spec : `feat(goals): suspendre un objectif [F3-R07]`.
+- Promotion `develop` → `main` en fin de sprint, en merge commit.
 - `make check` avant chaque push. Pas de ligne de co-auteur IA (hook `commit-msg`).
 
 ## Rituels
 
 - 10 min au début de chaque séance sur Discord : fait, à faire, bloquant.
-- Fin de sprint : 15 min de démo interne, puis mise à jour de Trello et de `traceability.md`.
+- Fin de sprint : 15 min de démo interne, mise à jour de Trello et de `traceability.md`, puis PR de promotion vers `main`.
 - Toute décision nouvelle → une ligne dans [decisions.md](decisions.md).
 
 ## IA
@@ -68,7 +70,7 @@ Autorisée comme assistant (CDC §9). On génère à partir des specs ; tout est
 | Livrable | Forme | Responsable |
 |---|---|---|
 | L1 + L2 Prise en charge et pilotage | Un document ≤ 5 pages : synthèse, ambiguïtés, risques, backlog, rôles, planning, renvoi vers `decisions.md` | Mael |
-| L3 Dépôt et environnement | README + `make setup/dev` | Mael |
+| L3 Dépôt et environnement | README + `make setup/dev` + conventions ([workflow.md](workflow.md)) | Mael |
 | L4 PULSE exécutable | En ligne (Railway) + local | Tous |
 | L5 Note technique | README + `spec/` (architecture, sécurité, usage de l'IA, limites) | Grégory |
 | L6 Dossier de recette | `docs/recette.md` exporté en PDF, ≤ 5 pages | Maxime |
