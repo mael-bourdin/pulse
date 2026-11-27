@@ -2,6 +2,7 @@
 
 pub mod config;
 pub mod error;
+pub mod seed;
 
 use std::sync::Arc;
 use std::time::Duration;

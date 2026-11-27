@@ -124,7 +124,7 @@ goal-004 appartient à Samira, goal-006 à Chloé : ces cas se testent avec leur
 | ACC-SEC-07 messages d'erreur sans trace, chemin interne ni configuration | F1-R11, F1-R31, catalogue d'erreurs et `AppError` ([api/endpoints.md](api/endpoints.md#erreurs)) | I | `sim`, `api/security` : `acc_sec_07_panique_500_generique` (route de test qui panique → 500 `INTERNAL_ERROR`, message générique) ; `acc_sec_07_auth_injoignable_sans_url` (service d'auth injoignable → 503 `AUTH_UNAVAILABLE`, corps sans `AUTH_SERVICE_URL`, hôte, port ni message d'erreur `reqwest`) | à faire |
 | ACC-QUAL-01 code PULSE et simulateur séparés | [architecture.md](architecture.md) (crates distinctes) | R | — | à faire |
 | ACC-QUAL-02 appels d'auth regroupés | F1-R20 | R + outil (`reqwest` utilisé seulement dans `auth_client`) | — | à faire |
-| ACC-QUAL-03 cohérent avec DATA | [data-model.md](data-model.md) | E2E | `e2e/rec-*` | à faire |
+| ACC-QUAL-03 cohérent avec DATA | [data-model.md](data-model.md) | I + E2E | `api/seed` (`acc_qual_03_seed_conforme_a_hac_data_001`), `e2e/rec-*` | en cours (seed fait) |
 
 ## Scénarios de recette (REC)
 
