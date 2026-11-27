@@ -63,14 +63,14 @@ pulse/
 ## Flux d'une requête protégée
 
 1. Le navigateur envoie le cookie `pulse_session`, qui contient le jeton opaque du service d'auth et n'est jamais lisible par JavaScript.
-2. L'extracteur `CurrentUser` appelle `GET /api/v1/auth/me` avec ce jeton (à chaque requête, sans cache).
+2. La couche du groupe (`route_layer`) appelle `GET /api/v1/auth/me` avec ce jeton (une fois par requête, sans cache).
    - 401 → `SESSION_EXPIRED` ;
    - 403 → `ACCOUNT_DISABLED` ;
    - 503, délai dépassé ou réponse invalide → `AUTH_UNAVAILABLE`.
 3. La couche de rôle du groupe vérifie le rôle : `RequireRole<User>` sur `/me/*`, `RequireRole<Admin>` sur `/admin/*`. Un mauvais rôle donne **403** `FORBIDDEN`.
    - Elle est posée **une fois par groupe** (`Router::route_layer`), jamais handler par handler : un handler de `/me` qui ne lirait que `CurrentUser` laisserait passer un FUNCTIONAL_ADMIN.
    - `route_layer` est appelé en dernier sur le routeur du groupe : Axum ne protège pas une route ajoutée après lui.
-   - La couche range le `CurrentUser` dans les extensions de la requête ; le handler le relit sans rappeler `/me`.
+   - La couche range le `CurrentUser` dans les extensions de la requête ; l'extracteur `CurrentUser` le relit sans rappeler `/me`.
 4. La route appelle le domaine avec le `user_id` issu de `/me`, jamais de la requête.
 5. Une ressource qui appartient à un autre utilisateur donne **404** `NOT_FOUND`.
 
