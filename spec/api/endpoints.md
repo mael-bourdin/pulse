@@ -66,10 +66,10 @@ Aucun endpoint ne reçoit de `userId` : il vient toujours de la session.
 |---|---|
 | `POST /session` | `email` (1–254), `password` (1–200) |
 | `PUT /me/preferences` | `themePrioritaire`, `notifications`, `frequenceRappel`, `momentPrefere`, `participationDefis` |
-| `POST /me/goals` | `label` (1–120), `category`, `targetValue` (> 0), `unit` (1–30), `endDate?` |
-| `PATCH /me/goals/{id}` | mêmes champs, tous facultatifs |
+| `POST /me/goals` | `label` (1–120), `category`, `targetValue` (> 0), `unit` (énum, une des 9 valeurs de F3-R11), `endDate?` (`null` vaut absente) |
+| `PATCH /me/goals/{id}` | mêmes champs, tous facultatifs ; `endDate: null` efface la date, `endDate` absent la laisse inchangée (F3-R10) |
 | `PUT …/progress` | `currentValue` (≥ 0) |
-| `POST/PUT /admin/challenges` | `title`, `category`, `description`, `startDate`, `endDate` (≥ début), `targetValue` (> 0), `unit`, `status` |
+| `POST/PUT /admin/challenges` | `title`, `category`, `description`, `startDate`, `endDate` (≥ début), `targetValue` (> 0), `unit` (énum de F3-R11), `status` |
 | `POST/PUT /admin/contents` | `title`, `type`, `category`, `status` |
 
 Une clé inconnue dans le corps est **refusée** (400). Exception : `POST /session`, où le contrat d'auth tolère les clés supplémentaires.
