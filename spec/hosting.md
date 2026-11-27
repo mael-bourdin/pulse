@@ -98,7 +98,7 @@ Gratuit pendant le développement : Railway Free pour les deux services, Neon Fr
 | Railway Free : **1 membre** par projet | Une seule personne voit les journaux et fait le 503 en ligne : point unique de défaillance le jour de la soutenance | Q14.2 ; Neon accepte toute l'équipe, donc tout le monde peut lancer un seed |
 | Railway Free : 1 volume par projet | Une base Railway serait vue par un seul membre et consommerait le crédit | Base sur **Neon Free** : 0,5 Go, mise en veille après 5 min, sans limite de durée ni carte |
 
-**Hobby (5 $) le mois de la soutenance** reste l'option d'ADR-17 : pas de mise en veille, donc pas de 502 au réveil devant le jury, et plus de ressources de build. À trancher en équipe (Q14.11).
+**Hobby (5 $) le mois de la soutenance** reste l'option d'ADR-17 : pas de mise en veille, donc pas de 502 au réveil devant le jury, et plus de ressources de build. À trancher en équipe (Q14.9).
 
 Exclus : Render pour la base (PostgreSQL gratuit supprimé au bout de 30 jours), Supabase (pause après 7 jours d'inactivité), Fly.io et Koyeb (carte exigée). Dernier recours si Railway devenait inutilisable : auto-hébergement Oracle Cloud Always Free + Dokploy (carte exigée, 4 à 8 h de mise en place, administration).
 
