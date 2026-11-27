@@ -8,6 +8,7 @@ Ici, **la spec fait foi.** Le code et les tests découlent de ces fichiers. Tout
 | [constitution.md](constitution.md) | Règles non négociables |
 | [architecture.md](architecture.md) | Composants, flux, organisation du code |
 | [decisions.md](decisions.md) | Décisions d'architecture (ADR) |
+| [ambiguites.md](ambiguites.md) | Ambiguïtés du dossier signalées au Produit (L1) |
 | [data-model.md](data-model.md) | Schéma PostgreSQL, chargement de HAC-DATA-001 |
 | [api/endpoints.md](api/endpoints.md) | API PULSE (REST `/api/v1`) |
 | [api/auth.openapi.yaml](api/auth.openapi.yaml) | Contrat HAC-API-001 (écrit à la main) |
