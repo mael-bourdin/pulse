@@ -1,0 +1,847 @@
+{
+  "board": "https://trello.com/b/Ed35xHmf/mspr",
+  "updatedAt": "2026-11-27",
+  "tickets": [
+    {
+      "id": "MHBbYieR",
+      "title": "Règles de l'équipe",
+      "status": "Backlog",
+      "priority": null,
+      "sprint": null,
+      "feature": "E0 Socle",
+      "owner": null,
+      "spec": [],
+      "description": "**Branches** : `main` protégée et toujours démontrable. Une branche par carte : `feat/<id>-libelle` (ex. `feat/US-GOAL-02-creer-objectif`), `fix/…`, `docs/…`. **Commits** : Conventional Commits avec l'identifiant de la carte, ex. `feat(goals): suspendre un objectif [US-GOAL-04]`. **Revue** : toute…",
+      "url": "https://trello.com/c/MHBbYieR"
+    },
+    {
+      "id": "T-704",
+      "title": "Note de prise en charge + dossier de pilotage (L1/L2)",
+      "status": "Backlog",
+      "priority": null,
+      "sprint": "S0",
+      "feature": "Recette & livrables",
+      "owner": "Mael",
+      "spec": [],
+      "description": "**Task** de l'epic E7 – Recette, qualité & livrables. Priorité : Medium. Ambiguïtés, hypothèses, risques, journal des arbitrages.",
+      "url": "https://trello.com/c/a5AqL7Xr"
+    },
+    {
+      "id": "T-006",
+      "title": "Coque Tauri v2 pour la version desktop",
+      "status": "Backlog",
+      "priority": "SHOULD",
+      "sprint": "S3",
+      "feature": "E0 Socle",
+      "owner": "Mael",
+      "spec": [],
+      "description": "**Task** de l'epic E0 – Socle & organisation. Priorité : Low. apps/desktop charge le build web. Optionnel pour la démo : la cible principale reste le web responsive.",
+      "url": "https://trello.com/c/lePMUV5u"
+    },
+    {
+      "id": "T-702",
+      "title": "Exécuter la recette REC-01..13 et consigner les résultats (L6)",
+      "status": "Backlog",
+      "priority": "MUST",
+      "sprint": "S4",
+      "feature": "Recette & livrables",
+      "owner": "Maxime",
+      "spec": [
+        "REC-01"
+      ],
+      "description": "**Task** de l'epic E7 – Recette, qualité & livrables. Priorité : High. Dossier de recette : scénarios, résultats, anomalies, corrections.",
+      "url": "https://trello.com/c/ISEj2ahm"
+    },
+    {
+      "id": "T-705",
+      "title": "Note technique (L5)",
+      "status": "Backlog",
+      "priority": null,
+      "sprint": "S4",
+      "feature": "Recette & livrables",
+      "owner": "Grégory",
+      "spec": [],
+      "description": "**Task** de l'epic E7 – Recette, qualité & livrables. Priorité : Medium. Organisation du code, intégration auth, choix de sécurité, limites.",
+      "url": "https://trello.com/c/lEZgXsSq"
+    },
+    {
+      "id": "T-706",
+      "title": "Bilan V1 et recommandations V2 (L7) + support de revue (L8)",
+      "status": "Backlog",
+      "priority": null,
+      "sprint": "S4",
+      "feature": "Recette & livrables",
+      "owner": "Simon",
+      "spec": [],
+      "description": "**Task** de l'epic E7 – Recette, qualité & livrables. Priorité : Medium. Dette technique, limites, pistes architecture / données / services.",
+      "url": "https://trello.com/c/ikpnHxSh"
+    },
+    {
+      "id": "T-104",
+      "title": "Test : réponse non conforme du service d’auth → message maîtrisé",
+      "status": "Backlog",
+      "priority": "SHOULD",
+      "sprint": "S1",
+      "feature": "F1 Auth",
+      "owner": "Grégory",
+      "spec": [
+        "ACC-SEC-05"
+      ],
+      "description": "Ajouter un test API où le service renvoie un JSON invalide ou un 500 : PULSE doit répondre 503 AUTH_UNAVAILABLE sans détail technique (ACC-SEC-05).",
+      "url": "https://trello.com/c/WBQ8iVAM"
+    },
+    {
+      "id": "T-105",
+      "title": "Tester l’expiration de session (jeton expiré → retour à la connexion)",
+      "status": "Backlog",
+      "priority": "SHOULD",
+      "sprint": "S1",
+      "feature": "F1 Auth",
+      "owner": "Grégory",
+      "spec": [],
+      "description": "Lancer le simulateur avec AUTH_SIM_TOKEN_TTL_SECONDS=30, vérifier le message « Votre session a expiré ».",
+      "url": "https://trello.com/c/d2k6K6js"
+    },
+    {
+      "id": "T-106",
+      "title": "Limiter les tentatives de connexion (anti force brute simple)",
+      "status": "Backlog",
+      "priority": "SHOULD",
+      "sprint": "S1",
+      "feature": "F1 Auth",
+      "owner": "Grégory",
+      "spec": [],
+      "description": "Limite en mémoire côté API (ex. 5 essais / minute / adresse). À documenter comme limite V1.",
+      "url": "https://trello.com/c/cBkTOhyd"
+    },
+    {
+      "id": "T-107",
+      "title": "Audit accessibilité de l’écran de connexion",
+      "status": "Backlog",
+      "priority": "MUST",
+      "sprint": "S1",
+      "feature": "F1 Auth",
+      "owner": "Grégory",
+      "spec": [],
+      "description": "Navigation clavier, libellés, annonces d’erreur au lecteur d’écran, contrastes.",
+      "url": "https://trello.com/c/27joN3mY"
+    },
+    {
+      "id": "T-203",
+      "title": "Objectifs : date de fin optionnelle dans le formulaire",
+      "status": "Backlog",
+      "priority": "SHOULD",
+      "sprint": "S2",
+      "feature": "F3 Objectifs",
+      "owner": "Maxime",
+      "spec": [],
+      "description": "Le schéma API accepte endDate, l’écran ne la propose pas encore.",
+      "url": "https://trello.com/c/o8P6bpF5"
+    },
+    {
+      "id": "T-204",
+      "title": "Objectifs : refuser une valeur de progression absurde côté écran",
+      "status": "Backlog",
+      "priority": "SHOULD",
+      "sprint": "S2",
+      "feature": "F3 Objectifs",
+      "owner": "Maxime",
+      "spec": [],
+      "description": "Message au plus près du champ si la valeur est vide, négative ou non numérique (le contrôle API existe déjà).",
+      "url": "https://trello.com/c/N6c7JoZh"
+    },
+    {
+      "id": "T-303",
+      "title": "Défis : mettre à jour sa progression sur un défi",
+      "status": "Backlog",
+      "priority": "SHOULD",
+      "sprint": "S3",
+      "feature": "F4 Défis",
+      "owner": "Simon",
+      "spec": [],
+      "description": "Ambiguïté n°3 (docs/decisions.md) : faire valider la règle par le Produit avant de coder.",
+      "url": "https://trello.com/c/T6gmTy0V"
+    },
+    {
+      "id": "T-304",
+      "title": "Défis : afficher l’historique de mes participations (quittées, terminées)",
+      "status": "Backlog",
+      "priority": "SHOULD",
+      "sprint": "S3",
+      "feature": "F4 Défis",
+      "owner": "Simon",
+      "spec": [],
+      "description": "Liste personnelle, sans aucune donnée d’autres utilisateurs.",
+      "url": "https://trello.com/c/CYj4Mtqx"
+    },
+    {
+      "id": "T-707",
+      "title": "Audit accessibilité de tous les écrans (contrastes, clavier, libellés)",
+      "status": "Backlog",
+      "priority": "MUST",
+      "sprint": "S4",
+      "feature": "Recette & livrables",
+      "owner": "Maxime",
+      "spec": [],
+      "description": "Outils : Lighthouse / axe DevTools. Consigner les écarts dans le dossier de recette.",
+      "url": "https://trello.com/c/maFUIFrG"
+    },
+    {
+      "id": "T-708",
+      "title": "Vérifier le responsive sur smartphone et tablette",
+      "status": "Backlog",
+      "priority": "MUST",
+      "sprint": "S4",
+      "feature": "Recette & livrables",
+      "owner": "Simon",
+      "spec": [],
+      "description": "390 px, 768 px, 1280 px : navigation, formulaires, tableaux admin.",
+      "url": "https://trello.com/c/zi5pyVN7"
+    },
+    {
+      "id": "T-709",
+      "title": "Préparer les données et le déroulé de la démo (pnpm db:reset)",
+      "status": "Backlog",
+      "priority": "MUST",
+      "sprint": "S4",
+      "feature": "Recette & livrables",
+      "owner": "Mael",
+      "spec": [],
+      "description": "Scénario de démo : connexion, erreur 401 ou 503, préférences, objectif, défi, progression, admin.",
+      "url": "https://trello.com/c/VYL4XvTj"
+    },
+    {
+      "id": "T-710",
+      "title": "Répétition : chacun présente sa partie du code (5 min)",
+      "status": "Backlog",
+      "priority": "MUST",
+      "sprint": "S4",
+      "feature": "Recette & livrables",
+      "owner": "Mael, Grégory, Maxime, Simon",
+      "spec": [],
+      "description": "Exigence CDC §8 : chaque membre explique le fonctionnement général, une partie du code, l’intégration de l’auth et la sécurité.",
+      "url": "https://trello.com/c/V0JE1xem"
+    },
+    {
+      "id": "T-711",
+      "title": "Revue croisée : relire le code d’un autre domaine",
+      "status": "Backlog",
+      "priority": "MUST",
+      "sprint": "S4",
+      "feature": "Recette & livrables",
+      "owner": "Mael, Grégory, Maxime, Simon",
+      "spec": [],
+      "description": "Mael → défis/progression, Grégory → préférences/objectifs, Maxime → auth/admin, Simon → socle/API.",
+      "url": "https://trello.com/c/FDHEL8jq"
+    },
+    {
+      "id": "T-007",
+      "title": "Installer l’environnement et lancer PULSE sur son poste (Mael)",
+      "status": "À faire",
+      "priority": "MUST",
+      "sprint": "S0",
+      "feature": "E0 Socle",
+      "owner": "Mael",
+      "spec": [],
+      "description": "Suivre le README : Node 22, pnpm install, cp .env.example .env, pnpm dev, pnpm test. Noter tout écart dans le README.",
+      "url": "https://trello.com/c/pLk801ti"
+    },
+    {
+      "id": "T-009",
+      "title": "Installer l’environnement et lancer PULSE sur son poste (Maxime)",
+      "status": "À faire",
+      "priority": "MUST",
+      "sprint": "S0",
+      "feature": "E0 Socle",
+      "owner": "Maxime",
+      "spec": [],
+      "description": "Suivre le README : Node 22, pnpm install, cp .env.example .env, pnpm dev, pnpm test. Noter tout écart dans le README.",
+      "url": "https://trello.com/c/JPmvVoNF"
+    },
+    {
+      "id": "T-010",
+      "title": "Installer l’environnement et lancer PULSE sur son poste (Simon)",
+      "status": "À faire",
+      "priority": "MUST",
+      "sprint": "S0",
+      "feature": "E0 Socle",
+      "owner": "Simon",
+      "spec": [],
+      "description": "Suivre le README : Node 22, pnpm install, cp .env.example .env, pnpm dev, pnpm test. Noter tout écart dans le README.",
+      "url": "https://trello.com/c/wk5KdGP0"
+    },
+    {
+      "id": "T-011",
+      "title": "Inviter la squad sur le repo GitHub et protéger la branche main",
+      "status": "À faire",
+      "priority": "MUST",
+      "sprint": "S0",
+      "feature": "E0 Socle",
+      "owner": "Mael",
+      "spec": [],
+      "description": "Ajouter Grégory, Maxime et Simon sur mael-bourdin/pulse. Règle de protection : PR obligatoire, 1 relecteur, CI verte.",
+      "url": "https://trello.com/c/DNzTybeD"
+    },
+    {
+      "id": "T-012",
+      "title": "Débloquer GitHub Actions (facturation du compte)",
+      "status": "À faire",
+      "priority": "SHOULD",
+      "sprint": "S0",
+      "feature": "E0 Socle",
+      "owner": "Mael",
+      "spec": [],
+      "description": "Les jobs CI ne démarrent pas à cause de la facturation du compte. Régler le plafond de dépenses ou passer le repo sur un compte d’équipe.",
+      "url": "https://trello.com/c/JeRVQHhY"
+    },
+    {
+      "id": "T-103",
+      "title": "Démontrer le 503 et le documenter dans la recette",
+      "status": "À faire",
+      "priority": "MUST",
+      "sprint": "S1",
+      "feature": "F1 Auth",
+      "owner": "Grégory",
+      "spec": [
+        "REC-04"
+      ],
+      "description": "pnpm auth:down → message « service momentanément indisponible » ; pnpm auth:up → retour à la normale. Capture pour le dossier de recette (REC-04).",
+      "url": "https://trello.com/c/C5SHXc3a"
+    },
+    {
+      "id": "T-201",
+      "title": "Recette manuelle REC-06 (préférences) avec captures",
+      "status": "À faire",
+      "priority": "MUST",
+      "sprint": "S2",
+      "feature": "F2 Préférences",
+      "owner": "Maxime",
+      "spec": [
+        "REC-06"
+      ],
+      "description": "Alex : consulter pref-001, modifier le moment préféré, recharger, vérifier.",
+      "url": "https://trello.com/c/EQK9nG1a"
+    },
+    {
+      "id": "T-202",
+      "title": "Recette manuelle REC-07 (objectifs) avec captures",
+      "status": "À faire",
+      "priority": "MUST",
+      "sprint": "S2",
+      "feature": "F3 Objectifs",
+      "owner": "Maxime",
+      "spec": [
+        "REC-07"
+      ],
+      "description": "Créer un objectif, le retrouver, mettre à jour la progression, suspendre, réactiver, clôturer.",
+      "url": "https://trello.com/c/IDJzoWlV"
+    },
+    {
+      "id": "T-301",
+      "title": "Recette manuelle REC-08 et REC-09 (défis) avec captures",
+      "status": "À faire",
+      "priority": "MUST",
+      "sprint": "S3",
+      "feature": "F4 Défis",
+      "owner": "Simon",
+      "spec": [
+        "REC-08",
+        "REC-09"
+      ],
+      "description": "Rejoindre chl-005, vérifier la participation ; tenter chl-004 (terminé) : refus.",
+      "url": "https://trello.com/c/AamowMZu"
+    },
+    {
+      "id": "T-302",
+      "title": "Recette manuelle REC-10 (progression) avec captures",
+      "status": "À faire",
+      "priority": "MUST",
+      "sprint": "S3",
+      "feature": "F5 Progression",
+      "owner": "Simon",
+      "spec": [
+        "REC-10"
+      ],
+      "description": "Alex : 5 jours actifs, série de 4, états vides check-ins et hydratation.",
+      "url": "https://trello.com/c/NeyQcPd0"
+    },
+    {
+      "id": "T-401",
+      "title": "Recette manuelle REC-11, REC-12 et REC-13 (admin) avec captures",
+      "status": "À faire",
+      "priority": "MUST",
+      "sprint": "S3",
+      "feature": "F6 Admin",
+      "owner": "Mael",
+      "spec": [
+        "REC-11",
+        "REC-12",
+        "REC-13"
+      ],
+      "description": "Léa : accès admin, création et modification d’un défi ; Alex : accès direct à /admin refusé (écran + API 403).",
+      "url": "https://trello.com/c/XHgC2rYL"
+    },
+    {
+      "id": "T-001",
+      "title": "Initialiser le monorepo pnpm (web / api / auth-simulator / desktop / shared)",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S0",
+      "feature": "E0 Socle",
+      "owner": "Mael",
+      "spec": [],
+      "description": "**Task** de l'epic E0 – Socle & organisation. Priorité : High. Structure de dépôt, scripts racine, .editorconfig, .gitignore, .env.example. DoD : pnpm install && pnpm dev lance tout.",
+      "url": "https://trello.com/c/ezreZlqu"
+    },
+    {
+      "id": "T-002",
+      "title": "Rédiger README : prérequis, installation, lancement, conventions (L3)",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S0",
+      "feature": "E0 Socle",
+      "owner": "Mael",
+      "spec": [],
+      "description": "**Task** de l'epic E0 – Socle & organisation. Priorité : High. Node 22+, pnpm, Rust (optionnel, desktop). Procédure de lancement PULSE + simulateur.",
+      "url": "https://trello.com/c/JO8Sk9n7"
+    },
+    {
+      "id": "T-003",
+      "title": "Définir stratégie de branches / commits / revues",
+      "status": "En revue",
+      "priority": null,
+      "sprint": "S0",
+      "feature": "E0 Socle",
+      "owner": "Mael",
+      "spec": [],
+      "description": "**Task** de l'epic E0 – Socle & organisation. Priorité : Medium. main protégée, branches feat/<ticket>, Conventional Commits, PR avec 1 relecteur.",
+      "url": "https://trello.com/c/Ese9n1eg"
+    },
+    {
+      "id": "T-005",
+      "title": "Importer HAC-DATA-001 en jeu de données seed JSON",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S0",
+      "feature": "E0 Socle",
+      "owner": "Maxime",
+      "spec": [],
+      "description": "**Task** de l'epic E0 – Socle & organisation. Priorité : High. Script de conversion, mots de passe démo hachés (scrypt), aucune donnée réelle.",
+      "url": "https://trello.com/c/xW5UPZTG"
+    },
+    {
+      "id": "US-AUTH-SIM-01",
+      "title": "Simulateur : POST /api/v1/auth/login conforme HAC-API-001",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S1",
+      "feature": "F1 Auth",
+      "owner": "Grégory",
+      "spec": [
+        "ACC-AUTH-01"
+      ],
+      "description": "**Story** de l'epic E1 – F1 Authentification & accès. Priorité : Highest. 200 / 400 AUTH_BAD_REQUEST / 401 AUTH_INVALID_CREDENTIALS / 403 AUTH_ACCOUNT_DISABLED. Ne retourne jamais le mot de passe. **Règles / critères :** ACC-AUTH-01..07, 09.",
+      "url": "https://trello.com/c/Z0PQt5An"
+    },
+    {
+      "id": "US-AUTH-SIM-02",
+      "title": "Simulateur : GET /api/v1/auth/me (Bearer)",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S1",
+      "feature": "F1 Auth",
+      "owner": "Grégory",
+      "spec": [
+        "ACC-AUTH-08"
+      ],
+      "description": "**Story** de l'epic E1 – F1 Authentification & accès. Priorité : Highest. Jeton opaque émis par /login, 401 AUTH_INVALID_TOKEN si absent/invalide. **Règles / critères :** ACC-AUTH-08.",
+      "url": "https://trello.com/c/PhRrLFGX"
+    },
+    {
+      "id": "US-AUTH-SIM-03",
+      "title": "Simulateur : mécanisme 503 reproductible et documenté",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S1",
+      "feature": "F1 Auth",
+      "owner": "Grégory",
+      "spec": [
+        "ACC-AUTH-07",
+        "REC-04"
+      ],
+      "description": "**Story** de l'epic E1 – F1 Authentification & accès. Priorité : Highest. Fichier drapeau + scripts pnpm auth:down / auth:up. **Règles / critères :** ACC-AUTH-07, REC-04.",
+      "url": "https://trello.com/c/e8x2Z0Lv"
+    },
+    {
+      "id": "US-AUTH-01",
+      "title": "Se connecter à PULSE (contexte selon le rôle)",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S1",
+      "feature": "F1 Auth",
+      "owner": "Grégory",
+      "spec": [
+        "ACC-AUTH-03",
+        "REC-01",
+        "REC-05",
+        "RG-AUTH-01"
+      ],
+      "description": "**Story** de l'epic E1 – F1 Authentification & accès. Priorité : Highest. En tant qu'utilisateur autorisé, je veux me connecter afin d'accéder à mon espace. **Règles / critères :** RG-AUTH-01..03. ACC-AUTH-03, 06, 08, 12. REC-01, REC-05.",
+      "url": "https://trello.com/c/XXZlauGI"
+    },
+    {
+      "id": "US-AUTH-02",
+      "title": "Messages d'erreur de connexion distincts et non techniques",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S1",
+      "feature": "F1 Auth",
+      "owner": "Grégory",
+      "spec": [
+        "ACC-AUTH-04",
+        "ACC-SEC-06",
+        "REC-02",
+        "RG-AUTH-06"
+      ],
+      "description": "**Story** de l'epic E1 – F1 Authentification & accès. Priorité : Highest. 401 vs 403 vs 503 vs 400 distingués, sans révéler l'existence du compte. **Règles / critères :** RG-AUTH-06. ACC-AUTH-04, 05, 07, 16 ; ACC-SEC-06, 07. REC-02..04.",
+      "url": "https://trello.com/c/Zy9isjig"
+    },
+    {
+      "id": "US-AUTH-03",
+      "title": "Accès admin réservé à FUNCTIONAL_ADMIN (contrôle côté API)",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S1",
+      "feature": "F1 Auth",
+      "owner": "Grégory",
+      "spec": [
+        "ACC-ADM-01",
+        "ACC-AUTH-13",
+        "REC-11",
+        "REC-12"
+      ],
+      "description": "**Story** de l'epic E1 – F1 Authentification & accès. Priorité : Highest. Garde de route front + middleware de rôle côté API. **Règles / critères :** ACC-AUTH-13..15, ACC-ADM-01, 02. REC-11, REC-12.",
+      "url": "https://trello.com/c/b8ZVnY1C"
+    },
+    {
+      "id": "T-101",
+      "title": "Client d'auth isolé dans l'API (authClient) + validation des réponses (zod)",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S1",
+      "feature": "F1 Auth",
+      "owner": "Grégory",
+      "spec": [
+        "ACC-AUTH-10",
+        "ACC-QUAL-02",
+        "ACC-SEC-05"
+      ],
+      "description": "**Task** de l'epic E1 – F1 Authentification & accès. Priorité : Highest. URL configurable AUTH_SERVICE_URL, contrôle de schéma, mapping des erreurs. **Règles / critères :** ACC-AUTH-10, 11 ; ACC-QUAL-02 ; ACC-SEC-05.",
+      "url": "https://trello.com/c/tpyHxKh6"
+    },
+    {
+      "id": "T-102",
+      "title": "Écran de connexion (maquette HAC-UX-001 p.4)",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S1",
+      "feature": "F1 Auth",
+      "owner": "Grégory",
+      "spec": [],
+      "description": "**Task** de l'epic E1 – F1 Authentification & accès. Priorité : High. Formulaire accessible, encart confidentialité, messages d'erreur.",
+      "url": "https://trello.com/c/cSkTsjh7"
+    },
+    {
+      "id": "US-PREF-01",
+      "title": "Consulter mes préférences",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S2",
+      "feature": "F2 Préférences",
+      "owner": "Maxime",
+      "spec": [
+        "ACC-PREF-01"
+      ],
+      "description": "**Story** de l'epic E2 – F2 Profil & préférences. Priorité : High. Préférences de l'utilisateur connecté uniquement (pref-001 pour Alex). **Règles / critères :** ACC-PREF-01, 02, 06.",
+      "url": "https://trello.com/c/v8AWtZfV"
+    },
+    {
+      "id": "US-PREF-02",
+      "title": "Modifier mes préférences",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S2",
+      "feature": "F2 Préférences",
+      "owner": "Maxime",
+      "spec": [
+        "ACC-PREF-03",
+        "REC-06"
+      ],
+      "description": "**Story** de l'epic E2 – F2 Profil & préférences. Priorité : High. Valeurs contrôlées (thème, fréquence, moment), persistance. **Règles / critères :** ACC-PREF-03..06. REC-06.",
+      "url": "https://trello.com/c/Ls21MvLO"
+    },
+    {
+      "id": "US-GOAL-01",
+      "title": "Consulter mes objectifs",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S2",
+      "feature": "F3 Objectifs",
+      "owner": "Maxime",
+      "spec": [
+        "ACC-GOAL-01"
+      ],
+      "description": "**Story** de l'epic E3 – F3 Objectifs personnels. Priorité : High. Objectifs de l'utilisateur connecté avec état et progression. **Règles / critères :** ACC-GOAL-01, 09.",
+      "url": "https://trello.com/c/uI1jxpW5"
+    },
+    {
+      "id": "US-GOAL-02",
+      "title": "Créer un objectif",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S2",
+      "feature": "F3 Objectifs",
+      "owner": "Maxime",
+      "spec": [
+        "ACC-GOAL-02",
+        "REC-07"
+      ],
+      "description": "**Story** de l'epic E3 – F3 Objectifs personnels. Priorité : High. Libellé, catégorie, cible > 0, unité ; créé ACTIVE et rattaché au user du jeton. **Règles / critères :** ACC-GOAL-02..04. REC-07.",
+      "url": "https://trello.com/c/brAIgzwG"
+    },
+    {
+      "id": "US-GOAL-03",
+      "title": "Modifier un objectif actif et mettre à jour sa progression",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S2",
+      "feature": "F3 Objectifs",
+      "owner": "Maxime",
+      "spec": [
+        "ACC-GOAL-05"
+      ],
+      "description": "**Story** de l'epic E3 – F3 Objectifs personnels. Priorité : High. Progression >= 0, objectif CLOSED non modifiable. **Règles / critères :** ACC-GOAL-05, 08, 09.",
+      "url": "https://trello.com/c/ISRuHkox"
+    },
+    {
+      "id": "US-GOAL-04",
+      "title": "Suspendre / clôturer / réactiver un objectif",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S2",
+      "feature": "F3 Objectifs",
+      "owner": "Maxime",
+      "spec": [
+        "ACC-GOAL-06"
+      ],
+      "description": "**Story** de l'epic E3 – F3 Objectifs personnels. Priorité : High. Transitions ACTIVE→SUSPENDED→CLOSED (+ réactivation documentée). **Règles / critères :** ACC-GOAL-06, 07.",
+      "url": "https://trello.com/c/68tic1lv"
+    },
+    {
+      "id": "US-CHAL-01",
+      "title": "Consulter les défis disponibles",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S3",
+      "feature": "F4 Défis",
+      "owner": "Simon",
+      "spec": [
+        "ACC-CHAL-01"
+      ],
+      "description": "**Story** de l'epic E4 – F4 Défis collectifs. Priorité : High. Statuts OPEN / UPCOMING / CLOSED distingués. **Règles / critères :** ACC-CHAL-01, 02.",
+      "url": "https://trello.com/c/ZUFx8cpT"
+    },
+    {
+      "id": "US-CHAL-02",
+      "title": "Consulter le détail d'un défi",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S3",
+      "feature": "F4 Défis",
+      "owner": "Simon",
+      "spec": [],
+      "description": "**Story** de l'epic E4 – F4 Défis collectifs. Priorité : High. Objectif, période, statut, action cohérente avec le statut.",
+      "url": "https://trello.com/c/HVl1yKKV"
+    },
+    {
+      "id": "US-CHAL-03",
+      "title": "Rejoindre un défi ouvert",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S3",
+      "feature": "F4 Défis",
+      "owner": "Simon",
+      "spec": [
+        "ACC-CHAL-03",
+        "REC-08",
+        "REC-09"
+      ],
+      "description": "**Story** de l'epic E4 – F4 Défis collectifs. Priorité : High. Uniquement OPEN, pas de doublon actif, réinscription après LEFT (nouvelle participation, décision documentée). **Règles / critères :** ACC-CHAL-03..06. REC-08, REC-09.",
+      "url": "https://trello.com/c/zkXSiKL0"
+    },
+    {
+      "id": "US-CHAL-04",
+      "title": "Suivre ma participation et ma progression",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S3",
+      "feature": "F4 Défis",
+      "owner": "Simon",
+      "spec": [
+        "ACC-CHAL-08"
+      ],
+      "description": "**Story** de l'epic E4 – F4 Défis collectifs. Priorité : High. Progression de l'utilisateur connecté uniquement. **Règles / critères :** ACC-CHAL-08.",
+      "url": "https://trello.com/c/kHckPouh"
+    },
+    {
+      "id": "US-CHAL-05",
+      "title": "Quitter un défi",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S3",
+      "feature": "F4 Défis",
+      "owner": "Simon",
+      "spec": [
+        "ACC-CHAL-07"
+      ],
+      "description": "**Story** de l'epic E4 – F4 Défis collectifs. Priorité : High. Participation ACTIVE → LEFT. **Règles / critères :** ACC-CHAL-07.",
+      "url": "https://trello.com/c/yy4KjaKt"
+    },
+    {
+      "id": "US-PROG-01",
+      "title": "Synthèse personnelle de progression",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S3",
+      "feature": "F5 Progression",
+      "owner": "Simon",
+      "spec": [
+        "ACC-PROG-01",
+        "REC-10"
+      ],
+      "description": "**Story** de l'epic E5 – F5 Progression. Priorité : High. Métriques + objectifs + participations, aucun classement. **Règles / critères :** ACC-PROG-01..04. REC-10.",
+      "url": "https://trello.com/c/8naR9JCf"
+    },
+    {
+      "id": "US-PROG-02",
+      "title": "États vides pour indicateurs absents",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S3",
+      "feature": "F5 Progression",
+      "owner": "Simon",
+      "spec": [
+        "ACC-PROG-05"
+      ],
+      "description": "**Story** de l'epic E5 – F5 Progression. Priorité : High. Ex. Alex : pas de WELLBEING_CHECKINS ni HYDRATION_DAYS. **Règles / critères :** ACC-PROG-05.",
+      "url": "https://trello.com/c/lMhhS7h3"
+    },
+    {
+      "id": "US-ADM-01",
+      "title": "Admin : consulter les défis",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S3",
+      "feature": "F6 Admin",
+      "owner": "Mael",
+      "spec": [
+        "ACC-ADM-01"
+      ],
+      "description": "**Story** de l'epic E6 – F6 Administration fonctionnelle. Priorité : High. Espace distinct, aucune donnée personnelle. **Règles / critères :** ACC-ADM-01..03.",
+      "url": "https://trello.com/c/kXYhp9WN"
+    },
+    {
+      "id": "US-ADM-02",
+      "title": "Admin : créer un défi",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S3",
+      "feature": "F6 Admin",
+      "owner": "Mael",
+      "spec": [
+        "ACC-ADM-04",
+        "REC-13"
+      ],
+      "description": "**Story** de l'epic E6 – F6 Administration fonctionnelle. Priorité : High. Titre, catégorie, description, période, cible, unité, statut cohérent. **Règles / critères :** ACC-ADM-04, 05. REC-13.",
+      "url": "https://trello.com/c/IjlgWNMy"
+    },
+    {
+      "id": "US-ADM-03",
+      "title": "Admin : modifier un défi",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S3",
+      "feature": "F6 Admin",
+      "owner": "Mael",
+      "spec": [
+        "ACC-ADM-04"
+      ],
+      "description": "**Story** de l'epic E6 – F6 Administration fonctionnelle. Priorité : High. Modification visible à la consultation suivante. **Règles / critères :** ACC-ADM-04..06.",
+      "url": "https://trello.com/c/Q4uAJm3V"
+    },
+    {
+      "id": "US-ADM-04",
+      "title": "Admin : gérer les contenus (SHOULD)",
+      "status": "En revue",
+      "priority": "SHOULD",
+      "sprint": "S3",
+      "feature": "F6 Admin",
+      "owner": "Mael",
+      "spec": [
+        "ACC-ADM-07"
+      ],
+      "description": "**Story** de l'epic E6 – F6 Administration fonctionnelle. Priorité : Medium. ARTICLE / FICHE / CONSEIL, DRAFT / PUBLISHED. **Règles / critères :** ACC-ADM-07.",
+      "url": "https://trello.com/c/pivS4otb"
+    },
+    {
+      "id": "T-701",
+      "title": "Tests automatisés simulateur + règles métier (vitest)",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S4",
+      "feature": "Recette & livrables",
+      "owner": "Grégory",
+      "spec": [],
+      "description": "**Task** de l'epic E7 – Recette, qualité & livrables. Priorité : High. Codes 200/400/401/403/503, ownership, transitions d'état.",
+      "url": "https://trello.com/c/AUSxBYN7"
+    },
+    {
+      "id": "T-703",
+      "title": "Vérifier l'absence de secrets dans le dépôt",
+      "status": "En revue",
+      "priority": "MUST",
+      "sprint": "S4",
+      "feature": "Recette & livrables",
+      "owner": "Grégory",
+      "spec": [
+        "ACC-SEC-01"
+      ],
+      "description": "**Task** de l'epic E7 – Recette, qualité & livrables. Priorité : High. Scan (gitleaks ou grep), .env non versionné. **Règles / critères :** ACC-SEC-01.",
+      "url": "https://trello.com/c/kKRDXKC5"
+    },
+    {
+      "id": "T-004",
+      "title": "Configurer le tableau Trello et planifier les sprints",
+      "status": "Terminé",
+      "priority": null,
+      "sprint": "S0",
+      "feature": "E0 Socle",
+      "owner": "Mael",
+      "spec": [],
+      "description": "**Task** de l'epic E0 – Socle & organisation. Priorité : Medium. Listes par sprint (0 à 4) + En cours / En revue / Terminé, répartition des responsabilités.",
+      "url": "https://trello.com/c/s8SBjqJ8"
+    },
+    {
+      "id": "T-008",
+      "title": "Installer l’environnement et lancer PULSE sur son poste (Grégory)",
+      "status": "Terminé",
+      "priority": "MUST",
+      "sprint": "S0",
+      "feature": "E0 Socle",
+      "owner": "Grégory",
+      "spec": [],
+      "description": "Suivre le README : Node 22, pnpm install, cp .env.example .env, pnpm dev, pnpm test. Noter tout écart dans le README.",
+      "url": "https://trello.com/c/qNiJGKkB"
+    }
+  ]
+}

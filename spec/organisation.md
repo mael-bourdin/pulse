@@ -4,9 +4,9 @@
 
 | Membre | Fonctionnalités | Rôle transverse |
 |---|---|---|
-| **Mael** | Socle (workspace, base, déploiement), F6 Administration | Pilote : planning, Trello, arbitrages, contact « Produit » ; référent hébergement |
+| **Mael** | Socle (workspace, base, déploiement), F6 Administration | Pilote : planning, Trello, arbitrages, contact « Produit » ; référent hébergement ; admin du dépôt (rulesets, branche par défaut) |
 | **Grégory** | F1 Authentification (simulateur + session PULSE) | Référent sécurité ([security.md](security.md)) |
-| **Maxime** | F2 Préférences, F3 Objectifs | Référent recette et qualité ([testing.md](testing.md)) |
+| **Maxime** | F2 Préférences, F3 Objectifs | Référent recette et qualité ([testing.md](testing.md)) et CI ([ci.md](ci.md)) |
 | **Simon** | F4 Défis, F5 Progression | Référent interface et accessibilité ([accessibility.md](accessibility.md)) |
 
 Chacun porte ses fonctionnalités **de bout en bout** : spec, domaine, API, écran, tests. Chacun **commite son propre code** (Q11.4).
@@ -24,7 +24,7 @@ Avant que F1 soit prête, les autres codent leur domaine et leurs tests unitaire
 
 ## Priorités (ordre de sacrifice si le temps manque)
 
-On ne coupe jamais : F1 à F6 (MUST), le simulateur conforme, les contrôles de droits, les REC en local, AA.
+On ne coupe jamais : F1 à F6 (MUST), le simulateur conforme, les contrôles de droits, les REC en local, AA, la CI de base (`rust`, `web`, `secrets`) et la protection de `main` et `develop` (CDC §5.2, §5.6).
 On coupe dans cet ordre, du premier au dernier :
 1. App Tauri (bonus, CDC §6)
 2. E2E WebKit et mobile (on garde Chromium bureau)
@@ -42,19 +42,23 @@ On coupe dans cet ordre, du premier au dernier :
 
 ## Dépôt
 
-On garde le **même dépôt** (`mael-bourdin/pulse`) : un premier commit supprime la V0 TypeScript, ce qui reste visible dans l'historique et montre la démarche au jury. Les annexes du dossier sont copiées dans `docs/annexes/` (dépôt privé).
+On garde le **même dépôt** (`mael-bourdin/pulse`) : un premier commit supprime la V0 TypeScript, ce qui reste visible dans l'historique et montre la démarche au jury.
+
+Le dépôt est **public** (vérifié le 2026-11-25), ce qui rend GitHub Actions et les rulesets gratuits (ADR-29). Les annexes du dossier (PDF, classeur `.xlsm`) **ne sont donc pas versionnées** : `docs/annexes/` est ignoré par Git et les annexes circulent sur Discord. Seules les données de référence `data/hac-data-001/` sont versionnées (données synthétiques, CDC §4.5).
 
 ## Git
 
-- `main` toujours démontrable. Une branche par carte : `feat/F3-R04-suspendre-objectif`.
-- Conventional Commits avec l'identifiant de la spec : `feat(goals): suspendre un objectif [F3-R04]`.
-- Une PR = une revue par un autre membre. Celui-ci vérifie la règle citée, le droit contrôlé côté API, le test nommé avec l'ACC, et que l'auteur sait l'expliquer.
+Détail dans [workflow.md](workflow.md). En résumé :
+- `main` = version livrée, toujours démontrable ; `develop` = intégration. Personne ne pousse dessus directement.
+- Une branche par carte depuis `develop` : `feat/F3-R07-suspendre-objectif`. PR relue par un autre membre, CI verte, fusion en squash.
+- Titre de PR en convention Angular avec l'identifiant de la spec : `feat(goals): suspendre un objectif [F3-R07]`.
+- Promotion `develop` → `main` en fin de sprint, en merge commit.
 - `make check` avant chaque push. Pas de ligne de co-auteur IA (hook `commit-msg`).
 
 ## Rituels
 
 - 10 min au début de chaque séance sur Discord : fait, à faire, bloquant.
-- Fin de sprint : 15 min de démo interne, puis mise à jour de Trello et de `traceability.md`.
+- Fin de sprint : 15 min de démo interne, mise à jour de Trello et de `traceability.md`, puis PR de promotion vers `main`.
 - Toute décision nouvelle → une ligne dans [decisions.md](decisions.md).
 
 ## IA
@@ -66,7 +70,7 @@ Autorisée comme assistant (CDC §9). On génère à partir des specs ; tout est
 | Livrable | Forme | Responsable |
 |---|---|---|
 | L1 + L2 Prise en charge et pilotage | Un document ≤ 5 pages : synthèse, ambiguïtés, risques, backlog, rôles, planning, renvoi vers `decisions.md` | Mael |
-| L3 Dépôt et environnement | README + `make setup/dev` | Mael |
+| L3 Dépôt et environnement | README + `make setup/dev` + conventions ([workflow.md](workflow.md)) | Mael |
 | L4 PULSE exécutable | En ligne (Railway) + local | Tous |
 | L5 Note technique | README + `spec/` (architecture, sécurité, usage de l'IA, limites) | Grégory |
 | L6 Dossier de recette | `docs/recette.md` exporté en PDF, ≤ 5 pages | Maxime |

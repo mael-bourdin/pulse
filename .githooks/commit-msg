@@ -1,6 +1,6 @@
 #!/bin/sh
 # Retire toute mention d'un assistant IA comme co-auteur (règle d'équipe PULSE).
-# Activé automatiquement par `pnpm install` (script "prepare" : git config core.hooksPath .githooks).
+# À activer une fois par clone : git config core.hooksPath .githooks
 msg_file="$1"
 tmp="$(mktemp)"
 grep -viE '^(co-authored-by:.*(claude|anthropic|noreply@anthropic\.com|copilot|cursor|openai|chatgpt)|claude-session:|.*generated with \[?claude code)' "$msg_file" > "$tmp"
