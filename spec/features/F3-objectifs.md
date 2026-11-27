@@ -20,11 +20,11 @@ stateDiagram-v2
 | Id | Exigence | Source |
 |---|---|---|
 | F3-R01 | La liste ne contient que les objectifs de l'utilisateur de la session (DATA pour Alex : goal-001, goal-002, goal-009) | RG-GOAL-01, ACC-GOAL-01 |
-| F3-R02 | Création : `label` (1–120, espaces retirés), `category` (5 valeurs), `targetValue` (nombre > 0, ≤ 1 000 000), `unit` (liste fermée, F3-R11), `endDate` facultative (≥ date du jour de création si fournie ; `null` vaut absente) | RG-GOAL-02, ACC-GOAL-02 |
+| F3-R02 | Création : `label` (1–120, espaces retirés), `category` (5 valeurs), `targetValue` (nombre > 0, ≤ 1 000 000, 2 décimales au plus), `unit` (liste fermée, F3-R11), `endDate` facultative (≥ date du jour de création si fournie ; `null` vaut absente) | RG-GOAL-02, ACC-GOAL-02 |
 | F3-R03 | Un nouvel objectif est créé en **ACTIVE**, avec `currentValue = 0`, `startDate` = date du jour et `userId` = celui de la session | RG-GOAL-03, ACC-GOAL-03 |
 | F3-R04 | Cible vide, nulle, négative ou non numérique → 400 `VALIDATION_ERROR` (`details` sur `targetValue`) ; aucun objectif créé | ACC-GOAL-04 |
 | F3-R05 | Modification (`label`, `category`, `targetValue`, `unit`, `endDate`) seulement si **ACTIVE** ; sinon 409 `INVALID_STATE` « Seul un objectif actif peut être modifié. » | RG-GOAL-05, 07, ACC-GOAL-05 |
-| F3-R06 | Progression : `currentValue` ≥ 0, seulement si **ACTIVE** ; sinon 409 `INVALID_STATE` « La progression d'un objectif suspendu ou clôturé ne peut pas être modifiée. ». Une valeur négative donne 400 | RG-GOAL-08, ACC-GOAL-08 |
+| F3-R06 | Progression : `currentValue` ≥ 0, ≤ 9 999 999 999,99 et 2 décimales au plus (colonne `numeric(12,2)`), seulement si **ACTIVE** ; sinon 409 `INVALID_STATE` « La progression d'un objectif suspendu ou clôturé ne peut pas être modifiée. ». Une valeur négative, trop grande ou trop précise donne 400 : jamais d'arrondi silencieux | RG-GOAL-08, ACC-GOAL-08 |
 | F3-R07 | Transitions selon le diagramme ; toute autre transition → 409 `INVALID_STATE`. Clôturer renseigne `endDate` = date du jour si elle était vide | RG-GOAL-05 à 07, ACC-GOAL-06, 07 |
 | F3-R08 | Un objectif d'un autre utilisateur (consultation, modification, transition) → **404** `NOT_FOUND`, et rien n'est modifié | RG-GOAL-01, ACC-GOAL-09, ADR-09 |
 | F3-R09 | Le pourcentage affiché vaut `min(100, arrondi(currentValue / targetValue × 100))`. L'arrondi va à l'entier le plus proche, **demi vers le haut** (12,5 → 13) : `round_dp_with_strategy(0, RoundingStrategy::MidpointAwayFromZero)` de `rust_decimal`, pas `round()`, qui arrondit au pair (12,5 → 12). Dépasser la cible est autorisé (goal-006 : 165/150) | — |

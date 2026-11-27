@@ -9,6 +9,9 @@ use serde::{Deserialize, Serialize};
 
 pub const LABEL_MAX_CHARS: usize = 120;
 pub const TARGET_MAX: Decimal = Decimal::from_parts(1_000_000, 0, 0, false, 0);
+/// Plus grande valeur d'une colonne `numeric(12,2)` (data-model.md).
+pub const PROGRESS_MAX: Decimal = Decimal::from_parts(999_999_999, 2, 0, false, 2);
+pub const MAX_DECIMALS: u32 = 2;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
@@ -95,19 +98,26 @@ pub enum FieldError {
     LabelTooLong,
     TargetNotPositive,
     TargetTooLarge,
+    TargetTooPrecise,
     UnknownUnit,
     EndDateInPast,
     NegativeProgress,
+    ProgressTooLarge,
+    ProgressTooPrecise,
 }
 
 impl FieldError {
     pub fn field(self) -> &'static str {
         match self {
             Self::EmptyLabel | Self::LabelTooLong => "label",
-            Self::TargetNotPositive | Self::TargetTooLarge => "targetValue",
+            Self::TargetNotPositive | Self::TargetTooLarge | Self::TargetTooPrecise => {
+                "targetValue"
+            }
             Self::UnknownUnit => "unit",
             Self::EndDateInPast => "endDate",
-            Self::NegativeProgress => "currentValue",
+            Self::NegativeProgress | Self::ProgressTooLarge | Self::ProgressTooPrecise => {
+                "currentValue"
+            }
         }
     }
 }
@@ -119,9 +129,12 @@ impl fmt::Display for FieldError {
             Self::LabelTooLong => "Le libellé ne doit pas dépasser 120 caractères.",
             Self::TargetNotPositive => "La valeur cible doit être un nombre supérieur à 0.",
             Self::TargetTooLarge => "La valeur cible ne doit pas dépasser 1 000 000.",
+            Self::TargetTooPrecise => "La valeur cible accepte au plus 2 décimales.",
             Self::UnknownUnit => "Choisissez une unité dans la liste.",
             Self::EndDateInPast => "La date de fin ne peut pas être antérieure à aujourd'hui.",
             Self::NegativeProgress => "La progression ne peut pas être négative.",
+            Self::ProgressTooLarge => "La progression ne doit pas dépasser 9 999 999 999,99.",
+            Self::ProgressTooPrecise => "La progression accepte au plus 2 décimales.",
         };
         f.write_str(message)
     }
@@ -176,6 +189,8 @@ pub fn validate_target(target: Decimal) -> Result<Decimal, FieldError> {
         Err(FieldError::TargetNotPositive)
     } else if target > TARGET_MAX {
         Err(FieldError::TargetTooLarge)
+    } else if decimals(target) > MAX_DECIMALS {
+        Err(FieldError::TargetTooPrecise)
     } else {
         Ok(target)
     }
@@ -213,6 +228,10 @@ pub fn check_editable(status: GoalStatus) -> Result<(), StateError> {
 pub fn validate_progress(value: Decimal) -> Result<Decimal, FieldError> {
     if value < Decimal::ZERO {
         Err(FieldError::NegativeProgress)
+    } else if value > PROGRESS_MAX {
+        Err(FieldError::ProgressTooLarge)
+    } else if decimals(value) > MAX_DECIMALS {
+        Err(FieldError::ProgressTooPrecise)
     } else {
         Ok(value)
     }
@@ -251,6 +270,10 @@ pub fn progress_percent(current: Decimal, target: Decimal) -> u8 {
         .min(Decimal::ONE_HUNDRED)
         .to_u8()
         .unwrap_or(100)
+}
+
+fn decimals(value: Decimal) -> u32 {
+    value.normalize().scale()
 }
 
 #[cfg(test)]
@@ -329,6 +352,20 @@ mod tests {
             Err(FieldError::TargetTooLarge)
         );
         assert_eq!(FieldError::TargetNotPositive.field(), "targetValue");
+    }
+
+    #[test]
+    fn acc_goal_04_cible_au_plus_deux_decimales() {
+        assert_eq!(validate_target(dec!(7.5)), Ok(dec!(7.5)));
+        assert_eq!(validate_target(dec!(7.10)), Ok(dec!(7.10)));
+        assert_eq!(
+            validate_target(dec!(7.125)),
+            Err(FieldError::TargetTooPrecise)
+        );
+        assert_eq!(
+            validate_target(dec!(0.001)),
+            Err(FieldError::TargetTooPrecise)
+        );
     }
 
     #[test]
@@ -426,6 +463,15 @@ mod tests {
         assert_eq!(
             validate_progress(dec!(-1)),
             Err(FieldError::NegativeProgress)
+        );
+        assert_eq!(validate_progress(PROGRESS_MAX), Ok(PROGRESS_MAX));
+        assert_eq!(
+            validate_progress(dec!(10000000000)),
+            Err(FieldError::ProgressTooLarge)
+        );
+        assert_eq!(
+            validate_progress(dec!(7.125)),
+            Err(FieldError::ProgressTooPrecise)
         );
         assert_eq!(check_progress_allowed(Active), Ok(()));
         for status in [Suspended, Closed] {
