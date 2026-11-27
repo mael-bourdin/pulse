@@ -83,7 +83,9 @@ pulse/
 | `TRUST_PROXY` | api | `false` en local, `true` sur Railway (IP client lue dans `X-Forwarded-For`) |
 | `COOKIE_SECURE` | api | `false` en local, `true` en ligne |
 | `WEB_DIST_DIR` | api | `apps/web/dist` |
-| `PORT` | api, simulateur | `8080`, `8081` |
+| `PORT` | api | `8080` (injectée par Railway en ligne) |
+| `AUTH_SIM_PORT` | simulateur | `8081` (nom distinct de `PORT` : les deux services partagent le même `.env` en local) |
+| `RAILWAY_GIT_COMMIT_SHA` | api | fournie par Railway, affichée par `/health` ; absente en local |
 | `AUTH_SIM_UNAVAILABLE` | simulateur | `false` |
 | `AUTH_SIM_CONTROL_TOKEN` | simulateur | secret, uniquement dans `.env` ou sur Railway |
 | `AUTH_SIM_TOKEN_TTL` | simulateur | `3600` |
@@ -91,6 +93,10 @@ pulse/
 | `PULSE_URL` | desktop | `http://localhost:5173` en dev, l'URL Railway en ligne |
 
 En développement, Vite (port 5173) redirige `/api` vers `:8080`, ce qui garde la même origine et le cookie.
+
+Les deux serveurs écoutent sur `[::]` (IPv4 et IPv6), ce qui fonctionne en local comme sur le réseau privé de Railway.
+
+Le pool sqlx garde **0 connexion au repos** (`min_connections(0)`, `idle_timeout` de 60 s) : sur les plans gratuits, une connexion ouverte empêcherait Railway et Neon de se mettre en veille ([hosting.md](hosting.md)).
 
 ## Choix de bibliothèques
 

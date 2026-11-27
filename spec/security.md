@@ -19,6 +19,8 @@ Responsable : **Grégory** (référent sécurité). Cette page répond au CDC §
 | Mot de passe exposé | Simulateur : Argon2id, jamais renvoyé ; PULSE ne stocke ni ne journalise le mot de passe | ACC-AUTH-09, ACC-SEC-02 |
 | Dépendances vulnérables | `cargo deny check` et `pnpm audit` dans `make check` | — |
 | Simulateur exposé sur Internet | Sur Railway, réseau privé seulement ; la route `/__control` exige un secret | ADR-15, ADR-17 |
+| Secrets d'hébergement | `AUTH_SIM_CONTROL_TOKEN` et `DATABASE_URL` (Neon) saisis comme variables scellées dans Railway. La chaîne Neon ne sort de la console que vers `.env.production` sur les postes (ignoré par Git) pour le seed. La CI n'a aucun jeton Railway | ADR-30 |
+| Comptes de démo publics | Les mots de passe de démo sont publiés (README, dossier HAC-DATA-001) : n'importe qui peut se connecter sur l'URL publique, y compris en admin, et modifier les données de démo. Risque **accepté** (données synthétiques) ; `make seed-remote` juste avant la démo. Conforme à ACC-SEC-02 : l'environnement en ligne est un environnement de recette ([hosting.md](hosting.md)) | CDC §4.5, ACC-SEC-02 |
 
 ## En-têtes HTTP (tower-http)
 
