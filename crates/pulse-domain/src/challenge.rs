@@ -82,6 +82,19 @@ pub fn check_leave(participations: &[ParticipationStatus]) -> Result<(), Challen
     }
 }
 
+/// Choisit la participation à exposer dans `myParticipation` (F4-R02) : l'active, sinon la
+/// plus récente selon la date d'inscription, sinon aucune.
+///
+/// Chaque élément donne l'état et la date d'inscription. Le résultat est la position de la
+/// participation retenue dans la liste reçue.
+pub fn my_participation<D: Ord>(participations: &[(ParticipationStatus, D)]) -> Option<usize> {
+    participations
+        .iter()
+        .enumerate()
+        .max_by_key(|(_, (status, joined_at))| (*status == ParticipationStatus::Active, joined_at))
+        .map(|(position, _)| position)
+}
+
 fn has_active(participations: &[ParticipationStatus]) -> bool {
     participations.contains(&ParticipationStatus::Active)
 }
@@ -100,6 +113,27 @@ mod tests {
         assert!(!can_join(Open, &[Active]));
         assert!(!can_join(Upcoming, &[]));
         assert!(!can_join(Closed, &[]));
+    }
+
+    #[test]
+    fn f4_r02_participation_active_avant_la_plus_recente() {
+        let participations = [(Left, "2026-02-10"), (Active, "2026-02-01")];
+        assert_eq!(my_participation(&participations), Some(1));
+    }
+
+    #[test]
+    fn f4_r02_sans_active_la_plus_recente() {
+        let participations = [
+            (Left, "2026-01-05"),
+            (Completed, "2026-02-01"),
+            (Left, "2026-01-20"),
+        ];
+        assert_eq!(my_participation(&participations), Some(1));
+    }
+
+    #[test]
+    fn f4_r02_aucune_participation() {
+        assert_eq!(my_participation::<&str>(&[]), None);
     }
 
     #[test]
