@@ -1,0 +1,471 @@
+{
+  "preferences": [
+    {
+      "preferenceId": "pref-001",
+      "userId": "usr-10027",
+      "themePrioritaire": "ACTIVITE",
+      "notifications": true,
+      "frequenceRappel": "QUOTIDIEN",
+      "momentPrefere": "MATIN",
+      "participationDefis": true
+    },
+    {
+      "preferenceId": "pref-002",
+      "userId": "usr-10028",
+      "themePrioritaire": "STRESS",
+      "notifications": true,
+      "frequenceRappel": "HEBDOMADAIRE",
+      "momentPrefere": "SOIR",
+      "participationDefis": true
+    },
+    {
+      "preferenceId": "pref-003",
+      "userId": "usr-10029",
+      "themePrioritaire": "SOMMEIL",
+      "notifications": false,
+      "frequenceRappel": "AUCUN",
+      "momentPrefere": "SOIR",
+      "participationDefis": false
+    },
+    {
+      "preferenceId": "pref-004",
+      "userId": "usr-10030",
+      "themePrioritaire": "NUTRITION",
+      "notifications": true,
+      "frequenceRappel": "HEBDOMADAIRE",
+      "momentPrefere": "MIDI",
+      "participationDefis": true
+    },
+    {
+      "preferenceId": "pref-005",
+      "userId": "usr-10031",
+      "themePrioritaire": "HYDRATATION",
+      "notifications": true,
+      "frequenceRappel": "QUOTIDIEN",
+      "momentPrefere": "MATIN",
+      "participationDefis": true
+    }
+  ],
+  "goals": [
+    {
+      "goalId": "goal-001",
+      "userId": "usr-10027",
+      "category": "ACTIVITE",
+      "label": "Atteindre 8000 pas par jour",
+      "targetValue": 8000,
+      "currentValue": 6250,
+      "unit": "pas/jour",
+      "status": "ACTIVE",
+      "startDate": "2026-01-05",
+      "endDate": "2026-03-31"
+    },
+    {
+      "goalId": "goal-002",
+      "userId": "usr-10027",
+      "category": "SOMMEIL",
+      "label": "Dormir au moins 7 h 30 par nuit",
+      "targetValue": 7.5,
+      "currentValue": 7.1,
+      "unit": "h/nuit",
+      "status": "ACTIVE",
+      "startDate": "2026-01-10",
+      "endDate": "2026-03-15"
+    },
+    {
+      "goalId": "goal-003",
+      "userId": "usr-10028",
+      "category": "HYDRATATION",
+      "label": "Boire 1,8 L par jour",
+      "targetValue": 1.8,
+      "currentValue": 1.6,
+      "unit": "L/jour",
+      "status": "ACTIVE",
+      "startDate": "2026-01-20",
+      "endDate": "2026-03-20"
+    },
+    {
+      "goalId": "goal-004",
+      "userId": "usr-10028",
+      "category": "STRESS",
+      "label": "Réaliser 3 séances de respiration par semaine",
+      "targetValue": 3,
+      "currentValue": 2,
+      "unit": "séances/semaine",
+      "status": "SUSPENDED",
+      "startDate": "2026-01-12",
+      "endDate": "2026-02-28"
+    },
+    {
+      "goalId": "goal-005",
+      "userId": "usr-10030",
+      "category": "NUTRITION",
+      "label": "Prendre 5 petits-déjeuners équilibrés par semaine",
+      "targetValue": 5,
+      "currentValue": 4,
+      "unit": "jours/semaine",
+      "status": "ACTIVE",
+      "startDate": "2026-02-01",
+      "endDate": "2026-04-01"
+    },
+    {
+      "goalId": "goal-006",
+      "userId": "usr-10030",
+      "category": "ACTIVITE",
+      "label": "Faire 150 minutes d’activité par semaine",
+      "targetValue": 150,
+      "currentValue": 165,
+      "unit": "min/semaine",
+      "status": "CLOSED",
+      "startDate": "2026-01-06",
+      "endDate": "2026-02-06"
+    },
+    {
+      "goalId": "goal-007",
+      "userId": "usr-10031",
+      "category": "SOMMEIL",
+      "label": "Se coucher avant 23 h 30",
+      "targetValue": 5,
+      "currentValue": 3,
+      "unit": "jours/semaine",
+      "status": "ACTIVE",
+      "startDate": "2026-02-03",
+      "endDate": "2026-04-03"
+    },
+    {
+      "goalId": "goal-008",
+      "userId": "usr-10031",
+      "category": "HYDRATATION",
+      "label": "Boire 2 L par jour",
+      "targetValue": 2,
+      "currentValue": 1.7,
+      "unit": "L/jour",
+      "status": "ACTIVE",
+      "startDate": "2026-02-05",
+      "endDate": "2026-04-05"
+    },
+    {
+      "goalId": "goal-009",
+      "userId": "usr-10027",
+      "category": "STRESS",
+      "label": "Faire 10 minutes de respiration par jour",
+      "targetValue": 10,
+      "currentValue": 10,
+      "unit": "min/jour",
+      "status": "CLOSED",
+      "startDate": "2026-01-01",
+      "endDate": "2026-01-31"
+    },
+    {
+      "goalId": "goal-010",
+      "userId": "usr-10028",
+      "category": "ACTIVITE",
+      "label": "Marcher 7000 pas par jour",
+      "targetValue": 7000,
+      "currentValue": 5400,
+      "unit": "pas/jour",
+      "status": "ACTIVE",
+      "startDate": "2026-02-10",
+      "endDate": "2026-04-10"
+    }
+  ],
+  "challenges": [
+    {
+      "challengeId": "chl-001",
+      "title": "10 000 pas ensemble",
+      "category": "ACTIVITE",
+      "description": "Atteindre 10 000 pas par jour pendant la période du défi",
+      "startDate": "2026-02-01",
+      "endDate": "2026-02-28",
+      "targetValue": 10000,
+      "unit": "pas/jour",
+      "status": "OPEN",
+      "createdBy": "adm-10001"
+    },
+    {
+      "challengeId": "chl-002",
+      "title": "Défi hydratation 7 jours",
+      "category": "HYDRATATION",
+      "description": "Boire au moins 1,8 L d’eau par jour pendant 7 jours",
+      "startDate": "2026-02-10",
+      "endDate": "2026-02-16",
+      "targetValue": 1.8,
+      "unit": "L/jour",
+      "status": "OPEN",
+      "createdBy": "adm-10001"
+    },
+    {
+      "challengeId": "chl-003",
+      "title": "Semaine sommeil régulier",
+      "category": "SOMMEIL",
+      "description": "Atteindre au moins 7 heures de sommeil par nuit",
+      "startDate": "2026-03-02",
+      "endDate": "2026-03-08",
+      "targetValue": 7,
+      "unit": "h/nuit",
+      "status": "UPCOMING",
+      "createdBy": "adm-10001"
+    },
+    {
+      "challengeId": "chl-004",
+      "title": "Pause respiration",
+      "category": "STRESS",
+      "description": "Réaliser deux séances de respiration guidée par jour",
+      "startDate": "2026-01-12",
+      "endDate": "2026-01-18",
+      "targetValue": 2,
+      "unit": "séances/jour",
+      "status": "CLOSED",
+      "createdBy": "adm-10001"
+    },
+    {
+      "challengeId": "chl-005",
+      "title": "5 fruits et légumes",
+      "category": "NUTRITION",
+      "description": "Atteindre cinq portions de fruits et légumes par jour",
+      "startDate": "2026-02-15",
+      "endDate": "2026-02-28",
+      "targetValue": 5,
+      "unit": "portions/jour",
+      "status": "OPEN",
+      "createdBy": "adm-10001"
+    },
+    {
+      "challengeId": "chl-006",
+      "title": "Bouger 30 minutes",
+      "category": "ACTIVITE",
+      "description": "Cumuler au moins 30 minutes d’activité physique par jour",
+      "startDate": "2026-03-15",
+      "endDate": "2026-03-21",
+      "targetValue": 30,
+      "unit": "min/jour",
+      "status": "UPCOMING",
+      "createdBy": "adm-10001"
+    }
+  ],
+  "participations": [
+    {
+      "participationId": "part-001",
+      "challengeId": "chl-001",
+      "userId": "usr-10027",
+      "joinedAt": "2026-02-01",
+      "progressValue": 7800,
+      "status": "ACTIVE"
+    },
+    {
+      "participationId": "part-002",
+      "challengeId": "chl-001",
+      "userId": "usr-10028",
+      "joinedAt": "2026-02-01",
+      "progressValue": 6200,
+      "status": "ACTIVE"
+    },
+    {
+      "participationId": "part-003",
+      "challengeId": "chl-001",
+      "userId": "usr-10030",
+      "joinedAt": "2026-02-02",
+      "progressValue": 9100,
+      "status": "ACTIVE"
+    },
+    {
+      "participationId": "part-004",
+      "challengeId": "chl-002",
+      "userId": "usr-10028",
+      "joinedAt": "2026-02-10",
+      "progressValue": 1.6,
+      "status": "ACTIVE"
+    },
+    {
+      "participationId": "part-005",
+      "challengeId": "chl-002",
+      "userId": "usr-10031",
+      "joinedAt": "2026-02-10",
+      "progressValue": 1.9,
+      "status": "ACTIVE"
+    },
+    {
+      "participationId": "part-006",
+      "challengeId": "chl-002",
+      "userId": "usr-10027",
+      "joinedAt": "2026-02-11",
+      "progressValue": 1.7,
+      "status": "LEFT"
+    },
+    {
+      "participationId": "part-007",
+      "challengeId": "chl-004",
+      "userId": "usr-10027",
+      "joinedAt": "2026-01-12",
+      "progressValue": 2,
+      "status": "COMPLETED"
+    },
+    {
+      "participationId": "part-008",
+      "challengeId": "chl-004",
+      "userId": "usr-10031",
+      "joinedAt": "2026-01-12",
+      "progressValue": 2,
+      "status": "COMPLETED"
+    },
+    {
+      "participationId": "part-009",
+      "challengeId": "chl-005",
+      "userId": "usr-10030",
+      "joinedAt": "2026-02-15",
+      "progressValue": 4,
+      "status": "ACTIVE"
+    },
+    {
+      "participationId": "part-010",
+      "challengeId": "chl-005",
+      "userId": "usr-10028",
+      "joinedAt": "2026-02-15",
+      "progressValue": 5,
+      "status": "ACTIVE"
+    }
+  ],
+  "metrics": [
+    {
+      "metricId": "met-001",
+      "userId": "usr-10027",
+      "periodStart": "2026-02-09",
+      "periodEnd": "2026-02-15",
+      "metricType": "WEEKLY_ACTIVE_DAYS",
+      "label": "Jours avec activité enregistrée",
+      "value": 5,
+      "unit": "jours"
+    },
+    {
+      "metricId": "met-002",
+      "userId": "usr-10027",
+      "periodStart": "2026-02-09",
+      "periodEnd": "2026-02-15",
+      "metricType": "STREAK_DAYS",
+      "label": "Série de suivi en cours",
+      "value": 4,
+      "unit": "jours"
+    },
+    {
+      "metricId": "met-003",
+      "userId": "usr-10028",
+      "periodStart": "2026-02-09",
+      "periodEnd": "2026-02-15",
+      "metricType": "WELLBEING_CHECKINS",
+      "label": "Check-ins bien-être complétés",
+      "value": 3,
+      "unit": "check-ins"
+    },
+    {
+      "metricId": "met-004",
+      "userId": "usr-10028",
+      "periodStart": "2026-02-09",
+      "periodEnd": "2026-02-15",
+      "metricType": "CHALLENGES_ACTIVE",
+      "label": "Défis collectifs actifs",
+      "value": 2,
+      "unit": "défis"
+    },
+    {
+      "metricId": "met-005",
+      "userId": "usr-10030",
+      "periodStart": "2026-02-09",
+      "periodEnd": "2026-02-15",
+      "metricType": "WEEKLY_ACTIVE_DAYS",
+      "label": "Jours avec activité enregistrée",
+      "value": 6,
+      "unit": "jours"
+    },
+    {
+      "metricId": "met-006",
+      "userId": "usr-10030",
+      "periodStart": "2026-02-09",
+      "periodEnd": "2026-02-15",
+      "metricType": "GOALS_CLOSED",
+      "label": "Objectifs clôturés",
+      "value": 1,
+      "unit": "objectif"
+    },
+    {
+      "metricId": "met-007",
+      "userId": "usr-10031",
+      "periodStart": "2026-02-09",
+      "periodEnd": "2026-02-15",
+      "metricType": "HYDRATION_DAYS",
+      "label": "Jours ayant atteint l’objectif hydratation",
+      "value": 4,
+      "unit": "jours"
+    },
+    {
+      "metricId": "met-008",
+      "userId": "usr-10031",
+      "periodStart": "2026-02-09",
+      "periodEnd": "2026-02-15",
+      "metricType": "STREAK_DAYS",
+      "label": "Série de suivi en cours",
+      "value": 6,
+      "unit": "jours"
+    }
+  ],
+  "contents": [
+    {
+      "contentId": "cnt-001",
+      "title": "Bien démarrer sa journée",
+      "type": "ARTICLE",
+      "category": "SOMMEIL",
+      "status": "PUBLISHED",
+      "publishedAt": "2026-01-05",
+      "updatedAt": "2026-01-05",
+      "authorId": "adm-10001"
+    },
+    {
+      "contentId": "cnt-002",
+      "title": "3 exercices de respiration",
+      "type": "FICHE",
+      "category": "STRESS",
+      "status": "PUBLISHED",
+      "publishedAt": "2026-01-12",
+      "updatedAt": "2026-01-20",
+      "authorId": "adm-10001"
+    },
+    {
+      "contentId": "cnt-003",
+      "title": "Hydratation au quotidien",
+      "type": "ARTICLE",
+      "category": "HYDRATATION",
+      "status": "PUBLISHED",
+      "publishedAt": "2026-01-18",
+      "updatedAt": "2026-01-18",
+      "authorId": "adm-10001"
+    },
+    {
+      "contentId": "cnt-004",
+      "title": "Idées de petit-déjeuner équilibré",
+      "type": "ARTICLE",
+      "category": "NUTRITION",
+      "status": "DRAFT",
+      "publishedAt": null,
+      "updatedAt": "2026-02-02",
+      "authorId": "adm-10001"
+    },
+    {
+      "contentId": "cnt-005",
+      "title": "Préparer une marche active",
+      "type": "CONSEIL",
+      "category": "ACTIVITE",
+      "status": "PUBLISHED",
+      "publishedAt": "2026-02-08",
+      "updatedAt": "2026-02-08",
+      "authorId": "adm-10001"
+    },
+    {
+      "contentId": "cnt-006",
+      "title": "Routine de déconnexion du soir",
+      "type": "FICHE",
+      "category": "SOMMEIL",
+      "status": "DRAFT",
+      "publishedAt": null,
+      "updatedAt": "2026-02-14",
+      "authorId": "adm-10001"
+    }
+  ]
+}

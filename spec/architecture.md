@@ -40,7 +40,7 @@ pulse/
 ├── apps/
 │   ├── web/                # React 19 + Vite + TypeScript
 │   └── desktop/            # Tauri 2 (src-tauri), charge PULSE_URL
-├── data/hac-data-001/      # jeu de données converti en JSON (versionné)
+├── data/hac-data-001/      # seed.json (HAC-DATA-001, chargé par make seed) et users.json, versionnés
 ├── migrations/             # migrations SQL (sqlx)
 ├── e2e/                    # tests Playwright (REC-01…13) + axe
 ├── .github/workflows/      # ci.yml, pr-title.yml (voir ci.md)

@@ -13,7 +13,7 @@
 | Id | Exigence | Source |
 |---|---|---|
 | F1-R01 | Expose `POST /api/v1/auth/login` et `GET /api/v1/auth/me`, en JSON camelCase | ACC-AUTH-01, 02 |
-| F1-R02 | Utilisateurs chargés depuis `data/users.json` (les 6 comptes de DATA, rôles et états inchangés). Mots de passe hachés en **Argon2id**, jamais en clair | ACC-AUTH-09, ADR-14 |
+| F1-R02 | Au démarrage, le simulateur charge `crates/auth-simulator/data/users.json` (les 6 comptes de DATA, rôles et états inchangés). Ce fichier est produit par `auth-simulator hash-users` à partir de `data/hac-data-001/users.json`, qui ne contient aucun haché. Mots de passe hachés en **Argon2id**, jamais en clair | ACC-AUTH-09, ADR-14 |
 | F1-R03 | Identifiants corrects + compte ACTIVE → **200** avec `userId`, `email`, `displayName`, `role`, `accountStatus`, `accessToken`, `tokenType: "Bearer"`, `expiresIn: 3600` | ACC-AUTH-03 |
 | F1-R04 | Corps non JSON, pas un objet, `email` ou `password` absent, vide ou non textuel → **400** `AUTH_BAD_REQUEST`. Les clés supplémentaires sont ignorées | ACC-AUTH-04 |
 | F1-R05 | Mauvais mot de passe **ou** adresse inconnue → **401** `AUTH_INVALID_CREDENTIALS`, avec un corps identique. Un hachage factice est calculé si l'adresse est inconnue, pour que le temps de réponse ne trahisse rien | ACC-AUTH-05, REC-02 |
