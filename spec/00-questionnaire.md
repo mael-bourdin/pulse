@@ -251,3 +251,43 @@ Réponse : Pas de plan B : on ne prendra pas de retard.
 
 **Q13.3** Autre chose (consignes du formateur…) ?
 Réponse : Respecter au maximum le cahier des charges.
+
+## 14. Workflow, CI et hébergement (ajouté le 2026-11-27)
+
+Questions ouvertes par le découpage de la PR #1 (PR #1, #14 à #18). À trancher en séance.
+
+**Q14.1** On adopte la proposition de #18 (release-please, environnement `staging` sur `develop`, E2E requis vers `main`), en COULD ?
+→ Coût : 2 à 3 h en S0, puis environ 15 min par fin de sprint. Sans elle, la promotion de fin de sprint reste une simple PR (#14).
+Réponse :
+
+**Q14.2** Dans quel espace vit le projet Railway ? Il a été créé le 2026-11-25 dans l'espace de Maxime (essai, puis plan Free, qui n'accepte qu'un membre).
+→ Celui qui possède le projet est le seul à voir les journaux et à faire le 503 en ligne : point unique de défaillance le jour de la soutenance. Options : le recréer dans l'espace de Mael (référent hébergement), ou le garder chez Maxime.
+Réponse :
+
+**Q14.3** Quelle est la date exacte de la soutenance ?
+→ Nécessaire pour planifier le gel de `main` (J-2) et la chauffe des services gratuits.
+Réponse :
+
+**Q14.4** Qui est référent CI ?
+→ Maxime (référent qualité) ; Mael garde les réglages GitHub (lui seul est admin du dépôt).
+Réponse :
+
+**Q14.5** Le dépôt est public : on sort les annexes du dossier (PDF, classeur) de Git ?
+→ Oui, `docs/annexes/` ignoré ; seules les données de référence en JSON sont versionnées (#1).
+Réponse :
+
+**Q14.6** `develop` devient la branche par défaut du dépôt ?
+→ Oui : les PR la visent par défaut, ce qui évite d'en ouvrir une vers `main` par erreur.
+Réponse :
+
+**Q14.7** La relecture par le référent sécurité (session, client d'auth, admin) est imposée par GitHub (`CODEOWNERS`) ou reste une règle d'équipe ?
+→ Règle d'équipe : un blocage technique figerait les PR quand Grégory est absent.
+Réponse :
+
+**Q14.8** On garde le nom `production`, ou on reprend le vocabulaire du dossier ?
+→ ACC-SEC-02 n'autorise les mots de passe de démo qu'en développement et en recette. Proposition : garder `main` comme branche de la version livrée, mais nommer l'environnement en ligne `demo` (et `recette` si #18 passe).
+Réponse :
+
+**Q14.9** Plan Railway le mois de la soutenance : Hobby (5 $) ou on reste gratuit ?
+→ Hobby évite la mise en veille (pas de 502 au réveil devant le jury) ; gratuit oblige à chauffer les services 2 min avant (#15).
+Réponse :
