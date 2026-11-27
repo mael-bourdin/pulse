@@ -1,0 +1,50 @@
+[
+  {
+    "userId": "usr-10027",
+    "email": "alex.martin@demo.healthaicoach.fr",
+    "displayName": "Alex Martin",
+    "role": "USER",
+    "accountStatus": "ACTIVE",
+    "passwordHash": "$argon2id$v=19$m=19456,t=2,p=1$gn59Cnvg2om86lTsCtTPmg$kQWeKTy5VsaLEPtHzOuP+ZqMqs5C5nDFvgvms3nfdj0"
+  },
+  {
+    "userId": "usr-10028",
+    "email": "samira.benali@demo.healthaicoach.fr",
+    "displayName": "Samira Benali",
+    "role": "USER",
+    "accountStatus": "ACTIVE",
+    "passwordHash": "$argon2id$v=19$m=19456,t=2,p=1$wzJPvbk9ThQ0MpMadoSFdQ$GoHaIbx4ssGVeT9pPlEHIIbCvLKuT6QLo11FThon5Oc"
+  },
+  {
+    "userId": "usr-10029",
+    "email": "thomas.roy@demo.healthaicoach.fr",
+    "displayName": "Thomas Roy",
+    "role": "USER",
+    "accountStatus": "DISABLED",
+    "passwordHash": "$argon2id$v=19$m=19456,t=2,p=1$UJ+fL5AGVTHXKAvIuPwTwQ$bBdbp0/321jdRKc8pnfh0usY6+G0K0K4cRhkF1i5Ar8"
+  },
+  {
+    "userId": "usr-10030",
+    "email": "chloe.nguyen@demo.healthaicoach.fr",
+    "displayName": "Chloé Nguyen",
+    "role": "USER",
+    "accountStatus": "ACTIVE",
+    "passwordHash": "$argon2id$v=19$m=19456,t=2,p=1$UkCxzNCnOG7GIZrkgszJ0Q$I0t+NVYXFXYwjhd/5QqbNHPnYd70mstCBKHEKBrUGuU"
+  },
+  {
+    "userId": "usr-10031",
+    "email": "mehdi.laurent@demo.healthaicoach.fr",
+    "displayName": "Mehdi Laurent",
+    "role": "USER",
+    "accountStatus": "ACTIVE",
+    "passwordHash": "$argon2id$v=19$m=19456,t=2,p=1$CafSviaMR0722GpQ81N7Uw$ksNc/DrwkL01+PPMHkOP89xNMLK9ze13taMPjmLbWH4"
+  },
+  {
+    "userId": "adm-10001",
+    "email": "lea.bernard@demo.healthaicoach.fr",
+    "displayName": "Léa Bernard",
+    "role": "FUNCTIONAL_ADMIN",
+    "accountStatus": "ACTIVE",
+    "passwordHash": "$argon2id$v=19$m=19456,t=2,p=1$GnAkF26BueGSC8mr66pApQ$u87JvpwoPcm2m5u0mtnRFaj4kWRD9N3rXrWKouQUJTU"
+  }
+]
