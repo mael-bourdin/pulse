@@ -94,10 +94,10 @@ goal-004 appartient à Samira, goal-006 à Chloé : ces cas se testent avec leur
 | Critère | Exigences | Niveau | Fichier | Statut |
 |---|---|---|---|---|
 | ACC-PROG-01 | F5-R01 | I | `api/f5_progress` | à faire |
-| ACC-PROG-02 | F5-R02, F5-R03 | I | `api/f5_progress` | à faire |
+| ACC-PROG-02 | F5-R02, F5-R03 | I | `dom/progress`, `api/f5_progress` | en cours (indicateurs du domaine faits) |
 | ACC-PROG-03 | F5-R01 | I | `api/f5_progress` | à faire |
 | ACC-PROG-04 | F5-R04, F5-R05 | I | `api/f5_progress` | à faire |
-| ACC-PROG-05 | F5-R03, F5-R07 | I + E2E | `api/f5_progress`, `e2e/rec-10` | à faire |
+| ACC-PROG-05 | F5-R03, F5-R07 | I + E2E | `dom/progress`, `api/f5_progress`, `e2e/rec-10` | en cours (indicateurs du domaine faits) |
 
 ## F6 — Administration (ACC-ADM)
 
