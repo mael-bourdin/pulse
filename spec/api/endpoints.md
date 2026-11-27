@@ -79,7 +79,7 @@ Une clé inconnue dans le corps est **refusée** (400). Exception : `POST /sessi
 Une réponse ne contient que les champs listés ici.
 
 - **Pas de `userId`** dans les ressources : sous `/me/*`, la propriété est implicite (constitution §4, §5). Seul `SessionUser` porte le sien, celui de la session. Aucune réponse ne contient de donnée d'un autre utilisateur.
-- **Nombres** : les colonnes `numeric(12,2)` sont des nombres JSON (`7.5`), jamais des chaînes. On active la fonctionnalité `serde-float` de `rust_decimal`, et `decimal_float` d'utoipa pour que l'OpenAPI, donc les types générés du front, disent `number`. En entrée, une chaîne à la place d'un nombre (`"12"`) est refusée (400) : `rust_decimal` l'accepterait par défaut.
+- **Nombres** : les colonnes `numeric(12,2)` sont des nombres JSON (`7.5`), jamais des chaînes. On active les fonctionnalités `serde-float` **et** `serde-str` de `rust_decimal`, et `decimal_float` d'utoipa pour que l'OpenAPI, donc les types générés du front, disent `number`. `serde-float` seul sort bien des nombres, mais accepte encore `"12"` en entrée (`deserialize_any`) ; avec les deux, la lecture passe par `deserialize_f64`, que serde_json refuse sur une chaîne. En entrée, une chaîne à la place d'un nombre (`"12"`) est donc refusée (400) : test `acc_sec_03_nombre_en_chaine_400`.
 - **Dates** : `"YYYY-MM-DD"`.
 - **Null** : un champ marqué « oui » est toujours présent, avec la valeur `null`. Il n'est jamais omis.
 
@@ -115,7 +115,7 @@ Non renvoyés : `preference_id`, `user_id`, `updated_at`.
 | `category` | énum `category` | non | `goals.category` |
 | `targetValue` | number | non | `goals.target_value` |
 | `currentValue` | number | non | `goals.current_value` |
-| `unit` | string | non | `goals.unit` |
+| `unit` | énum `Unit` (F3-R11) | non | `goals.unit` |
 | `status` | énum `goal_status` | non | `goals.status` |
 | `startDate` | date | non | `goals.start_date` |
 | `endDate` | date | oui | `goals.end_date` |
@@ -123,7 +123,7 @@ Non renvoyés : `preference_id`, `user_id`, `updated_at`.
 
 Non renvoyé : `user_id`.
 
-`progressPercent` vaut `min(100, arrondi(currentValue / targetValue × 100))`. Il est calculé dans `pulse-domain` et le front ne le recalcule jamais. L'arrondi va au plus proche, **demi vers le haut** (12,5 → 13) : `round_dp_with_strategy(0, RoundingStrategy::MidpointAwayFromZero)`. Pas `round()` de `rust_decimal`, qui arrondit au pair (12,5 → 12).
+`progressPercent` suit F3-R09, qui fixe la formule et l'arrondi. Il est calculé dans `pulse-domain` et le front ne le recalcule jamais.
 
 ### `Challenge`
 
@@ -138,7 +138,7 @@ Réponse de `/admin/challenges`, et base de `ChallengeView`.
 | `startDate` | date | non | `challenges.start_date` |
 | `endDate` | date | non | `challenges.end_date` |
 | `targetValue` | number | non | `challenges.target_value` |
-| `unit` | string | non | `challenges.unit` |
+| `unit` | énum `Unit` (F3-R11) | non | `challenges.unit` |
 | `status` | énum `challenge_status` | non | `challenges.status` |
 
 Non renvoyé : `created_by`, ni aux USER ni à l'admin (aucun écran ne l'affiche).

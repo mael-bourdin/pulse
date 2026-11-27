@@ -12,7 +12,7 @@
 | F5-R02 | **Période** = celle de la métrique la plus récente de l'utilisateur, renvoyée en `period: { start, end }`. S'il n'a aucune métrique : `period: null` | ACC-PROG-02 |
 | F5-R03 | **Indicateurs affichés**, toujours ces 4 et dans cet ordre : WEEKLY_ACTIVE_DAYS, STREAK_DAYS, WELLBEING_CHECKINS, HYDRATION_DAYS. Pour chacun : `label` et `unit` fixes (tableau ci-dessous), et `value`, ou `value: null` s'il n'y a pas de donnée sur la période | RG-PROG-02, 03, ACC-PROG-02, 05 |
 | F5-R04 | **Compteurs calculés depuis les données réelles** : objectifs ACTIVE, SUSPENDED et CLOSED (table `goals`) ; participations ACTIVE (table `participations`). Les métriques `CHALLENGES_ACTIVE` et `GOALS_CLOSED` de DATA ne sont jamais lues | ACC-PROG-04 |
-| F5-R05 | **Détail** : `goals.items` = les objectifs ACTIVE, au format `Goal` : libellé, valeur actuelle, cible, unité et `progressPercent` (F3-R09), calculé par le serveur et arrondi demi vers le haut. `challenges.items` = les défis où la participation est ACTIVE, au format `ChallengeView` : titre, unité et `myParticipation.progressValue` | ACC-PROG-04 |
+| F5-R05 | **Détail** : `goals.items` = les objectifs ACTIVE, au format `Goal` : libellé, valeur actuelle, cible, unité et `progressPercent` (F3-R09), calculé par le serveur. `challenges.items` = les défis où la participation est ACTIVE, au format `ChallengeView` : titre, unité et `myParticipation.progressValue` | ACC-PROG-04 |
 | F5-R06 | Aucun classement, aucune moyenne collective, aucune comparaison | RG-PROG-04 |
 | F5-R07 | Une donnée absente n'est jamais une erreur : réponse 200 avec `null` ou une liste vide | RG-PROG-03, ACC-PROG-05 |
 
@@ -97,7 +97,7 @@ Il réutilise `/me/progress` et `/me/preferences`.
 | ACC-PROG-01 | R01 | Intégration | `acc_prog_01_synthese_personnelle` |
 | ACC-PROG-02 / REC-10 | R02, R03 | Intégration, E2E | `acc_prog_02_valeurs_data_alex`, `rec_10` |
 | ACC-PROG-03 | R01 | Intégration (Alex ne reçoit rien de `usr-10028`) | `acc_prog_03_pas_les_donnees_d_autrui` |
-| ACC-PROG-04 | R04, R05 | Unitaire (arrondi : 12,5 → 13), intégration | `acc_prog_04_objectifs_et_participations`, `acc_prog_04_arrondi_demi_vers_le_haut` |
+| ACC-PROG-04 | R04, R05 | Intégration | `acc_prog_04_objectifs_et_participations` |
 | ACC-PROG-05 | R03, R07 | Intégration, E2E | `acc_prog_05_etats_vides` |
 
 ## Hors périmètre
