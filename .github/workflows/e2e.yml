@@ -26,7 +26,7 @@ jobs:
   e2e:
     name: e2e
     needs: detect
-    if: needs.detect.outputs.e2e == 'true' && !startsWith(github.head_ref, 'release-please--')
+    if: needs.detect.outputs.e2e == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     services:

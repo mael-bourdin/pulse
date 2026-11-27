@@ -2,7 +2,8 @@ name: release-please
 
 on:
   push:
-    branches: [main]
+    branches: [develop]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -28,5 +29,4 @@ jobs:
         with:
           # GITHUB_TOKEN-created PRs never trigger CI, so required checks would block the release PR.
           token: ${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}
-          # The default branch is develop: without this, release-please would release develop instead of main.
-          target-branch: main
+          target-branch: develop
