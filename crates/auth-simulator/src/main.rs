@@ -38,7 +38,7 @@ async fn serve() -> Result<(), String> {
         .with_env_filter(EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into()))
         .init();
     let config = Config::from_env()?;
-    let state = AppState::new(load_users()?, config.token_ttl)?;
+    let state = AppState::new(load_users()?, &config)?;
     // `::` : écoute en IPv4 et IPv6, le réseau privé de Railway étant en IPv6.
     let address = SocketAddr::from((Ipv6Addr::UNSPECIFIED, config.port));
     let listener = tokio::net::TcpListener::bind(address)
